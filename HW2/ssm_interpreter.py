@@ -52,6 +52,7 @@ input = sampleInput1
 # filePath = str(rawInput[1])
 # file = open(filePath, "r")
 # input = file.read() #Return input as one string
+# Testing 123
 
 while(i<len(input)):
     token += (input[i])
