@@ -48,9 +48,9 @@ valid = True
 
 sampleInput1 = "ildc 10\nildc 20\niadd\n"
 input = sampleInput1
-rawInput = sys.argv #Get file path and open it for reading
-filePath = str(rawInput[1])
-file = open(filePath, "r")
+# rawInput = sys.argv #Get file path and open it for reading
+# filePath = str(rawInput[1])
+# file = open(filePath, "r")
 # input = file.read() #Return input as one string
 
 while(i<len(input)):
