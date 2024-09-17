@@ -1,5 +1,4 @@
 #ideas
-#data structures
 #hashes:
 #   symbols:for holding the labels and their jump location
 #   store:for storing vars used in store and load (done at runtime)
@@ -36,6 +35,8 @@
 #   run the commands in commands array in order, do jumps when needed, pretty straight forward
 #   I think
 
+import sys
+
 symbols = {}
 store = {}
 
@@ -47,6 +48,10 @@ valid = True
 
 sampleInput1 = "ildc 10\nildc 20\niadd\n"
 input = sampleInput1
+rawInput = sys.argv #Get file path and open it for reading
+filePath = str(rawInput[1])
+file = open(filePath, "r")
+# input = file.read() #Return input as one string
 
 while(i<len(input)):
     token += (input[i])
