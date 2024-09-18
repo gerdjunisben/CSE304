@@ -42,22 +42,40 @@ store = {}
 
 stack = []
 commands = []
+commandCounter = 0
 token = ""
 i = 0
 valid = True
 
-sampleInput1 = "ildc 10\nildc 20\niadd\n"
-input = sampleInput1
-# rawInput = sys.argv #Get file path and open it for reading
-# filePath = str(rawInput[1])
-# file = open(filePath, "r")
-# input = file.read() #Return input as one string
-# Testing 123
+
+filePath = "HW2/test.txt"
+file = open(filePath, "r")
+input = file.read() #Return input as one string
+input += ' '
+
+def isWhiteSpace(char):
+    return char=='\n' or char==' ' or char=='\t'
+
 
 while(i<len(input)):
     token += (input[i])
     i+=1
-    if token=="ildc ":
+    if len(token) == 1 and token[0] == '#':
+        while input[i]!='\n':
+            i+=1
+        token=""
+    elif token[-1] == ':':
+        token = token[0:-1]
+        for j in token:
+            if not j.isalnum() and j!='_':
+                valid = False
+                break
+        symbols[token] = commandCounter
+        token = ""
+    elif token=="ildc":
+        i+=1
+        while(isWhiteSpace(input[i])):
+            i+=1
         sign = 1
         num = 0
         if(input[i]=='-'):
@@ -71,7 +89,7 @@ while(i<len(input)):
             valid = False
             break
 
-        while input[i]!='\n':
+        while not isWhiteSpace(input[i]):
             if input[i]<='9' or input[i]>='0':
                 num*=10
                 num += ord(input[i]) - ord('0')
@@ -81,29 +99,132 @@ while(i<len(input)):
                 break
         
         commands.append((0,num*sign))
+        commandCounter+=1
         token=""
-    elif token=='iadd\n':
-        commands.append((1,))
+    elif token=='iadd':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((1,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='isub':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((2,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='idiv':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((3,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='imod':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((4,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='pop':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((5,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='dup':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((6,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='swap':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((7,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='load':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((8,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='store':
+        if isWhiteSpace(input[i]):
+            commandCounter+=1
+            commands.append((9,))
+            token=""
+        else:
+            valid=False
+            break
+        i+=1
+    elif token=='jz':
+        i+=1
+        while(isWhiteSpace(input[i])):
+            i+=1
+        
         token=""
-    elif token=='isub\n':
-        commands.append((2,))
+        while not isWhiteSpace(input[i]):
+            token += input[i]
+            i+=1
+        if not token in symbols:
+            symbols[token] = -1
+        commands.append((10,token))
         token=""
-    elif token=='idiv\n':
-        commands.append((3,))
+        commandCounter += 1
+    elif token=='jnz':
+        i+=1
+        while(isWhiteSpace(input[i])):
+            i+=1
+        
         token=""
-    elif token=='imod\n':
-        commands.append((4,))
+        while not isWhiteSpace(input[i]):
+            token += input[i]
+            i+=1
+        if not token in symbols:
+            symbols[token] = -1
+        commands.append((11,token))
         token=""
-    elif token=='pop\n':
-        commands.append((5,))
+        commandCounter += 1
+    elif token=='jmp':
+        i+=1
+        while(isWhiteSpace(input[i])):
+            i+=1
+        
         token=""
-    elif token=='dup\n':
-        commands.append((6,))
+        while not isWhiteSpace(input[i]):
+            token += input[i]
+            i+=1
+        if not token in symbols:
+            symbols[token] = -1
+        commands.append((12,token))
         token=""
-    elif token=='swap\n':
-        commands.append((7,))
-        token=""
-    elif token=='\n':
+        commandCounter += 1
+    elif len(token) ==1 and isWhiteSpace(token):
         token=""
         continue
 
@@ -112,37 +233,63 @@ while(i<len(input)):
 if len(token) >0:
     valid = False
 
+for i in symbols.values():
+    if i == -1:
+        valid = False
+        break
+
 if(valid):
-    for i in commands:
-        if i[0] == 0:
-            stack.append(i[1])
-        elif i[0] == 1:
+    j = 0
+    while j < commandCounter:
+        if commands[j][0] == 0:
+            stack.append(commands[j][1])
+        elif commands[j][0] == 1:
             a = stack.pop()
             b = stack.pop()
             stack.append(a+b)
-        elif i[0] == 2:
+        elif commands[j][0] == 2:
             a = stack.pop()
             b = stack.pop()
             stack.append(b-a)
-        elif i[0] == 3:
+        elif commands[j][0] == 3:
             a = stack.pop()
             b = stack.pop()
             stack.append(b/a)
-        elif i[0] == 4:
+        elif commands[j][0] == 4:
             a = stack.pop()
             b = stack.pop()
             stack.append(b%a)
-        elif i[0] == 5:
+        elif commands[j][0] == 5:
             stack.pop()
-        elif i[0] == 6:
+        elif commands[j][0] == 6:
             a = stack.pop()
             stack.append(a)
             stack.append(a)
-        elif i[0] == 7:
+        elif commands[j][0] == 7:
             a = stack.pop()
             b = stack.pop()
             stack.append(a)
             stack.append(b)
+        elif commands[j][0] == 8:
+            a = stack.pop()
+            val = store[a] 
+            stack.append(a)
+            stack.append(val)
+        elif commands[j][0] ==9:
+            int = stack.pop()
+            a = stack.pop()
+            store[a] = int
+        elif commands[j][0] == 10: #jz
+            a = stack.pop()
+            if a == 0:
+                j = symbols[commands[j][1]] -1
+        elif commands[j][0] == 11: #jnz
+            a = stack.pop()
+            if a != 0:
+                j = symbols[commands[j][1]] -1 
+        elif commands[j][0] == 12: #jump
+            j = symbols[commands[j][1]] -1
+        j+=1
     print(stack.pop())
 else:
     print("Invalid program")
