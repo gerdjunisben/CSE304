@@ -48,7 +48,8 @@ i = 0
 valid = True
 
 
-filePath = "HW2/test.txt"
+rawInput = sys.argv #Get file path and open it for reading
+filePath = str(rawInput[1])
 file = open(filePath, "r")
 input = file.read() #Return input as one string
 input += ' '
