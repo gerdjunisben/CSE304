@@ -239,59 +239,110 @@ for i in symbols.values():
         valid = False
         break
 
+runtime = False
 if(valid):
     j = 0
     while j < commandCounter:
         if commands[j][0] == 0:
             stack.append(commands[j][1])
         elif commands[j][0] == 1:
-            a = stack.pop()
-            b = stack.pop()
-            stack.append(a+b)
+            if len(stack)>=2:
+                a = stack.pop()
+                b = stack.pop()
+                stack.append(a+b)
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 2:
-            a = stack.pop()
-            b = stack.pop()
-            stack.append(b-a)
+            if len(stack)>=2:
+                a = stack.pop()
+                b = stack.pop()
+                stack.append(b-a)
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 3:
-            a = stack.pop()
-            b = stack.pop()
-            stack.append(b/a)
+            if len(stack)>=2:
+                a = stack.pop()
+                b = stack.pop()
+                stack.append(b/a)
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 4:
-            a = stack.pop()
-            b = stack.pop()
-            stack.append(b%a)
+            if len(stack)>=2:
+                a = stack.pop()
+                b = stack.pop()
+                stack.append(b%a)
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 5:
-            stack.pop()
+            if len(stack)>=1:
+                stack.pop()
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 6:
-            a = stack.pop()
-            stack.append(a)
-            stack.append(a)
+            if len(stack)>=1:
+                a = stack.pop()
+                stack.append(a)
+                stack.append(a)
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 7:
-            a = stack.pop()
-            b = stack.pop()
-            stack.append(a)
-            stack.append(b)
+            if len(stack)>=2:
+                a = stack.pop()
+                b = stack.pop()
+                stack.append(a)
+                stack.append(b)
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 8:
-            a = stack.pop()
-            val = store[a] 
-            stack.append(a)
-            stack.append(val)
+            if len(stack)>=1:
+                a = stack.pop()
+                if not a in store:
+                    runtime=True 
+                    break
+                val = store[a] 
+                stack.append(a)
+                stack.append(val)
+            else:
+                runtime = True
+                break
         elif commands[j][0] ==9:
-            int = stack.pop()
-            a = stack.pop()
-            store[a] = int
+            if len(stack)>=2:
+                b = stack.pop()
+                a = stack.pop()
+                store[a] = b
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 10: #jz
-            a = stack.pop()
-            if a == 0:
-                j = symbols[commands[j][1]] -1
+            if len(stack)>=1:
+                a = stack.pop()
+                if a == 0:
+                    j = symbols[commands[j][1]] -1
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 11: #jnz
-            a = stack.pop()
-            if a != 0:
-                j = symbols[commands[j][1]] -1 
+            if len(stack)>=1:
+                a = stack.pop()
+                if a != 0:
+                    j = symbols[commands[j][1]] -1 
+            else:
+                runtime = True
+                break
         elif commands[j][0] == 12: #jump
             j = symbols[commands[j][1]] -1
         j+=1
-    print(stack.pop())
+    if runtime:
+        print("Runtime error around line %d",j)
+    else:
+        print(stack.pop())
 else:
     print("Invalid program")
 

@@ -2,6 +2,7 @@ ildc 20
 ildc 5
 here: ildc 1
 isub
+#balls
 dup
 jz there
 swap
