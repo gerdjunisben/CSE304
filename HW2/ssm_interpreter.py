@@ -1,3 +1,8 @@
+# CSE 304 Homework 2
+#
+# Benjamin Gerdjunis
+# Donato Zampini
+#
 #ideas
 #hashes:
 #   symbols:for holding the labels and their jump location
