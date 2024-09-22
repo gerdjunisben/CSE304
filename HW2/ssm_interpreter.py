@@ -1,7 +1,7 @@
 # CSE 304 Homework 2
 #
 # Benjamin Gerdjunis, bgerdjunis, 115962358
-# Donato Zampini
+# Donato Zampini, dzampini, 114849209
 #
 #ideas
 #hashes:
@@ -54,9 +54,9 @@ i = 0
 valid = True
 
 
-#rawInput = sys.argv #Get file path and open it for reading
-#filePath = str(rawInput[1])
-filePath = 'HW2/test.txt'
+rawInput = sys.argv #Get file path and open it for reading
+filePath = str(rawInput[1])
+# filePath = 'HW2/test.txt'
 file = open(filePath, "r")
 input = file.read() #Return input as one string
 input += ' '
