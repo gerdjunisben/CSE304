@@ -1,6 +1,6 @@
 # CSE 304 Homework 2
 #
-# Benjamin Gerdjunis
+# Benjamin Gerdjunis, bgerdjunis, 115962358
 # Donato Zampini
 #
 #ideas
@@ -39,6 +39,7 @@
 #Once we scan through:
 #   run the commands in commands array in order, do jumps when needed, pretty straight forward
 #   I think
+#>NOTE:this clearly wasn't our final implementation these were the initial ideas
 
 import sys
 
@@ -53,8 +54,9 @@ i = 0
 valid = True
 
 
-rawInput = sys.argv #Get file path and open it for reading
-filePath = str(rawInput[1])
+#rawInput = sys.argv #Get file path and open it for reading
+#filePath = str(rawInput[1])
+filePath = 'HW2/test.txt'
 file = open(filePath, "r")
 input = file.read() #Return input as one string
 input += ' '
