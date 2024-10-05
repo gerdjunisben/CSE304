@@ -1,14 +1,3 @@
-ildc 20 ildc 5
-here: ildc 
-1
-isub
-#balls
-dup
-jz there
-swap
-ildc 10
-iadd
-swap
-jmp here
-there:
-pop
+ildc 5
+ildc 8
+imul
