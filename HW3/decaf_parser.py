@@ -2,21 +2,22 @@ import ply.yacc as yacc
 from decaf_lexer import tokens
 
 def p_empty(p):
-    '''empty : None'''
-    p[0] = None
+    '''empty :'''
+    pass
 
 def p_program(p):
     '''program : class_decl
-                | class_decl program'''
+                | class_decl program
+                | empty'''
     if len(p) ==2:
         p[0] = [p[1]]
     else:
         p[0] = p[1] +[p[2]]
 
 def p_class_decl(p):
-    '''class_decl : class id extends id LBRACE class_body_decl RBRACE
-                  | class id LBRACE class_body_decl RBRACE'''
-    if p[3] == 'extends':
+    '''class_decl : CLASS id EXTENDS id LBRACE class_body_decl RBRACE
+                  | CLASS id LBRACE class_body_decl RBRACE'''
+    if len(p) == 7:
         p[0] = {'id':p[2], 'super_id':p[4], 'class_body_decl':p[6]}
     else:
         p[0] = {'id':p[2], 'class_body_decl':p[4]}
@@ -25,24 +26,36 @@ def p_class_body_decl(p):
     '''class_body_decl : field_decl
                     | method_decl
                     | constructor_decl
-                    | class_body_decl field_decl
-                    | class_body_decl method_decl
-                    | class_body_decl constructor_decl'''
+                    | field_decl class_body_more
+                    | method_decl class_body_more
+                    | constructor_decl class_body_more'''
     if len(p) == 2:
         p[0] = [p[1]]  
     else:
-        p[0] = [p[1]] + p[2]
+        p[0] = p[1] + [p[2]]
+
+
+def p_class_body_more(p):
+    '''class_body_more : empty
+                    | field_decl class_body_more
+                    | method_decl class_body_more
+                    | constructor_decl class_body_more'''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1] + [p[2]]
+
 
 def p_field_decl(p):
     '''field_decl : modifier var_decl'''
     p[0] = {'modifier':p[1],'var_decl':p[2]}
         
 def p_modifier(p):
-    '''modifier : public static
-                | private static
-                | public
-                | private
-                | static
+    '''modifier : PUBLIC STATIC
+                | PRIVATE STATIC
+                | PUBLIC
+                | PRIVATE
+                | STATIC
                 | empty'''
     if len(p) == 3:
         p[0] = p[1] + p[2]
@@ -56,10 +69,10 @@ def p_var_decl(p):
     p[0] = {'type':p[1], 'variables':p[2]}
 
 def p_type(p):
-    '''type : int
-            | float
-            | boolean
-            | void
+    '''type : INT
+            | FLOAT
+            | BOOLEAN
+            | VOID
             | id'''
     if p[1] == 'void':
         p[0] = None
@@ -69,11 +82,14 @@ def p_type(p):
 
 def p_variables(p):
     '''variables : variable
-                | variables COMMA variable'''
+                | variables COMMA variable
+                | empty'''
     if len(p)==2:
         p[0] = p[1]
+    elif len(p) == 4:
+        p[0] = [p[1]] + p[3]
     else:
-        p[0] = [p[1]] + p[2]
+        p[0] = []
 
 def p_variable(p):
     '''variable : id'''
@@ -82,9 +98,9 @@ def p_variable(p):
 
 def p_method_decl(p):
     '''method_decl : modifier type id LPAREN RPAREN block
-                    | modifier void id LPAREN RPAREN block
+                    | modifier VOID id LPAREN RPAREN block
                     | modifier type id LPAREN formals RPAREN block
-                    | modifier void id LPAREN formals RPAREN block'''
+                    | modifier VOID id LPAREN formals RPAREN block'''
     if len(p) >4:
         p[0] = {'modifier':p[1], 'type':p[2], 'id':p[3], 'formals':p[5],'block':p[6]}
     else:
@@ -102,7 +118,8 @@ def p_constructor_decl(p):
 
 def p_formals(p):
     '''formals : formals COMMA formal_param 
-                | formal_param'''
+                | formal_param
+                | empty'''
     if len(p)==2:
         p[0] = p[1]
     else:
@@ -111,7 +128,7 @@ def p_formals(p):
 
 def p_formal_param(p):
     '''formal_param : type variable'''
-    p[0] = p[1] + p[2]
+    p[0] = {'type':p[1], 'variable':p[2]}
 
 
 def p_block(p):
@@ -120,25 +137,25 @@ def p_block(p):
 
 
 def p_stmt(p):
-    '''stmt : if LPAREN expr RPAREN stmt
-            | if LPAREN expr RPAREN stmt else stmt
-            | while LPAREN expr RPAREN stmt
-            | for LPAREN stmt_expr ; expr ; stmt_expr RPAREN stmt
-            | for LPAREN ; expr ; stmt_expr RPAREN stmt
-            | for LPAREN stmt_expr ;  ; stmt_expr RPAREN stmt
-            | for LPAREN stmt_expr ; expr ;  RPAREN stmt
-            | for LPAREN  ;  ; stmt_expr RPAREN stmt
-            | for LPAREN stmt_expr ;  ; RPAREN stmt
-            | for LPAREN  ; expr ; RPAREN stmt
-            | for LPAREN  ;  ;  RPAREN stmt
-            | return ;
-            | return expr ;
-            | stmt_expr ;
-            | break ;
-            | continue ;
+    '''stmt : IF LPAREN expr RPAREN stmt
+            | IF LPAREN expr RPAREN stmt ELSE stmt
+            | WHILE LPAREN expr RPAREN stmt
+            | FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+            | FOR LPAREN SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+            | FOR LPAREN stmt_expr SEMICOLON  SEMICOLON stmt_expr RPAREN stmt
+            | FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON  RPAREN stmt
+            | FOR LPAREN  SEMICOLON  SEMICOLON stmt_expr RPAREN stmt
+            | FOR LPAREN stmt_expr SEMICOLON  SEMICOLON RPAREN stmt
+            | FOR LPAREN  SEMICOLON expr SEMICOLON RPAREN stmt
+            | FOR LPAREN  SEMICOLON  SEMICOLON  RPAREN stmt
+            | RETURN SEMICOLON
+            | RETURN expr SEMICOLON
+            | stmt_expr SEMICOLON
+            | BREAK SEMICOLON
+            | CONTINUE SEMICOLON
             | block
             | var_decl
-            | ;'''
+            | SEMICOLON'''
     
     if p[1] == 'if':
         if len(p) == 6:
@@ -182,9 +199,9 @@ def p_literal(p):
     '''literal : int_const
                 | float_const
                 | string_const
-                | null
-                | true
-                | false'''
+                | NULL
+                | TRUE
+                | FALSE'''
     if p[1] =='null' or p[1] =='true' or p[1]=='false':
         p[0] = None
     else:
@@ -193,11 +210,11 @@ def p_literal(p):
 
 def p_primary(p):
     '''primary : literal
-            | this
-            | super
+            | THIS
+            | SUPER
             | LPAREN expr RPAREN
-            | new id LPAREN arguments RPAREN
-            | new id LPAREN RPAREN
+            | NEW id LPAREN arguments RPAREN
+            | NEW id LPAREN RPAREN
             | lhs
             | method_invocation'''
     if p[1] == 'this' or p[1]=='super':
@@ -214,15 +231,15 @@ def p_primary(p):
             
 def p_arguments(p):
     '''arguments : expr
-                | arguments COMMA expr'''
+                | arguments COMMA expr
+                | empty'''
     if len(p) == 1:
         p[0] = p[1]
     else:
         p[0] = p[1] + p[3]
 
 def p_lhs(p):
-    '''lhs : field_access
-            | array_access'''
+    '''lhs : field_access'''
     p[0] = p[1]
 
 
@@ -260,10 +277,10 @@ def p_expr(p):
 
 def p_assign(p):
     '''assign : lhs EQUALS expr
-            | lhs ++
-            | ++ lhs
-            | lhs --
-            | -- lhs'''
+            | lhs PLUSPLUS
+            | PLUSPLUS lhs
+            | lhs MINUSMINUS
+            | MINUSMINUS lhs'''
     if p[2] == '=':
         p[0] = p[1] + p[3]
     elif(p[1] == '++' or p[1] =='--'):
@@ -279,8 +296,8 @@ def p_arith_op(p):
     p[0] = None
 
 def p_bool_op(p):
-    '''bool_op : &&
-                | ||
+    '''bool_op : AND
+                | OR
                 | EQUALSCOMPARE
                 | NOTEQUALS
                 | LESSTHAN
@@ -295,5 +312,9 @@ def p_unary_op(p):
                 | NOT'''
     p[0] = None
 
+def p_stmt_expr(p):
+    '''stmt_expr : assign
+                | method_invocation'''
 
-parser = yacc.yacc()
+
+parser = yacc.yacc(start = "program")

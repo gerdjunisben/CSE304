@@ -1,1 +1,222 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    DECLARE
+    DO
+    LBRACKET
+    NUMBER
+    RBRACKET
+    STRING
+    SYMBOLS
+    TERMINALS
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     empty -> <empty>
+Rule 2     program -> class_decl
+Rule 3     program -> class_decl program
+Rule 4     program -> empty
+Rule 5     class_decl -> CLASS id EXTENDS id LBRACE class_body_decl RBRACE
+Rule 6     class_decl -> CLASS id LBRACE class_body_decl RBRACE
+Rule 7     class_body_decl -> field_decl
+Rule 8     class_body_decl -> method_decl
+Rule 9     class_body_decl -> constructor_decl
+Rule 10    class_body_decl -> field_decl class_body_more
+Rule 11    class_body_decl -> method_decl class_body_more
+Rule 12    class_body_decl -> constructor_decl class_body_more
+Rule 13    class_body_more -> empty
+Rule 14    class_body_more -> field_decl class_body_more
+Rule 15    class_body_more -> method_decl class_body_more
+Rule 16    class_body_more -> constructor_decl class_body_more
+Rule 17    field_decl -> modifier var_decl
+Rule 18    modifier -> PUBLIC STATIC
+Rule 19    modifier -> PRIVATE STATIC
+Rule 20    modifier -> PUBLIC
+Rule 21    modifier -> PRIVATE
+Rule 22    modifier -> STATIC
+Rule 23    modifier -> empty
+Rule 24    var_decl -> type variables
+Rule 25    type -> INT
+Rule 26    type -> FLOAT
+Rule 27    type -> BOOLEAN
+Rule 28    type -> VOID
+Rule 29    type -> id
+Rule 30    variables -> variable
+Rule 31    variables -> variables COMMA variable
+Rule 32    variables -> empty
+Rule 33    variable -> id
+Rule 34    method_decl -> modifier type id LPAREN RPAREN block
+Rule 35    method_decl -> modifier VOID id LPAREN RPAREN block
+Rule 36    method_decl -> modifier type id LPAREN formals RPAREN block
+Rule 37    method_decl -> modifier VOID id LPAREN formals RPAREN block
+Rule 38    constructor_decl -> modifier id LPAREN RPAREN block
+Rule 39    constructor_decl -> modifier id LPAREN formals RPAREN block
+Rule 40    formals -> formals COMMA formal_param
+Rule 41    formals -> formal_param
+Rule 42    formals -> empty
+Rule 43    formal_param -> type variable
+Rule 44    block -> LBRACE stmt RBRACE
+Rule 45    stmt -> IF LPAREN expr RPAREN stmt
+Rule 46    stmt -> IF LPAREN expr RPAREN stmt ELSE stmt
+Rule 47    stmt -> WHILE LPAREN expr RPAREN stmt
+Rule 48    stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+Rule 49    stmt -> FOR LPAREN SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+Rule 50    stmt -> FOR LPAREN stmt_expr SEMICOLON SEMICOLON stmt_expr RPAREN stmt
+Rule 51    stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON RPAREN stmt
+Rule 52    stmt -> FOR LPAREN SEMICOLON SEMICOLON stmt_expr RPAREN stmt
+Rule 53    stmt -> FOR LPAREN stmt_expr SEMICOLON SEMICOLON RPAREN stmt
+Rule 54    stmt -> FOR LPAREN SEMICOLON expr SEMICOLON RPAREN stmt
+Rule 55    stmt -> FOR LPAREN SEMICOLON SEMICOLON RPAREN stmt
+Rule 56    stmt -> RETURN SEMICOLON
+Rule 57    stmt -> RETURN expr SEMICOLON
+Rule 58    stmt -> stmt_expr SEMICOLON
+Rule 59    stmt -> BREAK SEMICOLON
+Rule 60    stmt -> CONTINUE SEMICOLON
+Rule 61    stmt -> block
+Rule 62    stmt -> var_decl
+Rule 63    stmt -> SEMICOLON
+Rule 64    literal -> int_const
+Rule 65    literal -> float_const
+Rule 66    literal -> string_const
+Rule 67    literal -> NULL
+Rule 68    literal -> TRUE
+Rule 69    literal -> FALSE
+Rule 70    primary -> literal
+Rule 71    primary -> THIS
+Rule 72    primary -> SUPER
+Rule 73    primary -> LPAREN expr RPAREN
+Rule 74    primary -> NEW id LPAREN arguments RPAREN
+Rule 75    primary -> NEW id LPAREN RPAREN
+Rule 76    primary -> lhs
+Rule 77    primary -> method_invocation
+Rule 78    arguments -> expr
+Rule 79    arguments -> arguments COMMA expr
+Rule 80    arguments -> empty
+Rule 81    lhs -> field_access
+Rule 82    field_access -> primary PERIOD id
+Rule 83    field_access -> id
+Rule 84    method_invocation -> field_access LPAREN RPAREN
+Rule 85    method_invocation -> field_access LPAREN arguments RPAREN
+Rule 86    expr -> primary
+Rule 87    expr -> assign
+Rule 88    expr -> expr arith_op expr
+Rule 89    expr -> expr bool_op expr
+Rule 90    expr -> unary_op expr
+Rule 91    assign -> lhs EQUALS expr
+Rule 92    assign -> lhs PLUSPLUS
+Rule 93    assign -> PLUSPLUS lhs
+Rule 94    assign -> lhs MINUSMINUS
+Rule 95    assign -> MINUSMINUS lhs
+Rule 96    arith_op -> PLUS
+Rule 97    arith_op -> MINUS
+Rule 98    arith_op -> TIMES
+Rule 99    arith_op -> DIVIDE
+Rule 100   bool_op -> AND
+Rule 101   bool_op -> OR
+Rule 102   bool_op -> EQUALSCOMPARE
+Rule 103   bool_op -> NOTEQUALS
+Rule 104   bool_op -> LESSTHAN
+Rule 105   bool_op -> GREATERTHAN
+Rule 106   bool_op -> LESSTHANOREQ
+Rule 107   bool_op -> GREATERTHANOREQ
+Rule 108   unary_op -> PLUS
+Rule 109   unary_op -> MINUS
+Rule 110   unary_op -> NOT
+Rule 111   stmt_expr -> assign
+Rule 112   stmt_expr -> method_invocation
+
+Terminals, with rules where they appear
+
+AND                  : 100
+BOOLEAN              : 27
+BREAK                : 59
+CLASS                : 5 6
+COMMA                : 31 40 79
+CONTINUE             : 60
+DECLARE              : 
+DIVIDE               : 99
+DO                   : 
+ELSE                 : 46
+EQUALS               : 91
+EQUALSCOMPARE        : 102
+EXTENDS              : 5
+FALSE                : 69
+FLOAT                : 26
+FOR                  : 48 49 50 51 52 53 54 55
+GREATERTHAN          : 105
+GREATERTHANOREQ      : 107
+IF                   : 45 46
+INT                  : 25
+LBRACE               : 5 6 44
+LBRACKET             : 
+LESSTHAN             : 104
+LESSTHANOREQ         : 106
+LPAREN               : 34 35 36 37 38 39 45 46 47 48 49 50 51 52 53 54 55 73 74 75 84 85
+MINUS                : 97 109
+MINUSMINUS           : 94 95
+NEW                  : 74 75
+NOT                  : 110
+NOTEQUALS            : 103
+NULL                 : 67
+NUMBER               : 
+OR                   : 101
+PERIOD               : 82
+PLUS                 : 96 108
+PLUSPLUS             : 92 93
+PRIVATE              : 19 21
+PUBLIC               : 18 20
+RBRACE               : 5 6 44
+RBRACKET             : 
+RETURN               : 56 57
+RPAREN               : 34 35 36 37 38 39 45 46 47 48 49 50 51 52 53 54 55 73 74 75 84 85
+SEMICOLON            : 48 48 49 49 50 50 51 51 52 52 53 53 54 54 55 55 56 57 58 59 60 63
+STATIC               : 18 19 22
+STRING               : 
+SUPER                : 72
+SYMBOLS              : 
+TERMINALS            : 
+THIS                 : 71
+TIMES                : 98
+TRUE                 : 68
+VOID                 : 28 35 37
+WHILE                : 47
+error                : 
+
+Nonterminals, with rules where they appear
+
+arguments            : 74 79 85
+arith_op             : 88
+assign               : 87 111
+block                : 34 35 36 37 38 39 61
+bool_op              : 89
+class_body_decl      : 5 6
+class_body_more      : 10 11 12 14 15 16
+class_decl           : 2 3
+constructor_decl     : 9 12 16
+empty                : 4 13 23 32 42 80
+expr                 : 45 46 47 48 49 51 54 57 73 78 79 88 88 89 89 90 91
+field_access         : 81 84 85
+field_decl           : 7 10 14
+float_const          : 65
+formal_param         : 40 41
+formals              : 36 37 39 40
+id                   : 5 5 6 29 33 34 35 36 37 38 39 74 75 82 83
+int_const            : 64
+lhs                  : 76 91 92 93 94 95
+literal              : 70
+method_decl          : 8 11 15
+method_invocation    : 77 112
+modifier             : 17 34 35 36 37 38 39
+primary              : 82 86
+program              : 3 0
+stmt                 : 44 45 46 46 47 48 49 50 51 52 53 54 55
+stmt_expr            : 48 48 49 50 50 51 52 53 58
+string_const         : 66
+type                 : 24 34 36 43
+unary_op             : 90
+var_decl             : 17 62
+variable             : 30 31 43
+variables            : 24 31
+
