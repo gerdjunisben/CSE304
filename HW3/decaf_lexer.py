@@ -32,30 +32,37 @@ tokens = (
     'PERIOD',
     'PLUSPLUS',
     'MINUSMINUS',
-    'BOOLEAN',
-    'BREAK',
-    'CONTINUE',
-    'CLASS',
-    'DO',
-    'ELSE',
-    'EXTENDS',
-    'FALSE',
-    'FLOAT',
-    'FOR',
-    'IF',
-    'INT',
-    'NEW',
-    'NULL',
-    'PRIVATE',
-    'PUBLIC',
-    'RETURN',
-    'STATIC',
-    'SUPER',
-    'THIS',
-    'TRUE',
-    'VOID',
-    'WHILE'
+    'FLOATCONST',
+    'STRINGCONST',
+    'INTCONST',
+    'ID'
 )
+
+reserved = {
+    'boolean':'BOOLEAN',
+    'break':'BREAK',
+    'continue':'CONTINUE',
+    'class':'CLASS',
+    'do':'DO',
+    'else':'ELSE',
+    'extends':'EXTENDS',
+    'false':'FALSE',
+    'float':'FLOAT',
+    'for':'FOR',
+    'if':'IF',
+    'int':'INT',
+    'new':'NEW',
+    'null':'NULL',
+    'private':'PRIVATE',
+    'public':'PUBLIC',
+    'return':'RETURN',
+    'static':'STATIC',
+    'super':'SUPER',
+    'this':'THIS',
+    'true':'TRUE',
+    'void':'VOID',
+    'while':'WHILE'
+}
 
 # Regex rules
 t_PLUS      = r'\+'
@@ -113,16 +120,40 @@ t_WHILE     = r'while'
 
 #######Things I think I need tokens for ',', ';', '.', '++', '--', '&&', '||'
 
+# Function for ID regex
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    if t.value in reserved:
+        t.type = reserved[t.value]
+    return t
 
-# Funtion for number regex
+# Function for FLOATCONST regex
+def t_FLOATCONST(t):
+    r'(-)?\d+(\.)?\d+'
+    t.value = float(t.value)
+    return t
+
+# Function for INTCONST regex
+def t_INTCONST(t):
+    r'(-)?\d+'
+    t.value = int(t.value)
+    return t
+
+# Function for STRINGCONST regex
+def t_STRINGCONST(t):
+    r'\".+\"'
+    t.value = str(t.value)
+    return t
+
+# Function for NUMBER regex
 def t_NUMBER(t):
     r'\d+'
     t.value = int(t.value)    
     return t
 
-# Function for string regex
+# Function for STRING regex
 def t_STRING(t):
-    r'\"\w+\"'
+    r'\".+\"'
     return str(t)
 
 ######Make sure to set up the tokens array and the regex rules, what you wrote might not like things
