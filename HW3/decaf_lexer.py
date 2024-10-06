@@ -7,6 +7,10 @@ reserved_words = ["boolean", "break", "continue", "class", "do", "else"
 
 tokens:list[str] = []
 
+
+######Make sure ti set up the tokens array and the regex rules, what you wrote might not like things
+######such as number. See the example in the PLY thing also brackets and junk are tokens in this language
+
 # Tokenizes a line that contains the operator "::="
 def createToken(String:str):
     newToken = String.split(":").pop(0)
