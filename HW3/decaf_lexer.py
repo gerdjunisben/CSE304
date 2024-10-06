@@ -55,6 +55,9 @@ t_RBRACKET = r'\]'
 t_RBRACE = r'\}'
 
 
+#######Things I think I need tokens for ',', ';', '.', '++', '--', '&&', '||'
+
+
 # Funtion for number regex
 def t_NUMBER(t):
     r'\d+'
