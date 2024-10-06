@@ -26,7 +26,35 @@ tokens = (
     'LBRACE',
     'RPAREN',
     'RBRACKET',
-    'RBRACE'
+    'RBRACE',
+    'COMMA',
+    'SEMICOLON',
+    'PERIOD',
+    'PLUSPLUS',
+    'MINUSMINUS',
+    'BOOLEAN',
+    'BREAK',
+    'CONTINUE',
+    'CLASS',
+    'DO',
+    'ELSE',
+    'EXTENDS',
+    'FALSE',
+    'FLOAT',
+    'FOR',
+    'IF',
+    'INT',
+    'NEW',
+    'NULL',
+    'PRIVATE',
+    'PUBLIC',
+    'RETURN',
+    'STATIC',
+    'SUPER',
+    'THIS',
+    'TRUE',
+    'VOID',
+    'WHILE'
 )
 
 # Regex rules
@@ -53,6 +81,34 @@ t_LBRACE = r'\{'
 t_RPAREN  = r'\)'
 t_RBRACKET = r'\]'
 t_RBRACE = r'\}'
+t_COMMA = r','
+t_SEMICOLON = r';'
+t_PERIOD = r'.'
+t_PLUSPLUS = r'\+\+'
+t_MINUSMINUS = r'--'
+t_BOOLEAN = r'boolean' 
+t_BREAK = r'break' 
+t_CONTINUE = r'continue' 
+t_CLASS = r'class'
+t_DO = r'do'
+t_ELSE = r'else'
+t_EXTENDS = r'extends'
+t_FALSE = r'false'
+t_FLOAT = r'float'
+t_FOR = r'for'
+t_IF = r'if'
+t_INT = r'int'
+t_NEW = r'new'
+t_NULL = r'null'
+t_PRIVATE = r'private'
+t_PUBLIC = r'public'
+t_RETURN = r'return'
+t_STATIC = r'static'
+t_SUPER = r'super'
+t_THIS = r'this'
+t_TRUE = r'true'
+t_VOID = r'void'
+t_WHILE = r'while'
 
 
 #######Things I think I need tokens for ',', ';', '.', '++', '--', '&&', '||'
