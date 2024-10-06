@@ -1,7 +1,7 @@
 import ply.lex as lex
 
 # List of token names
-tokens = (
+tokens = [
     'NUMBER',
     'STRING',
     'PLUS',
@@ -36,7 +36,7 @@ tokens = (
     'STRINGCONST',
     'INTCONST',
     'ID'
-)
+]
 
 reserved = {
     'boolean':'BOOLEAN',
@@ -63,6 +63,8 @@ reserved = {
     'void':'VOID',
     'while':'WHILE'
 }
+
+tokens = tokens + list(reserved.values())
 
 # Regex rules
 t_PLUS      = r'\+'

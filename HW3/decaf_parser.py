@@ -15,8 +15,8 @@ def p_program(p):
         p[0] = p[1] +[p[2]]
 
 def p_class_decl(p):
-    '''class_decl : CLASS id EXTENDS id LBRACE class_body_decl RBRACE
-                  | CLASS id LBRACE class_body_decl RBRACE'''
+    '''class_decl : CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE
+                  | CLASS ID LBRACE class_body_decl RBRACE'''
     if len(p) == 7:
         p[0] = {'id':p[2], 'super_id':p[4], 'class_body_decl':p[6]}
     else:
@@ -73,7 +73,7 @@ def p_type(p):
             | FLOAT
             | BOOLEAN
             | VOID
-            | id'''
+            | ID'''
     if p[1] == 'void':
         p[0] = None
     else:
@@ -92,15 +92,15 @@ def p_variables(p):
         p[0] = []
 
 def p_variable(p):
-    '''variable : id'''
+    '''variable : ID'''
     p[0] = p[1]
 
 
 def p_method_decl(p):
-    '''method_decl : modifier type id LPAREN RPAREN block
-                    | modifier VOID id LPAREN RPAREN block
-                    | modifier type id LPAREN formals RPAREN block
-                    | modifier VOID id LPAREN formals RPAREN block'''
+    '''method_decl : modifier type ID LPAREN RPAREN block
+                    | modifier VOID ID LPAREN RPAREN block
+                    | modifier type ID LPAREN formals RPAREN block
+                    | modifier VOID ID LPAREN formals RPAREN block'''
     if len(p) >4:
         p[0] = {'modifier':p[1], 'type':p[2], 'id':p[3], 'formals':p[5],'block':p[6]}
     else:
@@ -108,8 +108,8 @@ def p_method_decl(p):
 
 
 def p_constructor_decl(p):
-    '''constructor_decl : modifier id LPAREN RPAREN block
-                        | modifier id LPAREN formals RPAREN block'''
+    '''constructor_decl : modifier ID LPAREN RPAREN block
+                        | modifier ID LPAREN formals RPAREN block'''
     if len(p) >4:
         p[0] = {'modifier':p[1],  'id':p[2], 'formals':p[4],'block':p[6]}
     else:
@@ -196,9 +196,9 @@ def p_stmt(p):
         p[0] = p[1]
 
 def p_literal(p):
-    '''literal : int_const
-                | float_const
-                | string_const
+    '''literal : INTCONST
+                | FLOATCONST
+                | STRINGCONST
                 | NULL
                 | TRUE
                 | FALSE'''
@@ -213,8 +213,8 @@ def p_primary(p):
             | THIS
             | SUPER
             | LPAREN expr RPAREN
-            | NEW id LPAREN arguments RPAREN
-            | NEW id LPAREN RPAREN
+            | NEW ID LPAREN arguments RPAREN
+            | NEW ID LPAREN RPAREN
             | lhs
             | method_invocation'''
     if p[1] == 'this' or p[1]=='super':
@@ -244,8 +244,8 @@ def p_lhs(p):
 
 
 def p_field_access(p):
-    '''field_access : primary PERIOD id
-                    | id'''
+    '''field_access : primary PERIOD ID
+                    | ID'''
     if len(p) == 2:
         p[0] = p[1]
     else:
