@@ -11,14 +11,13 @@ tokens = (
     'OR',
     'AND',
     'NOT',
+    'EQUALS',
     'EQUALSCOMPARE',
     'NOTEQUALS',
     'LESSTHAN',
     'GREATERTHAN',
     'LESSTHANOREQ',
     'GREATERTHANOREQ',
-    'UNARYPOSITIVE',
-    'UNARYNEGATIVE',
     'DECLARE',
     'TERMINALS',
     'SYMBOLS',
@@ -38,14 +37,13 @@ t_DIVIDE  = r'/'
 t_OR = r'\|\|'
 t_AND = r'&&'
 t_NOT = r'!'
+t_EQUALS = r'='
 t_EQUALSCOMPARE = r'=='
 t_NOTEQUALS = r'!='
 t_LESSTHAN = r'<'
 t_GREATERTHAN = r'>'
 t_LESSTHANOREQ = r'<='
 t_GREATERTHANOREQ = r'>='
-t_UNARYPOSITIVE = r'\+'
-t_UNARYNEGATIVE = r'-'
 t_DECLARE = r'::='
 t_TERMINALS = r'[A-Z]'
 t_SYMBOLS = r'[a-z]'
@@ -67,36 +65,52 @@ def t_NUMBER(t):
 def t_STRING(t):
     r'\"\w+\"'
     return str(t)
+
 ######Make sure to set up the tokens array and the regex rules, what you wrote might not like things
 ######such as number. See the example in the PLY thing also brackets and junk are tokens in this language
 
+# FUNCTIONS FROM PLY RECITATION LECTURE
+# Define a rule so we can track line numbers
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+# A string containing ignored characters (spaces and tabs)
+t_ignore  = ' \t'
+
+# Error handling rule
+def t_error(t):
+    print("Illegal character '%s'" % t.value[0])
+    t.lexer.skip(1)
+
+# END OF FUNCTIONS FROM PLY RECITATION LECTURE
+
 # Tokenizes a line that contains the operator "::="
-def tokenizeTerminalLine(String:str):
-    newToken = String.split(' ').pop(0)
-    if newToken not in tokens:
-        tokens.append(newToken)
+# def tokenizeTerminalLine(String:str):
+#     newToken = String.split(' ').pop(0)
+#     if newToken not in tokens:
+#         tokens.append(newToken)
 
 # Reads through entire program, passed as one long string
-def lexProgram(String:str):
-    lines:list[str] = str.split("\n")
-    for line in lines:
-        if "::=" in line:
-            tokenizeTerminalLine(line)
+# def lexProgram(String:str):
+#     lines:list[str] = str.split("\n")
+#     for line in lines:
+#         if "::=" in line:
+#             tokenizeTerminalLine(line)
 
-lexer = lex.lex
+lexer = lex.lex()
+data = '''
+A ::=a||aB
+B ::= b||ab
+number = 3 + 3 + -9'''
 
-# # Test it out
-# data = '''
-# 3 + 4 * 10
-#   + -20 *2
-# '''
 
-# # Give the lexer some input
-# lexer.input(data)
+# Give the lexer some input
+lexer.input(data)
 
-# # Tokenize
-# while True:
-#     tok = lexer.token()
-#     if not tok: 
-#         break      # No more input
-#     print(tok)
+# Tokenize
+while True:
+    tok = lexer.token()
+    if not tok: 
+        break      # No more input
+    print(tok)
