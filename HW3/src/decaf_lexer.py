@@ -1,6 +1,6 @@
 # Benjamin Gerdjunis 
-# SB ID:
-# Net ID:
+# SB ID: 115962358
+# Net ID: bgerdjunis
 # Donato Zampini
 # SB ID: 114849209
 # Net ID: dzampini
@@ -128,7 +128,6 @@ t_WHILE     = r'while'
 
 
 
-#######Things I think I need tokens for ',', ';', '.', '++', '--', '&&', '||'
 
 # Function for ID regex
 def t_ID(t):
@@ -166,14 +165,13 @@ def t_STRING(t):
     r'\".+\"'
     return str(t)
 
-######Make sure to set up the tokens array and the regex rules, what you wrote might not like things
-######such as number. See the example in the PLY thing also brackets and junk are tokens in this language
 
-# FUNCTIONS FROM PLY RECITATION LECTURE
-# Define a rule so we can track line numbers
+# Function for lexer to interpret and ignore comments
 def t_comment(t):
     r'(//(.)*\n) | (/\*(.|\n)*?\*/)'
     t.lexer.lineno += t.value.count('\n')
+
+# FUNCTIONS FROM PLY RECITATION LECTURE
 
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \n\t'
@@ -185,6 +183,7 @@ def t_error(t):
 
 # END OF FUNCTIONS FROM PLY RECITATION LECTURE
 
+# Old functions that were commented out for being bad and not working
 # Tokenizes a line that contains the operator "::="
 # def tokenizeTerminalLine(String:str):
 #     newToken = String.split(' ').pop(0)
@@ -198,4 +197,5 @@ def t_error(t):
 #         if "::=" in line:
 #             tokenizeTerminalLine(line)
 
+# Create lexer
 lex.lex()
