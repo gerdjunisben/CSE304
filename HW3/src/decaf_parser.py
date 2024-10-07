@@ -6,7 +6,7 @@
 # Net ID: dzampini
 
 import ply.yacc as yacc
-from src.decaf_lexer import tokens
+from decaf_lexer import tokens
 
 def p_empty(p):
     '''empty :'''

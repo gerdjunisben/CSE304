@@ -1,0 +1,4425 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    DECLARE
+    DO
+    LBRACKET
+    NUMBER
+    RBRACKET
+    STRING
+    SYMBOLS
+    TERMINALS
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     empty -> <empty>
+Rule 2     program -> class_decl
+Rule 3     program -> class_decl program
+Rule 4     program -> empty
+Rule 5     class_decl -> CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE
+Rule 6     class_decl -> CLASS ID LBRACE class_body_decl RBRACE
+Rule 7     class_body_decl -> field_decl SEMICOLON
+Rule 8     class_body_decl -> method_decl
+Rule 9     class_body_decl -> constructor_decl
+Rule 10    class_body_decl -> class_body_decl field_decl SEMICOLON
+Rule 11    class_body_decl -> class_body_decl method_decl
+Rule 12    class_body_decl -> class_body_decl constructor_decl
+Rule 13    field_decl -> modifier var_decl
+Rule 14    modifier -> PUBLIC STATIC
+Rule 15    modifier -> PRIVATE STATIC
+Rule 16    modifier -> PUBLIC
+Rule 17    modifier -> PRIVATE
+Rule 18    modifier -> STATIC
+Rule 19    modifier -> empty
+Rule 20    var_decl -> type variables
+Rule 21    type -> INT
+Rule 22    type -> FLOAT
+Rule 23    type -> BOOLEAN
+Rule 24    type -> VOID
+Rule 25    type -> ID
+Rule 26    variables -> variable
+Rule 27    variables -> variables COMMA variable
+Rule 28    variables -> empty
+Rule 29    variable -> ID
+Rule 30    method_decl -> modifier type ID LPAREN RPAREN block
+Rule 31    method_decl -> modifier VOID ID LPAREN RPAREN block
+Rule 32    method_decl -> modifier type ID LPAREN formals RPAREN block
+Rule 33    method_decl -> modifier VOID ID LPAREN formals RPAREN block
+Rule 34    method_decl -> modifier ID LPAREN RPAREN block
+Rule 35    method_decl -> modifier ID LPAREN formals RPAREN block
+Rule 36    constructor_decl -> modifier ID LPAREN RPAREN block
+Rule 37    constructor_decl -> modifier ID LPAREN formals RPAREN block
+Rule 38    formals -> formals COMMA formal_param
+Rule 39    formals -> formal_param
+Rule 40    formals -> empty
+Rule 41    formal_param -> type variable
+Rule 42    block -> LBRACE stmt RBRACE
+Rule 43    stmt -> IF LPAREN expr RPAREN stmt
+Rule 44    stmt -> IF LPAREN expr RPAREN stmt ELSE stmt
+Rule 45    stmt -> WHILE LPAREN expr RPAREN stmt
+Rule 46    stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+Rule 47    stmt -> RETURN SEMICOLON
+Rule 48    stmt -> RETURN expr SEMICOLON
+Rule 49    stmt -> stmt_expr SEMICOLON
+Rule 50    stmt -> BREAK SEMICOLON
+Rule 51    stmt -> CONTINUE SEMICOLON
+Rule 52    stmt -> block
+Rule 53    stmt -> var_decl SEMICOLON
+Rule 54    stmt -> SEMICOLON
+Rule 55    stmt -> empty
+Rule 56    literal -> INTCONST
+Rule 57    literal -> FLOATCONST
+Rule 58    literal -> STRINGCONST
+Rule 59    literal -> NULL
+Rule 60    literal -> TRUE
+Rule 61    literal -> FALSE
+Rule 62    primary -> literal
+Rule 63    primary -> THIS
+Rule 64    primary -> SUPER
+Rule 65    primary -> LPAREN expr RPAREN
+Rule 66    primary -> NEW ID LPAREN arguments RPAREN
+Rule 67    primary -> NEW ID LPAREN RPAREN
+Rule 68    primary -> lhs
+Rule 69    primary -> method_invocation
+Rule 70    arguments -> expr
+Rule 71    arguments -> arguments COMMA expr
+Rule 72    arguments -> empty
+Rule 73    lhs -> field_access
+Rule 74    field_access -> primary PERIOD ID
+Rule 75    field_access -> ID
+Rule 76    method_invocation -> field_access LPAREN RPAREN
+Rule 77    method_invocation -> field_access LPAREN arguments RPAREN
+Rule 78    expr -> primary
+Rule 79    expr -> assign
+Rule 80    expr -> expr arith_op expr
+Rule 81    expr -> expr bool_op expr
+Rule 82    expr -> unary_op expr
+Rule 83    assign -> lhs EQUALS expr
+Rule 84    assign -> lhs PLUSPLUS
+Rule 85    assign -> PLUSPLUS lhs
+Rule 86    assign -> lhs MINUSMINUS
+Rule 87    assign -> MINUSMINUS lhs
+Rule 88    arith_op -> PLUS
+Rule 89    arith_op -> MINUS
+Rule 90    arith_op -> TIMES
+Rule 91    arith_op -> DIVIDE
+Rule 92    bool_op -> AND
+Rule 93    bool_op -> OR
+Rule 94    bool_op -> EQUALSCOMPARE
+Rule 95    bool_op -> NOTEQUALS
+Rule 96    bool_op -> LESSTHAN
+Rule 97    bool_op -> GREATERTHAN
+Rule 98    bool_op -> LESSTHANOREQ
+Rule 99    bool_op -> GREATERTHANOREQ
+Rule 100   unary_op -> PLUS
+Rule 101   unary_op -> MINUS
+Rule 102   unary_op -> NOT
+Rule 103   stmt_expr -> assign
+Rule 104   stmt_expr -> method_invocation
+
+Terminals, with rules where they appear
+
+AND                  : 92
+BOOLEAN              : 23
+BREAK                : 50
+CLASS                : 5 6
+COMMA                : 27 38 71
+CONTINUE             : 51
+DECLARE              : 
+DIVIDE               : 91
+DO                   : 
+ELSE                 : 44
+EQUALS               : 83
+EQUALSCOMPARE        : 94
+EXTENDS              : 5
+FALSE                : 61
+FLOAT                : 22
+FLOATCONST           : 57
+FOR                  : 46
+GREATERTHAN          : 97
+GREATERTHANOREQ      : 99
+ID                   : 5 5 6 25 29 30 31 32 33 34 35 36 37 66 67 74 75
+IF                   : 43 44
+INT                  : 21
+INTCONST             : 56
+LBRACE               : 5 6 42
+LBRACKET             : 
+LESSTHAN             : 96
+LESSTHANOREQ         : 98
+LPAREN               : 30 31 32 33 34 35 36 37 43 44 45 46 65 66 67 76 77
+MINUS                : 89 101
+MINUSMINUS           : 86 87
+NEW                  : 66 67
+NOT                  : 102
+NOTEQUALS            : 95
+NULL                 : 59
+NUMBER               : 
+OR                   : 93
+PERIOD               : 74
+PLUS                 : 88 100
+PLUSPLUS             : 84 85
+PRIVATE              : 15 17
+PUBLIC               : 14 16
+RBRACE               : 5 6 42
+RBRACKET             : 
+RETURN               : 47 48
+RPAREN               : 30 31 32 33 34 35 36 37 43 44 45 46 65 66 67 76 77
+SEMICOLON            : 7 10 46 46 47 48 49 50 51 53 54
+STATIC               : 14 15 18
+STRING               : 
+STRINGCONST          : 58
+SUPER                : 64
+SYMBOLS              : 
+TERMINALS            : 
+THIS                 : 63
+TIMES                : 90
+TRUE                 : 60
+VOID                 : 24 31 33
+WHILE                : 45
+error                : 
+
+Nonterminals, with rules where they appear
+
+arguments            : 66 71 77
+arith_op             : 80
+assign               : 79 103
+block                : 30 31 32 33 34 35 36 37 52
+bool_op              : 81
+class_body_decl      : 5 6 10 11 12
+class_decl           : 2 3
+constructor_decl     : 9 12
+empty                : 4 19 28 40 55 72
+expr                 : 43 44 45 46 48 65 70 71 80 80 81 81 82 83
+field_access         : 73 76 77
+field_decl           : 7 10
+formal_param         : 38 39
+formals              : 32 33 35 37 38
+lhs                  : 68 83 84 85 86 87
+literal              : 62
+method_decl          : 8 11
+method_invocation    : 69 104
+modifier             : 13 30 31 32 33 34 35 36 37
+primary              : 74 78
+program              : 3 0
+stmt                 : 42 43 44 44 45 46
+stmt_expr            : 46 46 49
+type                 : 20 30 32 41
+unary_op             : 82
+var_decl             : 13 53
+variable             : 26 27 41
+variables            : 20 27
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (2) program -> . class_decl
+    (3) program -> . class_decl program
+    (4) program -> . empty
+    (5) class_decl -> . CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE
+    (6) class_decl -> . CLASS ID LBRACE class_body_decl RBRACE
+    (1) empty -> .
+
+    CLASS           shift and go to state 4
+    $end            reduce using rule 1 (empty -> .)
+
+    program                        shift and go to state 1
+    class_decl                     shift and go to state 2
+    empty                          shift and go to state 3
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (2) program -> class_decl .
+    (3) program -> class_decl . program
+    (2) program -> . class_decl
+    (3) program -> . class_decl program
+    (4) program -> . empty
+    (5) class_decl -> . CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE
+    (6) class_decl -> . CLASS ID LBRACE class_body_decl RBRACE
+    (1) empty -> .
+
+  ! reduce/reduce conflict for $end resolved using rule 1 (empty -> .)
+    CLASS           shift and go to state 4
+    $end            reduce using rule 1 (empty -> .)
+
+  ! $end            [ reduce using rule 2 (program -> class_decl .) ]
+
+    class_decl                     shift and go to state 2
+    program                        shift and go to state 5
+    empty                          shift and go to state 3
+
+state 3
+
+    (4) program -> empty .
+
+    $end            reduce using rule 4 (program -> empty .)
+
+
+state 4
+
+    (5) class_decl -> CLASS . ID EXTENDS ID LBRACE class_body_decl RBRACE
+    (6) class_decl -> CLASS . ID LBRACE class_body_decl RBRACE
+
+    ID              shift and go to state 6
+
+
+state 5
+
+    (3) program -> class_decl program .
+
+    $end            reduce using rule 3 (program -> class_decl program .)
+
+
+state 6
+
+    (5) class_decl -> CLASS ID . EXTENDS ID LBRACE class_body_decl RBRACE
+    (6) class_decl -> CLASS ID . LBRACE class_body_decl RBRACE
+
+    EXTENDS         shift and go to state 7
+    LBRACE          shift and go to state 8
+
+
+state 7
+
+    (5) class_decl -> CLASS ID EXTENDS . ID LBRACE class_body_decl RBRACE
+
+    ID              shift and go to state 9
+
+
+state 8
+
+    (6) class_decl -> CLASS ID LBRACE . class_body_decl RBRACE
+    (7) class_body_decl -> . field_decl SEMICOLON
+    (8) class_body_decl -> . method_decl
+    (9) class_body_decl -> . constructor_decl
+    (10) class_body_decl -> . class_body_decl field_decl SEMICOLON
+    (11) class_body_decl -> . class_body_decl method_decl
+    (12) class_body_decl -> . class_body_decl constructor_decl
+    (13) field_decl -> . modifier var_decl
+    (30) method_decl -> . modifier type ID LPAREN RPAREN block
+    (31) method_decl -> . modifier VOID ID LPAREN RPAREN block
+    (32) method_decl -> . modifier type ID LPAREN formals RPAREN block
+    (33) method_decl -> . modifier VOID ID LPAREN formals RPAREN block
+    (34) method_decl -> . modifier ID LPAREN RPAREN block
+    (35) method_decl -> . modifier ID LPAREN formals RPAREN block
+    (36) constructor_decl -> . modifier ID LPAREN RPAREN block
+    (37) constructor_decl -> . modifier ID LPAREN formals RPAREN block
+    (14) modifier -> . PUBLIC STATIC
+    (15) modifier -> . PRIVATE STATIC
+    (16) modifier -> . PUBLIC
+    (17) modifier -> . PRIVATE
+    (18) modifier -> . STATIC
+    (19) modifier -> . empty
+    (1) empty -> .
+
+    PUBLIC          shift and go to state 15
+    PRIVATE         shift and go to state 17
+    STATIC          shift and go to state 16
+    VOID            reduce using rule 1 (empty -> .)
+    ID              reduce using rule 1 (empty -> .)
+    INT             reduce using rule 1 (empty -> .)
+    FLOAT           reduce using rule 1 (empty -> .)
+    BOOLEAN         reduce using rule 1 (empty -> .)
+
+    class_body_decl                shift and go to state 10
+    field_decl                     shift and go to state 11
+    method_decl                    shift and go to state 12
+    constructor_decl               shift and go to state 13
+    modifier                       shift and go to state 14
+    empty                          shift and go to state 18
+
+state 9
+
+    (5) class_decl -> CLASS ID EXTENDS ID . LBRACE class_body_decl RBRACE
+
+    LBRACE          shift and go to state 19
+
+
+state 10
+
+    (6) class_decl -> CLASS ID LBRACE class_body_decl . RBRACE
+    (10) class_body_decl -> class_body_decl . field_decl SEMICOLON
+    (11) class_body_decl -> class_body_decl . method_decl
+    (12) class_body_decl -> class_body_decl . constructor_decl
+    (13) field_decl -> . modifier var_decl
+    (30) method_decl -> . modifier type ID LPAREN RPAREN block
+    (31) method_decl -> . modifier VOID ID LPAREN RPAREN block
+    (32) method_decl -> . modifier type ID LPAREN formals RPAREN block
+    (33) method_decl -> . modifier VOID ID LPAREN formals RPAREN block
+    (34) method_decl -> . modifier ID LPAREN RPAREN block
+    (35) method_decl -> . modifier ID LPAREN formals RPAREN block
+    (36) constructor_decl -> . modifier ID LPAREN RPAREN block
+    (37) constructor_decl -> . modifier ID LPAREN formals RPAREN block
+    (14) modifier -> . PUBLIC STATIC
+    (15) modifier -> . PRIVATE STATIC
+    (16) modifier -> . PUBLIC
+    (17) modifier -> . PRIVATE
+    (18) modifier -> . STATIC
+    (19) modifier -> . empty
+    (1) empty -> .
+
+    RBRACE          shift and go to state 20
+    PUBLIC          shift and go to state 15
+    PRIVATE         shift and go to state 17
+    STATIC          shift and go to state 16
+    VOID            reduce using rule 1 (empty -> .)
+    ID              reduce using rule 1 (empty -> .)
+    INT             reduce using rule 1 (empty -> .)
+    FLOAT           reduce using rule 1 (empty -> .)
+    BOOLEAN         reduce using rule 1 (empty -> .)
+
+    field_decl                     shift and go to state 21
+    method_decl                    shift and go to state 22
+    constructor_decl               shift and go to state 23
+    modifier                       shift and go to state 14
+    empty                          shift and go to state 18
+
+state 11
+
+    (7) class_body_decl -> field_decl . SEMICOLON
+
+    SEMICOLON       shift and go to state 24
+
+
+state 12
+
+    (8) class_body_decl -> method_decl .
+
+    RBRACE          reduce using rule 8 (class_body_decl -> method_decl .)
+    PUBLIC          reduce using rule 8 (class_body_decl -> method_decl .)
+    PRIVATE         reduce using rule 8 (class_body_decl -> method_decl .)
+    STATIC          reduce using rule 8 (class_body_decl -> method_decl .)
+    VOID            reduce using rule 8 (class_body_decl -> method_decl .)
+    ID              reduce using rule 8 (class_body_decl -> method_decl .)
+    INT             reduce using rule 8 (class_body_decl -> method_decl .)
+    FLOAT           reduce using rule 8 (class_body_decl -> method_decl .)
+    BOOLEAN         reduce using rule 8 (class_body_decl -> method_decl .)
+
+
+state 13
+
+    (9) class_body_decl -> constructor_decl .
+
+    RBRACE          reduce using rule 9 (class_body_decl -> constructor_decl .)
+    PUBLIC          reduce using rule 9 (class_body_decl -> constructor_decl .)
+    PRIVATE         reduce using rule 9 (class_body_decl -> constructor_decl .)
+    STATIC          reduce using rule 9 (class_body_decl -> constructor_decl .)
+    VOID            reduce using rule 9 (class_body_decl -> constructor_decl .)
+    ID              reduce using rule 9 (class_body_decl -> constructor_decl .)
+    INT             reduce using rule 9 (class_body_decl -> constructor_decl .)
+    FLOAT           reduce using rule 9 (class_body_decl -> constructor_decl .)
+    BOOLEAN         reduce using rule 9 (class_body_decl -> constructor_decl .)
+
+
+state 14
+
+    (13) field_decl -> modifier . var_decl
+    (30) method_decl -> modifier . type ID LPAREN RPAREN block
+    (31) method_decl -> modifier . VOID ID LPAREN RPAREN block
+    (32) method_decl -> modifier . type ID LPAREN formals RPAREN block
+    (33) method_decl -> modifier . VOID ID LPAREN formals RPAREN block
+    (34) method_decl -> modifier . ID LPAREN RPAREN block
+    (35) method_decl -> modifier . ID LPAREN formals RPAREN block
+    (36) constructor_decl -> modifier . ID LPAREN RPAREN block
+    (37) constructor_decl -> modifier . ID LPAREN formals RPAREN block
+    (20) var_decl -> . type variables
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+
+    VOID            shift and go to state 28
+    ID              shift and go to state 27
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+
+    var_decl                       shift and go to state 25
+    type                           shift and go to state 26
+
+state 15
+
+    (14) modifier -> PUBLIC . STATIC
+    (16) modifier -> PUBLIC .
+
+    STATIC          shift and go to state 32
+    VOID            reduce using rule 16 (modifier -> PUBLIC .)
+    ID              reduce using rule 16 (modifier -> PUBLIC .)
+    INT             reduce using rule 16 (modifier -> PUBLIC .)
+    FLOAT           reduce using rule 16 (modifier -> PUBLIC .)
+    BOOLEAN         reduce using rule 16 (modifier -> PUBLIC .)
+
+
+state 16
+
+    (18) modifier -> STATIC .
+
+    VOID            reduce using rule 18 (modifier -> STATIC .)
+    ID              reduce using rule 18 (modifier -> STATIC .)
+    INT             reduce using rule 18 (modifier -> STATIC .)
+    FLOAT           reduce using rule 18 (modifier -> STATIC .)
+    BOOLEAN         reduce using rule 18 (modifier -> STATIC .)
+
+
+state 17
+
+    (15) modifier -> PRIVATE . STATIC
+    (17) modifier -> PRIVATE .
+
+    STATIC          shift and go to state 33
+    VOID            reduce using rule 17 (modifier -> PRIVATE .)
+    ID              reduce using rule 17 (modifier -> PRIVATE .)
+    INT             reduce using rule 17 (modifier -> PRIVATE .)
+    FLOAT           reduce using rule 17 (modifier -> PRIVATE .)
+    BOOLEAN         reduce using rule 17 (modifier -> PRIVATE .)
+
+
+state 18
+
+    (19) modifier -> empty .
+
+    VOID            reduce using rule 19 (modifier -> empty .)
+    ID              reduce using rule 19 (modifier -> empty .)
+    INT             reduce using rule 19 (modifier -> empty .)
+    FLOAT           reduce using rule 19 (modifier -> empty .)
+    BOOLEAN         reduce using rule 19 (modifier -> empty .)
+
+
+state 19
+
+    (5) class_decl -> CLASS ID EXTENDS ID LBRACE . class_body_decl RBRACE
+    (7) class_body_decl -> . field_decl SEMICOLON
+    (8) class_body_decl -> . method_decl
+    (9) class_body_decl -> . constructor_decl
+    (10) class_body_decl -> . class_body_decl field_decl SEMICOLON
+    (11) class_body_decl -> . class_body_decl method_decl
+    (12) class_body_decl -> . class_body_decl constructor_decl
+    (13) field_decl -> . modifier var_decl
+    (30) method_decl -> . modifier type ID LPAREN RPAREN block
+    (31) method_decl -> . modifier VOID ID LPAREN RPAREN block
+    (32) method_decl -> . modifier type ID LPAREN formals RPAREN block
+    (33) method_decl -> . modifier VOID ID LPAREN formals RPAREN block
+    (34) method_decl -> . modifier ID LPAREN RPAREN block
+    (35) method_decl -> . modifier ID LPAREN formals RPAREN block
+    (36) constructor_decl -> . modifier ID LPAREN RPAREN block
+    (37) constructor_decl -> . modifier ID LPAREN formals RPAREN block
+    (14) modifier -> . PUBLIC STATIC
+    (15) modifier -> . PRIVATE STATIC
+    (16) modifier -> . PUBLIC
+    (17) modifier -> . PRIVATE
+    (18) modifier -> . STATIC
+    (19) modifier -> . empty
+    (1) empty -> .
+
+    PUBLIC          shift and go to state 15
+    PRIVATE         shift and go to state 17
+    STATIC          shift and go to state 16
+    VOID            reduce using rule 1 (empty -> .)
+    ID              reduce using rule 1 (empty -> .)
+    INT             reduce using rule 1 (empty -> .)
+    FLOAT           reduce using rule 1 (empty -> .)
+    BOOLEAN         reduce using rule 1 (empty -> .)
+
+    class_body_decl                shift and go to state 34
+    field_decl                     shift and go to state 11
+    method_decl                    shift and go to state 12
+    constructor_decl               shift and go to state 13
+    modifier                       shift and go to state 14
+    empty                          shift and go to state 18
+
+state 20
+
+    (6) class_decl -> CLASS ID LBRACE class_body_decl RBRACE .
+
+    CLASS           reduce using rule 6 (class_decl -> CLASS ID LBRACE class_body_decl RBRACE .)
+    $end            reduce using rule 6 (class_decl -> CLASS ID LBRACE class_body_decl RBRACE .)
+
+
+state 21
+
+    (10) class_body_decl -> class_body_decl field_decl . SEMICOLON
+
+    SEMICOLON       shift and go to state 35
+
+
+state 22
+
+    (11) class_body_decl -> class_body_decl method_decl .
+
+    RBRACE          reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+    PUBLIC          reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+    PRIVATE         reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+    STATIC          reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+    VOID            reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+    ID              reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+    INT             reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+    FLOAT           reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+    BOOLEAN         reduce using rule 11 (class_body_decl -> class_body_decl method_decl .)
+
+
+state 23
+
+    (12) class_body_decl -> class_body_decl constructor_decl .
+
+    RBRACE          reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+    PUBLIC          reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+    PRIVATE         reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+    STATIC          reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+    VOID            reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+    ID              reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+    INT             reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+    FLOAT           reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+    BOOLEAN         reduce using rule 12 (class_body_decl -> class_body_decl constructor_decl .)
+
+
+state 24
+
+    (7) class_body_decl -> field_decl SEMICOLON .
+
+    RBRACE          reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+    PUBLIC          reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+    PRIVATE         reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+    STATIC          reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+    VOID            reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+    ID              reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+    INT             reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+    FLOAT           reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+    BOOLEAN         reduce using rule 7 (class_body_decl -> field_decl SEMICOLON .)
+
+
+state 25
+
+    (13) field_decl -> modifier var_decl .
+
+    SEMICOLON       reduce using rule 13 (field_decl -> modifier var_decl .)
+
+
+state 26
+
+    (30) method_decl -> modifier type . ID LPAREN RPAREN block
+    (32) method_decl -> modifier type . ID LPAREN formals RPAREN block
+    (20) var_decl -> type . variables
+    (26) variables -> . variable
+    (27) variables -> . variables COMMA variable
+    (28) variables -> . empty
+    (29) variable -> . ID
+    (1) empty -> .
+
+    ID              shift and go to state 36
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    variables                      shift and go to state 37
+    variable                       shift and go to state 38
+    empty                          shift and go to state 39
+
+state 27
+
+    (34) method_decl -> modifier ID . LPAREN RPAREN block
+    (35) method_decl -> modifier ID . LPAREN formals RPAREN block
+    (36) constructor_decl -> modifier ID . LPAREN RPAREN block
+    (37) constructor_decl -> modifier ID . LPAREN formals RPAREN block
+    (25) type -> ID .
+
+    LPAREN          shift and go to state 40
+    ID              reduce using rule 25 (type -> ID .)
+    COMMA           reduce using rule 25 (type -> ID .)
+    SEMICOLON       reduce using rule 25 (type -> ID .)
+
+
+state 28
+
+    (31) method_decl -> modifier VOID . ID LPAREN RPAREN block
+    (33) method_decl -> modifier VOID . ID LPAREN formals RPAREN block
+    (24) type -> VOID .
+
+  ! shift/reduce conflict for ID resolved as shift
+    ID              shift and go to state 41
+    COMMA           reduce using rule 24 (type -> VOID .)
+    SEMICOLON       reduce using rule 24 (type -> VOID .)
+
+  ! ID              [ reduce using rule 24 (type -> VOID .) ]
+
+
+state 29
+
+    (21) type -> INT .
+
+    ID              reduce using rule 21 (type -> INT .)
+    COMMA           reduce using rule 21 (type -> INT .)
+    SEMICOLON       reduce using rule 21 (type -> INT .)
+
+
+state 30
+
+    (22) type -> FLOAT .
+
+    ID              reduce using rule 22 (type -> FLOAT .)
+    COMMA           reduce using rule 22 (type -> FLOAT .)
+    SEMICOLON       reduce using rule 22 (type -> FLOAT .)
+
+
+state 31
+
+    (23) type -> BOOLEAN .
+
+    ID              reduce using rule 23 (type -> BOOLEAN .)
+    COMMA           reduce using rule 23 (type -> BOOLEAN .)
+    SEMICOLON       reduce using rule 23 (type -> BOOLEAN .)
+
+
+state 32
+
+    (14) modifier -> PUBLIC STATIC .
+
+    VOID            reduce using rule 14 (modifier -> PUBLIC STATIC .)
+    ID              reduce using rule 14 (modifier -> PUBLIC STATIC .)
+    INT             reduce using rule 14 (modifier -> PUBLIC STATIC .)
+    FLOAT           reduce using rule 14 (modifier -> PUBLIC STATIC .)
+    BOOLEAN         reduce using rule 14 (modifier -> PUBLIC STATIC .)
+
+
+state 33
+
+    (15) modifier -> PRIVATE STATIC .
+
+    VOID            reduce using rule 15 (modifier -> PRIVATE STATIC .)
+    ID              reduce using rule 15 (modifier -> PRIVATE STATIC .)
+    INT             reduce using rule 15 (modifier -> PRIVATE STATIC .)
+    FLOAT           reduce using rule 15 (modifier -> PRIVATE STATIC .)
+    BOOLEAN         reduce using rule 15 (modifier -> PRIVATE STATIC .)
+
+
+state 34
+
+    (5) class_decl -> CLASS ID EXTENDS ID LBRACE class_body_decl . RBRACE
+    (10) class_body_decl -> class_body_decl . field_decl SEMICOLON
+    (11) class_body_decl -> class_body_decl . method_decl
+    (12) class_body_decl -> class_body_decl . constructor_decl
+    (13) field_decl -> . modifier var_decl
+    (30) method_decl -> . modifier type ID LPAREN RPAREN block
+    (31) method_decl -> . modifier VOID ID LPAREN RPAREN block
+    (32) method_decl -> . modifier type ID LPAREN formals RPAREN block
+    (33) method_decl -> . modifier VOID ID LPAREN formals RPAREN block
+    (34) method_decl -> . modifier ID LPAREN RPAREN block
+    (35) method_decl -> . modifier ID LPAREN formals RPAREN block
+    (36) constructor_decl -> . modifier ID LPAREN RPAREN block
+    (37) constructor_decl -> . modifier ID LPAREN formals RPAREN block
+    (14) modifier -> . PUBLIC STATIC
+    (15) modifier -> . PRIVATE STATIC
+    (16) modifier -> . PUBLIC
+    (17) modifier -> . PRIVATE
+    (18) modifier -> . STATIC
+    (19) modifier -> . empty
+    (1) empty -> .
+
+    RBRACE          shift and go to state 42
+    PUBLIC          shift and go to state 15
+    PRIVATE         shift and go to state 17
+    STATIC          shift and go to state 16
+    VOID            reduce using rule 1 (empty -> .)
+    ID              reduce using rule 1 (empty -> .)
+    INT             reduce using rule 1 (empty -> .)
+    FLOAT           reduce using rule 1 (empty -> .)
+    BOOLEAN         reduce using rule 1 (empty -> .)
+
+    field_decl                     shift and go to state 21
+    method_decl                    shift and go to state 22
+    constructor_decl               shift and go to state 23
+    modifier                       shift and go to state 14
+    empty                          shift and go to state 18
+
+state 35
+
+    (10) class_body_decl -> class_body_decl field_decl SEMICOLON .
+
+    RBRACE          reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+    PUBLIC          reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+    PRIVATE         reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+    STATIC          reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+    VOID            reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+    ID              reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+    INT             reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+    FLOAT           reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+    BOOLEAN         reduce using rule 10 (class_body_decl -> class_body_decl field_decl SEMICOLON .)
+
+
+state 36
+
+    (30) method_decl -> modifier type ID . LPAREN RPAREN block
+    (32) method_decl -> modifier type ID . LPAREN formals RPAREN block
+    (29) variable -> ID .
+
+    LPAREN          shift and go to state 43
+    COMMA           reduce using rule 29 (variable -> ID .)
+    SEMICOLON       reduce using rule 29 (variable -> ID .)
+
+
+state 37
+
+    (20) var_decl -> type variables .
+    (27) variables -> variables . COMMA variable
+
+    SEMICOLON       reduce using rule 20 (var_decl -> type variables .)
+    COMMA           shift and go to state 44
+
+
+state 38
+
+    (26) variables -> variable .
+
+    COMMA           reduce using rule 26 (variables -> variable .)
+    SEMICOLON       reduce using rule 26 (variables -> variable .)
+
+
+state 39
+
+    (28) variables -> empty .
+
+    COMMA           reduce using rule 28 (variables -> empty .)
+    SEMICOLON       reduce using rule 28 (variables -> empty .)
+
+
+state 40
+
+    (34) method_decl -> modifier ID LPAREN . RPAREN block
+    (35) method_decl -> modifier ID LPAREN . formals RPAREN block
+    (36) constructor_decl -> modifier ID LPAREN . RPAREN block
+    (37) constructor_decl -> modifier ID LPAREN . formals RPAREN block
+    (38) formals -> . formals COMMA formal_param
+    (39) formals -> . formal_param
+    (40) formals -> . empty
+    (41) formal_param -> . type variable
+    (1) empty -> .
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+    RPAREN          shift and go to state 46
+    COMMA           reduce using rule 1 (empty -> .)
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 45
+
+  ! RPAREN          [ reduce using rule 1 (empty -> .) ]
+
+    formals                        shift and go to state 47
+    formal_param                   shift and go to state 48
+    empty                          shift and go to state 49
+    type                           shift and go to state 50
+
+state 41
+
+    (31) method_decl -> modifier VOID ID . LPAREN RPAREN block
+    (33) method_decl -> modifier VOID ID . LPAREN formals RPAREN block
+
+    LPAREN          shift and go to state 52
+
+
+state 42
+
+    (5) class_decl -> CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE .
+
+    CLASS           reduce using rule 5 (class_decl -> CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE .)
+    $end            reduce using rule 5 (class_decl -> CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE .)
+
+
+state 43
+
+    (30) method_decl -> modifier type ID LPAREN . RPAREN block
+    (32) method_decl -> modifier type ID LPAREN . formals RPAREN block
+    (38) formals -> . formals COMMA formal_param
+    (39) formals -> . formal_param
+    (40) formals -> . empty
+    (41) formal_param -> . type variable
+    (1) empty -> .
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+    RPAREN          shift and go to state 53
+    COMMA           reduce using rule 1 (empty -> .)
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 45
+
+  ! RPAREN          [ reduce using rule 1 (empty -> .) ]
+
+    type                           shift and go to state 50
+    formals                        shift and go to state 54
+    formal_param                   shift and go to state 48
+    empty                          shift and go to state 49
+
+state 44
+
+    (27) variables -> variables COMMA . variable
+    (29) variable -> . ID
+
+    ID              shift and go to state 56
+
+    variable                       shift and go to state 55
+
+state 45
+
+    (25) type -> ID .
+
+    ID              reduce using rule 25 (type -> ID .)
+
+
+state 46
+
+    (34) method_decl -> modifier ID LPAREN RPAREN . block
+    (36) constructor_decl -> modifier ID LPAREN RPAREN . block
+    (42) block -> . LBRACE stmt RBRACE
+
+    LBRACE          shift and go to state 58
+
+    block                          shift and go to state 57
+
+state 47
+
+    (35) method_decl -> modifier ID LPAREN formals . RPAREN block
+    (37) constructor_decl -> modifier ID LPAREN formals . RPAREN block
+    (38) formals -> formals . COMMA formal_param
+
+    RPAREN          shift and go to state 59
+    COMMA           shift and go to state 60
+
+
+state 48
+
+    (39) formals -> formal_param .
+
+    RPAREN          reduce using rule 39 (formals -> formal_param .)
+    COMMA           reduce using rule 39 (formals -> formal_param .)
+
+
+state 49
+
+    (40) formals -> empty .
+
+    RPAREN          reduce using rule 40 (formals -> empty .)
+    COMMA           reduce using rule 40 (formals -> empty .)
+
+
+state 50
+
+    (41) formal_param -> type . variable
+    (29) variable -> . ID
+
+    ID              shift and go to state 56
+
+    variable                       shift and go to state 61
+
+state 51
+
+    (24) type -> VOID .
+
+    ID              reduce using rule 24 (type -> VOID .)
+    COMMA           reduce using rule 24 (type -> VOID .)
+    SEMICOLON       reduce using rule 24 (type -> VOID .)
+
+
+state 52
+
+    (31) method_decl -> modifier VOID ID LPAREN . RPAREN block
+    (33) method_decl -> modifier VOID ID LPAREN . formals RPAREN block
+    (38) formals -> . formals COMMA formal_param
+    (39) formals -> . formal_param
+    (40) formals -> . empty
+    (41) formal_param -> . type variable
+    (1) empty -> .
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+    RPAREN          shift and go to state 62
+    COMMA           reduce using rule 1 (empty -> .)
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 45
+
+  ! RPAREN          [ reduce using rule 1 (empty -> .) ]
+
+    formals                        shift and go to state 63
+    formal_param                   shift and go to state 48
+    empty                          shift and go to state 49
+    type                           shift and go to state 50
+
+state 53
+
+    (30) method_decl -> modifier type ID LPAREN RPAREN . block
+    (42) block -> . LBRACE stmt RBRACE
+
+    LBRACE          shift and go to state 58
+
+    block                          shift and go to state 64
+
+state 54
+
+    (32) method_decl -> modifier type ID LPAREN formals . RPAREN block
+    (38) formals -> formals . COMMA formal_param
+
+    RPAREN          shift and go to state 65
+    COMMA           shift and go to state 60
+
+
+state 55
+
+    (27) variables -> variables COMMA variable .
+
+    COMMA           reduce using rule 27 (variables -> variables COMMA variable .)
+    SEMICOLON       reduce using rule 27 (variables -> variables COMMA variable .)
+
+
+state 56
+
+    (29) variable -> ID .
+
+    COMMA           reduce using rule 29 (variable -> ID .)
+    SEMICOLON       reduce using rule 29 (variable -> ID .)
+    RPAREN          reduce using rule 29 (variable -> ID .)
+
+
+state 57
+
+    (34) method_decl -> modifier ID LPAREN RPAREN block .
+    (36) constructor_decl -> modifier ID LPAREN RPAREN block .
+
+  ! reduce/reduce conflict for RBRACE resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+  ! reduce/reduce conflict for PUBLIC resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+  ! reduce/reduce conflict for PRIVATE resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+  ! reduce/reduce conflict for STATIC resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+  ! reduce/reduce conflict for VOID resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+  ! reduce/reduce conflict for ID resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+  ! reduce/reduce conflict for INT resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+  ! reduce/reduce conflict for FLOAT resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+  ! reduce/reduce conflict for BOOLEAN resolved using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    RBRACE          reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    PUBLIC          reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    PRIVATE         reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    STATIC          reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    VOID            reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    ID              reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    INT             reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    FLOAT           reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+    BOOLEAN         reduce using rule 34 (method_decl -> modifier ID LPAREN RPAREN block .)
+
+  ! RBRACE          [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+  ! PUBLIC          [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+  ! PRIVATE         [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+  ! STATIC          [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+  ! VOID            [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+  ! ID              [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+  ! INT             [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+  ! FLOAT           [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+  ! BOOLEAN         [ reduce using rule 36 (constructor_decl -> modifier ID LPAREN RPAREN block .) ]
+
+
+state 58
+
+    (42) block -> LBRACE . stmt RBRACE
+    (43) stmt -> . IF LPAREN expr RPAREN stmt
+    (44) stmt -> . IF LPAREN expr RPAREN stmt ELSE stmt
+    (45) stmt -> . WHILE LPAREN expr RPAREN stmt
+    (46) stmt -> . FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+    (47) stmt -> . RETURN SEMICOLON
+    (48) stmt -> . RETURN expr SEMICOLON
+    (49) stmt -> . stmt_expr SEMICOLON
+    (50) stmt -> . BREAK SEMICOLON
+    (51) stmt -> . CONTINUE SEMICOLON
+    (52) stmt -> . block
+    (53) stmt -> . var_decl SEMICOLON
+    (54) stmt -> . SEMICOLON
+    (55) stmt -> . empty
+    (103) stmt_expr -> . assign
+    (104) stmt_expr -> . method_invocation
+    (42) block -> . LBRACE stmt RBRACE
+    (20) var_decl -> . type variables
+    (1) empty -> .
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+
+    IF              shift and go to state 67
+    WHILE           shift and go to state 69
+    FOR             shift and go to state 70
+    RETURN          shift and go to state 73
+    BREAK           shift and go to state 74
+    CONTINUE        shift and go to state 75
+    SEMICOLON       shift and go to state 72
+    LBRACE          shift and go to state 58
+    RBRACE          reduce using rule 1 (empty -> .)
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 86
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    stmt                           shift and go to state 66
+    stmt_expr                      shift and go to state 71
+    block                          shift and go to state 76
+    var_decl                       shift and go to state 77
+    empty                          shift and go to state 78
+    assign                         shift and go to state 79
+    method_invocation              shift and go to state 80
+    type                           shift and go to state 81
+    lhs                            shift and go to state 82
+    field_access                   shift and go to state 85
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+
+state 59
+
+    (35) method_decl -> modifier ID LPAREN formals RPAREN . block
+    (37) constructor_decl -> modifier ID LPAREN formals RPAREN . block
+    (42) block -> . LBRACE stmt RBRACE
+
+    LBRACE          shift and go to state 58
+
+    block                          shift and go to state 98
+
+state 60
+
+    (38) formals -> formals COMMA . formal_param
+    (41) formal_param -> . type variable
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 45
+
+    formal_param                   shift and go to state 99
+    type                           shift and go to state 50
+
+state 61
+
+    (41) formal_param -> type variable .
+
+    RPAREN          reduce using rule 41 (formal_param -> type variable .)
+    COMMA           reduce using rule 41 (formal_param -> type variable .)
+
+
+state 62
+
+    (31) method_decl -> modifier VOID ID LPAREN RPAREN . block
+    (42) block -> . LBRACE stmt RBRACE
+
+    LBRACE          shift and go to state 58
+
+    block                          shift and go to state 100
+
+state 63
+
+    (33) method_decl -> modifier VOID ID LPAREN formals . RPAREN block
+    (38) formals -> formals . COMMA formal_param
+
+    RPAREN          shift and go to state 101
+    COMMA           shift and go to state 60
+
+
+state 64
+
+    (30) method_decl -> modifier type ID LPAREN RPAREN block .
+
+    RBRACE          reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+    PUBLIC          reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+    PRIVATE         reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+    STATIC          reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+    VOID            reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+    ID              reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+    INT             reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+    FLOAT           reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+    BOOLEAN         reduce using rule 30 (method_decl -> modifier type ID LPAREN RPAREN block .)
+
+
+state 65
+
+    (32) method_decl -> modifier type ID LPAREN formals RPAREN . block
+    (42) block -> . LBRACE stmt RBRACE
+
+    LBRACE          shift and go to state 58
+
+    block                          shift and go to state 102
+
+state 66
+
+    (42) block -> LBRACE stmt . RBRACE
+
+    RBRACE          shift and go to state 103
+
+
+state 67
+
+    (43) stmt -> IF . LPAREN expr RPAREN stmt
+    (44) stmt -> IF . LPAREN expr RPAREN stmt ELSE stmt
+
+    LPAREN          shift and go to state 104
+
+
+state 68
+
+    (65) primary -> LPAREN . expr RPAREN
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    expr                           shift and go to state 105
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 69
+
+    (45) stmt -> WHILE . LPAREN expr RPAREN stmt
+
+    LPAREN          shift and go to state 116
+
+
+state 70
+
+    (46) stmt -> FOR . LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+
+    LPAREN          shift and go to state 117
+
+
+state 71
+
+    (49) stmt -> stmt_expr . SEMICOLON
+
+    SEMICOLON       shift and go to state 118
+
+
+state 72
+
+    (54) stmt -> SEMICOLON .
+
+    RBRACE          reduce using rule 54 (stmt -> SEMICOLON .)
+    ELSE            reduce using rule 54 (stmt -> SEMICOLON .)
+
+
+state 73
+
+    (47) stmt -> RETURN . SEMICOLON
+    (48) stmt -> RETURN . expr SEMICOLON
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    SEMICOLON       shift and go to state 119
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    expr                           shift and go to state 120
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 74
+
+    (50) stmt -> BREAK . SEMICOLON
+
+    SEMICOLON       shift and go to state 121
+
+
+state 75
+
+    (51) stmt -> CONTINUE . SEMICOLON
+
+    SEMICOLON       shift and go to state 122
+
+
+state 76
+
+    (52) stmt -> block .
+
+    RBRACE          reduce using rule 52 (stmt -> block .)
+    ELSE            reduce using rule 52 (stmt -> block .)
+
+
+state 77
+
+    (53) stmt -> var_decl . SEMICOLON
+
+    SEMICOLON       shift and go to state 123
+
+
+state 78
+
+    (55) stmt -> empty .
+
+    RBRACE          reduce using rule 55 (stmt -> empty .)
+    ELSE            reduce using rule 55 (stmt -> empty .)
+
+
+state 79
+
+    (103) stmt_expr -> assign .
+
+    SEMICOLON       reduce using rule 103 (stmt_expr -> assign .)
+    RPAREN          reduce using rule 103 (stmt_expr -> assign .)
+
+
+state 80
+
+    (104) stmt_expr -> method_invocation .
+    (69) primary -> method_invocation .
+
+    SEMICOLON       reduce using rule 104 (stmt_expr -> method_invocation .)
+    RPAREN          reduce using rule 104 (stmt_expr -> method_invocation .)
+    PERIOD          reduce using rule 69 (primary -> method_invocation .)
+
+
+state 81
+
+    (20) var_decl -> type . variables
+    (26) variables -> . variable
+    (27) variables -> . variables COMMA variable
+    (28) variables -> . empty
+    (29) variable -> . ID
+    (1) empty -> .
+
+    ID              shift and go to state 56
+    COMMA           reduce using rule 1 (empty -> .)
+    SEMICOLON       reduce using rule 1 (empty -> .)
+
+    variables                      shift and go to state 37
+    variable                       shift and go to state 38
+    empty                          shift and go to state 39
+
+state 82
+
+    (83) assign -> lhs . EQUALS expr
+    (84) assign -> lhs . PLUSPLUS
+    (86) assign -> lhs . MINUSMINUS
+    (68) primary -> lhs .
+
+    EQUALS          shift and go to state 124
+    PLUSPLUS        shift and go to state 125
+    MINUSMINUS      shift and go to state 126
+    PERIOD          reduce using rule 68 (primary -> lhs .)
+
+
+state 83
+
+    (85) assign -> PLUSPLUS . lhs
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+
+    ID              shift and go to state 109
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    lhs                            shift and go to state 127
+    field_access                   shift and go to state 115
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+    method_invocation              shift and go to state 111
+
+state 84
+
+    (87) assign -> MINUSMINUS . lhs
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+
+    ID              shift and go to state 109
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    lhs                            shift and go to state 128
+    field_access                   shift and go to state 115
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+    method_invocation              shift and go to state 111
+
+state 85
+
+    (76) method_invocation -> field_access . LPAREN RPAREN
+    (77) method_invocation -> field_access . LPAREN arguments RPAREN
+    (73) lhs -> field_access .
+
+    LPAREN          shift and go to state 129
+    EQUALS          reduce using rule 73 (lhs -> field_access .)
+    PLUSPLUS        reduce using rule 73 (lhs -> field_access .)
+    MINUSMINUS      reduce using rule 73 (lhs -> field_access .)
+    PERIOD          reduce using rule 73 (lhs -> field_access .)
+
+
+state 86
+
+    (25) type -> ID .
+    (75) field_access -> ID .
+
+    ID              reduce using rule 25 (type -> ID .)
+    COMMA           reduce using rule 25 (type -> ID .)
+    SEMICOLON       reduce using rule 25 (type -> ID .)
+    LPAREN          reduce using rule 75 (field_access -> ID .)
+    EQUALS          reduce using rule 75 (field_access -> ID .)
+    PLUSPLUS        reduce using rule 75 (field_access -> ID .)
+    MINUSMINUS      reduce using rule 75 (field_access -> ID .)
+    PERIOD          reduce using rule 75 (field_access -> ID .)
+
+
+state 87
+
+    (74) field_access -> primary . PERIOD ID
+
+    PERIOD          shift and go to state 130
+
+
+state 88
+
+    (62) primary -> literal .
+
+    PERIOD          reduce using rule 62 (primary -> literal .)
+    RPAREN          reduce using rule 62 (primary -> literal .)
+    PLUS            reduce using rule 62 (primary -> literal .)
+    MINUS           reduce using rule 62 (primary -> literal .)
+    TIMES           reduce using rule 62 (primary -> literal .)
+    DIVIDE          reduce using rule 62 (primary -> literal .)
+    AND             reduce using rule 62 (primary -> literal .)
+    OR              reduce using rule 62 (primary -> literal .)
+    EQUALSCOMPARE   reduce using rule 62 (primary -> literal .)
+    NOTEQUALS       reduce using rule 62 (primary -> literal .)
+    LESSTHAN        reduce using rule 62 (primary -> literal .)
+    GREATERTHAN     reduce using rule 62 (primary -> literal .)
+    LESSTHANOREQ    reduce using rule 62 (primary -> literal .)
+    GREATERTHANOREQ reduce using rule 62 (primary -> literal .)
+    SEMICOLON       reduce using rule 62 (primary -> literal .)
+    COMMA           reduce using rule 62 (primary -> literal .)
+
+
+state 89
+
+    (63) primary -> THIS .
+
+    PERIOD          reduce using rule 63 (primary -> THIS .)
+    RPAREN          reduce using rule 63 (primary -> THIS .)
+    PLUS            reduce using rule 63 (primary -> THIS .)
+    MINUS           reduce using rule 63 (primary -> THIS .)
+    TIMES           reduce using rule 63 (primary -> THIS .)
+    DIVIDE          reduce using rule 63 (primary -> THIS .)
+    AND             reduce using rule 63 (primary -> THIS .)
+    OR              reduce using rule 63 (primary -> THIS .)
+    EQUALSCOMPARE   reduce using rule 63 (primary -> THIS .)
+    NOTEQUALS       reduce using rule 63 (primary -> THIS .)
+    LESSTHAN        reduce using rule 63 (primary -> THIS .)
+    GREATERTHAN     reduce using rule 63 (primary -> THIS .)
+    LESSTHANOREQ    reduce using rule 63 (primary -> THIS .)
+    GREATERTHANOREQ reduce using rule 63 (primary -> THIS .)
+    SEMICOLON       reduce using rule 63 (primary -> THIS .)
+    COMMA           reduce using rule 63 (primary -> THIS .)
+
+
+state 90
+
+    (64) primary -> SUPER .
+
+    PERIOD          reduce using rule 64 (primary -> SUPER .)
+    RPAREN          reduce using rule 64 (primary -> SUPER .)
+    PLUS            reduce using rule 64 (primary -> SUPER .)
+    MINUS           reduce using rule 64 (primary -> SUPER .)
+    TIMES           reduce using rule 64 (primary -> SUPER .)
+    DIVIDE          reduce using rule 64 (primary -> SUPER .)
+    AND             reduce using rule 64 (primary -> SUPER .)
+    OR              reduce using rule 64 (primary -> SUPER .)
+    EQUALSCOMPARE   reduce using rule 64 (primary -> SUPER .)
+    NOTEQUALS       reduce using rule 64 (primary -> SUPER .)
+    LESSTHAN        reduce using rule 64 (primary -> SUPER .)
+    GREATERTHAN     reduce using rule 64 (primary -> SUPER .)
+    LESSTHANOREQ    reduce using rule 64 (primary -> SUPER .)
+    GREATERTHANOREQ reduce using rule 64 (primary -> SUPER .)
+    SEMICOLON       reduce using rule 64 (primary -> SUPER .)
+    COMMA           reduce using rule 64 (primary -> SUPER .)
+
+
+state 91
+
+    (66) primary -> NEW . ID LPAREN arguments RPAREN
+    (67) primary -> NEW . ID LPAREN RPAREN
+
+    ID              shift and go to state 131
+
+
+state 92
+
+    (56) literal -> INTCONST .
+
+    PERIOD          reduce using rule 56 (literal -> INTCONST .)
+    RPAREN          reduce using rule 56 (literal -> INTCONST .)
+    PLUS            reduce using rule 56 (literal -> INTCONST .)
+    MINUS           reduce using rule 56 (literal -> INTCONST .)
+    TIMES           reduce using rule 56 (literal -> INTCONST .)
+    DIVIDE          reduce using rule 56 (literal -> INTCONST .)
+    AND             reduce using rule 56 (literal -> INTCONST .)
+    OR              reduce using rule 56 (literal -> INTCONST .)
+    EQUALSCOMPARE   reduce using rule 56 (literal -> INTCONST .)
+    NOTEQUALS       reduce using rule 56 (literal -> INTCONST .)
+    LESSTHAN        reduce using rule 56 (literal -> INTCONST .)
+    GREATERTHAN     reduce using rule 56 (literal -> INTCONST .)
+    LESSTHANOREQ    reduce using rule 56 (literal -> INTCONST .)
+    GREATERTHANOREQ reduce using rule 56 (literal -> INTCONST .)
+    SEMICOLON       reduce using rule 56 (literal -> INTCONST .)
+    COMMA           reduce using rule 56 (literal -> INTCONST .)
+
+
+state 93
+
+    (57) literal -> FLOATCONST .
+
+    PERIOD          reduce using rule 57 (literal -> FLOATCONST .)
+    RPAREN          reduce using rule 57 (literal -> FLOATCONST .)
+    PLUS            reduce using rule 57 (literal -> FLOATCONST .)
+    MINUS           reduce using rule 57 (literal -> FLOATCONST .)
+    TIMES           reduce using rule 57 (literal -> FLOATCONST .)
+    DIVIDE          reduce using rule 57 (literal -> FLOATCONST .)
+    AND             reduce using rule 57 (literal -> FLOATCONST .)
+    OR              reduce using rule 57 (literal -> FLOATCONST .)
+    EQUALSCOMPARE   reduce using rule 57 (literal -> FLOATCONST .)
+    NOTEQUALS       reduce using rule 57 (literal -> FLOATCONST .)
+    LESSTHAN        reduce using rule 57 (literal -> FLOATCONST .)
+    GREATERTHAN     reduce using rule 57 (literal -> FLOATCONST .)
+    LESSTHANOREQ    reduce using rule 57 (literal -> FLOATCONST .)
+    GREATERTHANOREQ reduce using rule 57 (literal -> FLOATCONST .)
+    SEMICOLON       reduce using rule 57 (literal -> FLOATCONST .)
+    COMMA           reduce using rule 57 (literal -> FLOATCONST .)
+
+
+state 94
+
+    (58) literal -> STRINGCONST .
+
+    PERIOD          reduce using rule 58 (literal -> STRINGCONST .)
+    RPAREN          reduce using rule 58 (literal -> STRINGCONST .)
+    PLUS            reduce using rule 58 (literal -> STRINGCONST .)
+    MINUS           reduce using rule 58 (literal -> STRINGCONST .)
+    TIMES           reduce using rule 58 (literal -> STRINGCONST .)
+    DIVIDE          reduce using rule 58 (literal -> STRINGCONST .)
+    AND             reduce using rule 58 (literal -> STRINGCONST .)
+    OR              reduce using rule 58 (literal -> STRINGCONST .)
+    EQUALSCOMPARE   reduce using rule 58 (literal -> STRINGCONST .)
+    NOTEQUALS       reduce using rule 58 (literal -> STRINGCONST .)
+    LESSTHAN        reduce using rule 58 (literal -> STRINGCONST .)
+    GREATERTHAN     reduce using rule 58 (literal -> STRINGCONST .)
+    LESSTHANOREQ    reduce using rule 58 (literal -> STRINGCONST .)
+    GREATERTHANOREQ reduce using rule 58 (literal -> STRINGCONST .)
+    SEMICOLON       reduce using rule 58 (literal -> STRINGCONST .)
+    COMMA           reduce using rule 58 (literal -> STRINGCONST .)
+
+
+state 95
+
+    (59) literal -> NULL .
+
+    PERIOD          reduce using rule 59 (literal -> NULL .)
+    RPAREN          reduce using rule 59 (literal -> NULL .)
+    PLUS            reduce using rule 59 (literal -> NULL .)
+    MINUS           reduce using rule 59 (literal -> NULL .)
+    TIMES           reduce using rule 59 (literal -> NULL .)
+    DIVIDE          reduce using rule 59 (literal -> NULL .)
+    AND             reduce using rule 59 (literal -> NULL .)
+    OR              reduce using rule 59 (literal -> NULL .)
+    EQUALSCOMPARE   reduce using rule 59 (literal -> NULL .)
+    NOTEQUALS       reduce using rule 59 (literal -> NULL .)
+    LESSTHAN        reduce using rule 59 (literal -> NULL .)
+    GREATERTHAN     reduce using rule 59 (literal -> NULL .)
+    LESSTHANOREQ    reduce using rule 59 (literal -> NULL .)
+    GREATERTHANOREQ reduce using rule 59 (literal -> NULL .)
+    SEMICOLON       reduce using rule 59 (literal -> NULL .)
+    COMMA           reduce using rule 59 (literal -> NULL .)
+
+
+state 96
+
+    (60) literal -> TRUE .
+
+    PERIOD          reduce using rule 60 (literal -> TRUE .)
+    RPAREN          reduce using rule 60 (literal -> TRUE .)
+    PLUS            reduce using rule 60 (literal -> TRUE .)
+    MINUS           reduce using rule 60 (literal -> TRUE .)
+    TIMES           reduce using rule 60 (literal -> TRUE .)
+    DIVIDE          reduce using rule 60 (literal -> TRUE .)
+    AND             reduce using rule 60 (literal -> TRUE .)
+    OR              reduce using rule 60 (literal -> TRUE .)
+    EQUALSCOMPARE   reduce using rule 60 (literal -> TRUE .)
+    NOTEQUALS       reduce using rule 60 (literal -> TRUE .)
+    LESSTHAN        reduce using rule 60 (literal -> TRUE .)
+    GREATERTHAN     reduce using rule 60 (literal -> TRUE .)
+    LESSTHANOREQ    reduce using rule 60 (literal -> TRUE .)
+    GREATERTHANOREQ reduce using rule 60 (literal -> TRUE .)
+    SEMICOLON       reduce using rule 60 (literal -> TRUE .)
+    COMMA           reduce using rule 60 (literal -> TRUE .)
+
+
+state 97
+
+    (61) literal -> FALSE .
+
+    PERIOD          reduce using rule 61 (literal -> FALSE .)
+    RPAREN          reduce using rule 61 (literal -> FALSE .)
+    PLUS            reduce using rule 61 (literal -> FALSE .)
+    MINUS           reduce using rule 61 (literal -> FALSE .)
+    TIMES           reduce using rule 61 (literal -> FALSE .)
+    DIVIDE          reduce using rule 61 (literal -> FALSE .)
+    AND             reduce using rule 61 (literal -> FALSE .)
+    OR              reduce using rule 61 (literal -> FALSE .)
+    EQUALSCOMPARE   reduce using rule 61 (literal -> FALSE .)
+    NOTEQUALS       reduce using rule 61 (literal -> FALSE .)
+    LESSTHAN        reduce using rule 61 (literal -> FALSE .)
+    GREATERTHAN     reduce using rule 61 (literal -> FALSE .)
+    LESSTHANOREQ    reduce using rule 61 (literal -> FALSE .)
+    GREATERTHANOREQ reduce using rule 61 (literal -> FALSE .)
+    SEMICOLON       reduce using rule 61 (literal -> FALSE .)
+    COMMA           reduce using rule 61 (literal -> FALSE .)
+
+
+state 98
+
+    (35) method_decl -> modifier ID LPAREN formals RPAREN block .
+    (37) constructor_decl -> modifier ID LPAREN formals RPAREN block .
+
+  ! reduce/reduce conflict for RBRACE resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+  ! reduce/reduce conflict for PUBLIC resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+  ! reduce/reduce conflict for PRIVATE resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+  ! reduce/reduce conflict for STATIC resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+  ! reduce/reduce conflict for VOID resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+  ! reduce/reduce conflict for ID resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+  ! reduce/reduce conflict for INT resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+  ! reduce/reduce conflict for FLOAT resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+  ! reduce/reduce conflict for BOOLEAN resolved using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    RBRACE          reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    PUBLIC          reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    PRIVATE         reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    STATIC          reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    VOID            reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    ID              reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    INT             reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    FLOAT           reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+    BOOLEAN         reduce using rule 35 (method_decl -> modifier ID LPAREN formals RPAREN block .)
+
+  ! RBRACE          [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+  ! PUBLIC          [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+  ! PRIVATE         [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+  ! STATIC          [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+  ! VOID            [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+  ! ID              [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+  ! INT             [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+  ! FLOAT           [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+  ! BOOLEAN         [ reduce using rule 37 (constructor_decl -> modifier ID LPAREN formals RPAREN block .) ]
+
+
+state 99
+
+    (38) formals -> formals COMMA formal_param .
+
+    RPAREN          reduce using rule 38 (formals -> formals COMMA formal_param .)
+    COMMA           reduce using rule 38 (formals -> formals COMMA formal_param .)
+
+
+state 100
+
+    (31) method_decl -> modifier VOID ID LPAREN RPAREN block .
+
+    RBRACE          reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+    PUBLIC          reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+    PRIVATE         reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+    STATIC          reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+    VOID            reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+    ID              reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+    INT             reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+    FLOAT           reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+    BOOLEAN         reduce using rule 31 (method_decl -> modifier VOID ID LPAREN RPAREN block .)
+
+
+state 101
+
+    (33) method_decl -> modifier VOID ID LPAREN formals RPAREN . block
+    (42) block -> . LBRACE stmt RBRACE
+
+    LBRACE          shift and go to state 58
+
+    block                          shift and go to state 132
+
+state 102
+
+    (32) method_decl -> modifier type ID LPAREN formals RPAREN block .
+
+    RBRACE          reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+    PUBLIC          reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+    PRIVATE         reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+    STATIC          reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+    VOID            reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+    ID              reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+    INT             reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+    FLOAT           reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+    BOOLEAN         reduce using rule 32 (method_decl -> modifier type ID LPAREN formals RPAREN block .)
+
+
+state 103
+
+    (42) block -> LBRACE stmt RBRACE .
+
+    RBRACE          reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    PUBLIC          reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    PRIVATE         reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    STATIC          reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    VOID            reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    ID              reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    INT             reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    FLOAT           reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    BOOLEAN         reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+    ELSE            reduce using rule 42 (block -> LBRACE stmt RBRACE .)
+
+
+state 104
+
+    (43) stmt -> IF LPAREN . expr RPAREN stmt
+    (44) stmt -> IF LPAREN . expr RPAREN stmt ELSE stmt
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    expr                           shift and go to state 133
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 105
+
+    (65) primary -> LPAREN expr . RPAREN
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+    RPAREN          shift and go to state 134
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 106
+
+    (78) expr -> primary .
+    (74) field_access -> primary . PERIOD ID
+
+    RPAREN          reduce using rule 78 (expr -> primary .)
+    PLUS            reduce using rule 78 (expr -> primary .)
+    MINUS           reduce using rule 78 (expr -> primary .)
+    TIMES           reduce using rule 78 (expr -> primary .)
+    DIVIDE          reduce using rule 78 (expr -> primary .)
+    AND             reduce using rule 78 (expr -> primary .)
+    OR              reduce using rule 78 (expr -> primary .)
+    EQUALSCOMPARE   reduce using rule 78 (expr -> primary .)
+    NOTEQUALS       reduce using rule 78 (expr -> primary .)
+    LESSTHAN        reduce using rule 78 (expr -> primary .)
+    GREATERTHAN     reduce using rule 78 (expr -> primary .)
+    LESSTHANOREQ    reduce using rule 78 (expr -> primary .)
+    GREATERTHANOREQ reduce using rule 78 (expr -> primary .)
+    SEMICOLON       reduce using rule 78 (expr -> primary .)
+    COMMA           reduce using rule 78 (expr -> primary .)
+    PERIOD          shift and go to state 130
+
+
+state 107
+
+    (79) expr -> assign .
+
+    RPAREN          reduce using rule 79 (expr -> assign .)
+    PLUS            reduce using rule 79 (expr -> assign .)
+    MINUS           reduce using rule 79 (expr -> assign .)
+    TIMES           reduce using rule 79 (expr -> assign .)
+    DIVIDE          reduce using rule 79 (expr -> assign .)
+    AND             reduce using rule 79 (expr -> assign .)
+    OR              reduce using rule 79 (expr -> assign .)
+    EQUALSCOMPARE   reduce using rule 79 (expr -> assign .)
+    NOTEQUALS       reduce using rule 79 (expr -> assign .)
+    LESSTHAN        reduce using rule 79 (expr -> assign .)
+    GREATERTHAN     reduce using rule 79 (expr -> assign .)
+    LESSTHANOREQ    reduce using rule 79 (expr -> assign .)
+    GREATERTHANOREQ reduce using rule 79 (expr -> assign .)
+    SEMICOLON       reduce using rule 79 (expr -> assign .)
+    COMMA           reduce using rule 79 (expr -> assign .)
+
+
+state 108
+
+    (82) expr -> unary_op . expr
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    unary_op                       shift and go to state 108
+    expr                           shift and go to state 149
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 109
+
+    (75) field_access -> ID .
+
+    LPAREN          reduce using rule 75 (field_access -> ID .)
+    EQUALS          reduce using rule 75 (field_access -> ID .)
+    PLUSPLUS        reduce using rule 75 (field_access -> ID .)
+    MINUSMINUS      reduce using rule 75 (field_access -> ID .)
+    PERIOD          reduce using rule 75 (field_access -> ID .)
+    RPAREN          reduce using rule 75 (field_access -> ID .)
+    PLUS            reduce using rule 75 (field_access -> ID .)
+    MINUS           reduce using rule 75 (field_access -> ID .)
+    TIMES           reduce using rule 75 (field_access -> ID .)
+    DIVIDE          reduce using rule 75 (field_access -> ID .)
+    AND             reduce using rule 75 (field_access -> ID .)
+    OR              reduce using rule 75 (field_access -> ID .)
+    EQUALSCOMPARE   reduce using rule 75 (field_access -> ID .)
+    NOTEQUALS       reduce using rule 75 (field_access -> ID .)
+    LESSTHAN        reduce using rule 75 (field_access -> ID .)
+    GREATERTHAN     reduce using rule 75 (field_access -> ID .)
+    LESSTHANOREQ    reduce using rule 75 (field_access -> ID .)
+    GREATERTHANOREQ reduce using rule 75 (field_access -> ID .)
+    SEMICOLON       reduce using rule 75 (field_access -> ID .)
+    COMMA           reduce using rule 75 (field_access -> ID .)
+
+
+state 110
+
+    (68) primary -> lhs .
+    (83) assign -> lhs . EQUALS expr
+    (84) assign -> lhs . PLUSPLUS
+    (86) assign -> lhs . MINUSMINUS
+
+    PERIOD          reduce using rule 68 (primary -> lhs .)
+    RPAREN          reduce using rule 68 (primary -> lhs .)
+    PLUS            reduce using rule 68 (primary -> lhs .)
+    MINUS           reduce using rule 68 (primary -> lhs .)
+    TIMES           reduce using rule 68 (primary -> lhs .)
+    DIVIDE          reduce using rule 68 (primary -> lhs .)
+    AND             reduce using rule 68 (primary -> lhs .)
+    OR              reduce using rule 68 (primary -> lhs .)
+    EQUALSCOMPARE   reduce using rule 68 (primary -> lhs .)
+    NOTEQUALS       reduce using rule 68 (primary -> lhs .)
+    LESSTHAN        reduce using rule 68 (primary -> lhs .)
+    GREATERTHAN     reduce using rule 68 (primary -> lhs .)
+    LESSTHANOREQ    reduce using rule 68 (primary -> lhs .)
+    GREATERTHANOREQ reduce using rule 68 (primary -> lhs .)
+    SEMICOLON       reduce using rule 68 (primary -> lhs .)
+    COMMA           reduce using rule 68 (primary -> lhs .)
+    EQUALS          shift and go to state 124
+    PLUSPLUS        shift and go to state 125
+    MINUSMINUS      shift and go to state 126
+
+
+state 111
+
+    (69) primary -> method_invocation .
+
+    PERIOD          reduce using rule 69 (primary -> method_invocation .)
+    RPAREN          reduce using rule 69 (primary -> method_invocation .)
+    PLUS            reduce using rule 69 (primary -> method_invocation .)
+    MINUS           reduce using rule 69 (primary -> method_invocation .)
+    TIMES           reduce using rule 69 (primary -> method_invocation .)
+    DIVIDE          reduce using rule 69 (primary -> method_invocation .)
+    AND             reduce using rule 69 (primary -> method_invocation .)
+    OR              reduce using rule 69 (primary -> method_invocation .)
+    EQUALSCOMPARE   reduce using rule 69 (primary -> method_invocation .)
+    NOTEQUALS       reduce using rule 69 (primary -> method_invocation .)
+    LESSTHAN        reduce using rule 69 (primary -> method_invocation .)
+    GREATERTHAN     reduce using rule 69 (primary -> method_invocation .)
+    LESSTHANOREQ    reduce using rule 69 (primary -> method_invocation .)
+    GREATERTHANOREQ reduce using rule 69 (primary -> method_invocation .)
+    SEMICOLON       reduce using rule 69 (primary -> method_invocation .)
+    COMMA           reduce using rule 69 (primary -> method_invocation .)
+
+
+state 112
+
+    (100) unary_op -> PLUS .
+
+    THIS            reduce using rule 100 (unary_op -> PLUS .)
+    SUPER           reduce using rule 100 (unary_op -> PLUS .)
+    LPAREN          reduce using rule 100 (unary_op -> PLUS .)
+    NEW             reduce using rule 100 (unary_op -> PLUS .)
+    PLUSPLUS        reduce using rule 100 (unary_op -> PLUS .)
+    MINUSMINUS      reduce using rule 100 (unary_op -> PLUS .)
+    PLUS            reduce using rule 100 (unary_op -> PLUS .)
+    MINUS           reduce using rule 100 (unary_op -> PLUS .)
+    NOT             reduce using rule 100 (unary_op -> PLUS .)
+    INTCONST        reduce using rule 100 (unary_op -> PLUS .)
+    FLOATCONST      reduce using rule 100 (unary_op -> PLUS .)
+    STRINGCONST     reduce using rule 100 (unary_op -> PLUS .)
+    NULL            reduce using rule 100 (unary_op -> PLUS .)
+    TRUE            reduce using rule 100 (unary_op -> PLUS .)
+    FALSE           reduce using rule 100 (unary_op -> PLUS .)
+    ID              reduce using rule 100 (unary_op -> PLUS .)
+
+
+state 113
+
+    (101) unary_op -> MINUS .
+
+    THIS            reduce using rule 101 (unary_op -> MINUS .)
+    SUPER           reduce using rule 101 (unary_op -> MINUS .)
+    LPAREN          reduce using rule 101 (unary_op -> MINUS .)
+    NEW             reduce using rule 101 (unary_op -> MINUS .)
+    PLUSPLUS        reduce using rule 101 (unary_op -> MINUS .)
+    MINUSMINUS      reduce using rule 101 (unary_op -> MINUS .)
+    PLUS            reduce using rule 101 (unary_op -> MINUS .)
+    MINUS           reduce using rule 101 (unary_op -> MINUS .)
+    NOT             reduce using rule 101 (unary_op -> MINUS .)
+    INTCONST        reduce using rule 101 (unary_op -> MINUS .)
+    FLOATCONST      reduce using rule 101 (unary_op -> MINUS .)
+    STRINGCONST     reduce using rule 101 (unary_op -> MINUS .)
+    NULL            reduce using rule 101 (unary_op -> MINUS .)
+    TRUE            reduce using rule 101 (unary_op -> MINUS .)
+    FALSE           reduce using rule 101 (unary_op -> MINUS .)
+    ID              reduce using rule 101 (unary_op -> MINUS .)
+
+
+state 114
+
+    (102) unary_op -> NOT .
+
+    THIS            reduce using rule 102 (unary_op -> NOT .)
+    SUPER           reduce using rule 102 (unary_op -> NOT .)
+    LPAREN          reduce using rule 102 (unary_op -> NOT .)
+    NEW             reduce using rule 102 (unary_op -> NOT .)
+    PLUSPLUS        reduce using rule 102 (unary_op -> NOT .)
+    MINUSMINUS      reduce using rule 102 (unary_op -> NOT .)
+    PLUS            reduce using rule 102 (unary_op -> NOT .)
+    MINUS           reduce using rule 102 (unary_op -> NOT .)
+    NOT             reduce using rule 102 (unary_op -> NOT .)
+    INTCONST        reduce using rule 102 (unary_op -> NOT .)
+    FLOATCONST      reduce using rule 102 (unary_op -> NOT .)
+    STRINGCONST     reduce using rule 102 (unary_op -> NOT .)
+    NULL            reduce using rule 102 (unary_op -> NOT .)
+    TRUE            reduce using rule 102 (unary_op -> NOT .)
+    FALSE           reduce using rule 102 (unary_op -> NOT .)
+    ID              reduce using rule 102 (unary_op -> NOT .)
+
+
+state 115
+
+    (73) lhs -> field_access .
+    (76) method_invocation -> field_access . LPAREN RPAREN
+    (77) method_invocation -> field_access . LPAREN arguments RPAREN
+
+    EQUALS          reduce using rule 73 (lhs -> field_access .)
+    PLUSPLUS        reduce using rule 73 (lhs -> field_access .)
+    MINUSMINUS      reduce using rule 73 (lhs -> field_access .)
+    PERIOD          reduce using rule 73 (lhs -> field_access .)
+    RPAREN          reduce using rule 73 (lhs -> field_access .)
+    PLUS            reduce using rule 73 (lhs -> field_access .)
+    MINUS           reduce using rule 73 (lhs -> field_access .)
+    TIMES           reduce using rule 73 (lhs -> field_access .)
+    DIVIDE          reduce using rule 73 (lhs -> field_access .)
+    AND             reduce using rule 73 (lhs -> field_access .)
+    OR              reduce using rule 73 (lhs -> field_access .)
+    EQUALSCOMPARE   reduce using rule 73 (lhs -> field_access .)
+    NOTEQUALS       reduce using rule 73 (lhs -> field_access .)
+    LESSTHAN        reduce using rule 73 (lhs -> field_access .)
+    GREATERTHAN     reduce using rule 73 (lhs -> field_access .)
+    LESSTHANOREQ    reduce using rule 73 (lhs -> field_access .)
+    GREATERTHANOREQ reduce using rule 73 (lhs -> field_access .)
+    SEMICOLON       reduce using rule 73 (lhs -> field_access .)
+    COMMA           reduce using rule 73 (lhs -> field_access .)
+    LPAREN          shift and go to state 129
+
+
+state 116
+
+    (45) stmt -> WHILE LPAREN . expr RPAREN stmt
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    expr                           shift and go to state 150
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 117
+
+    (46) stmt -> FOR LPAREN . stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+    (103) stmt_expr -> . assign
+    (104) stmt_expr -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    ID              shift and go to state 109
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    stmt_expr                      shift and go to state 151
+    assign                         shift and go to state 79
+    method_invocation              shift and go to state 80
+    lhs                            shift and go to state 82
+    field_access                   shift and go to state 85
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+
+state 118
+
+    (49) stmt -> stmt_expr SEMICOLON .
+
+    RBRACE          reduce using rule 49 (stmt -> stmt_expr SEMICOLON .)
+    ELSE            reduce using rule 49 (stmt -> stmt_expr SEMICOLON .)
+
+
+state 119
+
+    (47) stmt -> RETURN SEMICOLON .
+
+    RBRACE          reduce using rule 47 (stmt -> RETURN SEMICOLON .)
+    ELSE            reduce using rule 47 (stmt -> RETURN SEMICOLON .)
+
+
+state 120
+
+    (48) stmt -> RETURN expr . SEMICOLON
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+    SEMICOLON       shift and go to state 152
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 121
+
+    (50) stmt -> BREAK SEMICOLON .
+
+    RBRACE          reduce using rule 50 (stmt -> BREAK SEMICOLON .)
+    ELSE            reduce using rule 50 (stmt -> BREAK SEMICOLON .)
+
+
+state 122
+
+    (51) stmt -> CONTINUE SEMICOLON .
+
+    RBRACE          reduce using rule 51 (stmt -> CONTINUE SEMICOLON .)
+    ELSE            reduce using rule 51 (stmt -> CONTINUE SEMICOLON .)
+
+
+state 123
+
+    (53) stmt -> var_decl SEMICOLON .
+
+    RBRACE          reduce using rule 53 (stmt -> var_decl SEMICOLON .)
+    ELSE            reduce using rule 53 (stmt -> var_decl SEMICOLON .)
+
+
+state 124
+
+    (83) assign -> lhs EQUALS . expr
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    lhs                            shift and go to state 110
+    expr                           shift and go to state 153
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 125
+
+    (84) assign -> lhs PLUSPLUS .
+
+    SEMICOLON       reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    RPAREN          reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    PLUS            reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    MINUS           reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    TIMES           reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    DIVIDE          reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    AND             reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    OR              reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    EQUALSCOMPARE   reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    NOTEQUALS       reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    LESSTHAN        reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    GREATERTHAN     reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    LESSTHANOREQ    reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    GREATERTHANOREQ reduce using rule 84 (assign -> lhs PLUSPLUS .)
+    COMMA           reduce using rule 84 (assign -> lhs PLUSPLUS .)
+
+
+state 126
+
+    (86) assign -> lhs MINUSMINUS .
+
+    SEMICOLON       reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    RPAREN          reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    PLUS            reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    MINUS           reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    TIMES           reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    DIVIDE          reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    AND             reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    OR              reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    EQUALSCOMPARE   reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    NOTEQUALS       reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    LESSTHAN        reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    GREATERTHAN     reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    LESSTHANOREQ    reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    GREATERTHANOREQ reduce using rule 86 (assign -> lhs MINUSMINUS .)
+    COMMA           reduce using rule 86 (assign -> lhs MINUSMINUS .)
+
+
+state 127
+
+    (85) assign -> PLUSPLUS lhs .
+    (68) primary -> lhs .
+
+    SEMICOLON       reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    RPAREN          reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    PLUS            reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    MINUS           reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    TIMES           reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    DIVIDE          reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    AND             reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    OR              reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    EQUALSCOMPARE   reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    NOTEQUALS       reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    LESSTHAN        reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    GREATERTHAN     reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    LESSTHANOREQ    reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    GREATERTHANOREQ reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    COMMA           reduce using rule 85 (assign -> PLUSPLUS lhs .)
+    PERIOD          reduce using rule 68 (primary -> lhs .)
+
+
+state 128
+
+    (87) assign -> MINUSMINUS lhs .
+    (68) primary -> lhs .
+
+    SEMICOLON       reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    RPAREN          reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    PLUS            reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    MINUS           reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    TIMES           reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    DIVIDE          reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    AND             reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    OR              reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    EQUALSCOMPARE   reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    NOTEQUALS       reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    LESSTHAN        reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    GREATERTHAN     reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    LESSTHANOREQ    reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    GREATERTHANOREQ reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    COMMA           reduce using rule 87 (assign -> MINUSMINUS lhs .)
+    PERIOD          reduce using rule 68 (primary -> lhs .)
+
+
+state 129
+
+    (76) method_invocation -> field_access LPAREN . RPAREN
+    (77) method_invocation -> field_access LPAREN . arguments RPAREN
+    (70) arguments -> . expr
+    (71) arguments -> . arguments COMMA expr
+    (72) arguments -> . empty
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (1) empty -> .
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+    RPAREN          shift and go to state 154
+    COMMA           reduce using rule 1 (empty -> .)
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+  ! RPAREN          [ reduce using rule 1 (empty -> .) ]
+
+    field_access                   shift and go to state 115
+    arguments                      shift and go to state 155
+    expr                           shift and go to state 156
+    empty                          shift and go to state 157
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+
+state 130
+
+    (74) field_access -> primary PERIOD . ID
+
+    ID              shift and go to state 158
+
+
+state 131
+
+    (66) primary -> NEW ID . LPAREN arguments RPAREN
+    (67) primary -> NEW ID . LPAREN RPAREN
+
+    LPAREN          shift and go to state 159
+
+
+state 132
+
+    (33) method_decl -> modifier VOID ID LPAREN formals RPAREN block .
+
+    RBRACE          reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+    PUBLIC          reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+    PRIVATE         reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+    STATIC          reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+    VOID            reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+    ID              reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+    INT             reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+    FLOAT           reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+    BOOLEAN         reduce using rule 33 (method_decl -> modifier VOID ID LPAREN formals RPAREN block .)
+
+
+state 133
+
+    (43) stmt -> IF LPAREN expr . RPAREN stmt
+    (44) stmt -> IF LPAREN expr . RPAREN stmt ELSE stmt
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+    RPAREN          shift and go to state 160
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 134
+
+    (65) primary -> LPAREN expr RPAREN .
+
+    PERIOD          reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    RPAREN          reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    PLUS            reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    MINUS           reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    TIMES           reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    DIVIDE          reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    AND             reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    OR              reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    EQUALSCOMPARE   reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    NOTEQUALS       reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    LESSTHAN        reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    GREATERTHAN     reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    LESSTHANOREQ    reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    GREATERTHANOREQ reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    SEMICOLON       reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+    COMMA           reduce using rule 65 (primary -> LPAREN expr RPAREN .)
+
+
+state 135
+
+    (80) expr -> expr arith_op . expr
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    expr                           shift and go to state 161
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 136
+
+    (81) expr -> expr bool_op . expr
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    expr                           shift and go to state 162
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 137
+
+    (88) arith_op -> PLUS .
+
+    THIS            reduce using rule 88 (arith_op -> PLUS .)
+    SUPER           reduce using rule 88 (arith_op -> PLUS .)
+    LPAREN          reduce using rule 88 (arith_op -> PLUS .)
+    NEW             reduce using rule 88 (arith_op -> PLUS .)
+    PLUSPLUS        reduce using rule 88 (arith_op -> PLUS .)
+    MINUSMINUS      reduce using rule 88 (arith_op -> PLUS .)
+    PLUS            reduce using rule 88 (arith_op -> PLUS .)
+    MINUS           reduce using rule 88 (arith_op -> PLUS .)
+    NOT             reduce using rule 88 (arith_op -> PLUS .)
+    INTCONST        reduce using rule 88 (arith_op -> PLUS .)
+    FLOATCONST      reduce using rule 88 (arith_op -> PLUS .)
+    STRINGCONST     reduce using rule 88 (arith_op -> PLUS .)
+    NULL            reduce using rule 88 (arith_op -> PLUS .)
+    TRUE            reduce using rule 88 (arith_op -> PLUS .)
+    FALSE           reduce using rule 88 (arith_op -> PLUS .)
+    ID              reduce using rule 88 (arith_op -> PLUS .)
+
+
+state 138
+
+    (89) arith_op -> MINUS .
+
+    THIS            reduce using rule 89 (arith_op -> MINUS .)
+    SUPER           reduce using rule 89 (arith_op -> MINUS .)
+    LPAREN          reduce using rule 89 (arith_op -> MINUS .)
+    NEW             reduce using rule 89 (arith_op -> MINUS .)
+    PLUSPLUS        reduce using rule 89 (arith_op -> MINUS .)
+    MINUSMINUS      reduce using rule 89 (arith_op -> MINUS .)
+    PLUS            reduce using rule 89 (arith_op -> MINUS .)
+    MINUS           reduce using rule 89 (arith_op -> MINUS .)
+    NOT             reduce using rule 89 (arith_op -> MINUS .)
+    INTCONST        reduce using rule 89 (arith_op -> MINUS .)
+    FLOATCONST      reduce using rule 89 (arith_op -> MINUS .)
+    STRINGCONST     reduce using rule 89 (arith_op -> MINUS .)
+    NULL            reduce using rule 89 (arith_op -> MINUS .)
+    TRUE            reduce using rule 89 (arith_op -> MINUS .)
+    FALSE           reduce using rule 89 (arith_op -> MINUS .)
+    ID              reduce using rule 89 (arith_op -> MINUS .)
+
+
+state 139
+
+    (90) arith_op -> TIMES .
+
+    THIS            reduce using rule 90 (arith_op -> TIMES .)
+    SUPER           reduce using rule 90 (arith_op -> TIMES .)
+    LPAREN          reduce using rule 90 (arith_op -> TIMES .)
+    NEW             reduce using rule 90 (arith_op -> TIMES .)
+    PLUSPLUS        reduce using rule 90 (arith_op -> TIMES .)
+    MINUSMINUS      reduce using rule 90 (arith_op -> TIMES .)
+    PLUS            reduce using rule 90 (arith_op -> TIMES .)
+    MINUS           reduce using rule 90 (arith_op -> TIMES .)
+    NOT             reduce using rule 90 (arith_op -> TIMES .)
+    INTCONST        reduce using rule 90 (arith_op -> TIMES .)
+    FLOATCONST      reduce using rule 90 (arith_op -> TIMES .)
+    STRINGCONST     reduce using rule 90 (arith_op -> TIMES .)
+    NULL            reduce using rule 90 (arith_op -> TIMES .)
+    TRUE            reduce using rule 90 (arith_op -> TIMES .)
+    FALSE           reduce using rule 90 (arith_op -> TIMES .)
+    ID              reduce using rule 90 (arith_op -> TIMES .)
+
+
+state 140
+
+    (91) arith_op -> DIVIDE .
+
+    THIS            reduce using rule 91 (arith_op -> DIVIDE .)
+    SUPER           reduce using rule 91 (arith_op -> DIVIDE .)
+    LPAREN          reduce using rule 91 (arith_op -> DIVIDE .)
+    NEW             reduce using rule 91 (arith_op -> DIVIDE .)
+    PLUSPLUS        reduce using rule 91 (arith_op -> DIVIDE .)
+    MINUSMINUS      reduce using rule 91 (arith_op -> DIVIDE .)
+    PLUS            reduce using rule 91 (arith_op -> DIVIDE .)
+    MINUS           reduce using rule 91 (arith_op -> DIVIDE .)
+    NOT             reduce using rule 91 (arith_op -> DIVIDE .)
+    INTCONST        reduce using rule 91 (arith_op -> DIVIDE .)
+    FLOATCONST      reduce using rule 91 (arith_op -> DIVIDE .)
+    STRINGCONST     reduce using rule 91 (arith_op -> DIVIDE .)
+    NULL            reduce using rule 91 (arith_op -> DIVIDE .)
+    TRUE            reduce using rule 91 (arith_op -> DIVIDE .)
+    FALSE           reduce using rule 91 (arith_op -> DIVIDE .)
+    ID              reduce using rule 91 (arith_op -> DIVIDE .)
+
+
+state 141
+
+    (92) bool_op -> AND .
+
+    THIS            reduce using rule 92 (bool_op -> AND .)
+    SUPER           reduce using rule 92 (bool_op -> AND .)
+    LPAREN          reduce using rule 92 (bool_op -> AND .)
+    NEW             reduce using rule 92 (bool_op -> AND .)
+    PLUSPLUS        reduce using rule 92 (bool_op -> AND .)
+    MINUSMINUS      reduce using rule 92 (bool_op -> AND .)
+    PLUS            reduce using rule 92 (bool_op -> AND .)
+    MINUS           reduce using rule 92 (bool_op -> AND .)
+    NOT             reduce using rule 92 (bool_op -> AND .)
+    INTCONST        reduce using rule 92 (bool_op -> AND .)
+    FLOATCONST      reduce using rule 92 (bool_op -> AND .)
+    STRINGCONST     reduce using rule 92 (bool_op -> AND .)
+    NULL            reduce using rule 92 (bool_op -> AND .)
+    TRUE            reduce using rule 92 (bool_op -> AND .)
+    FALSE           reduce using rule 92 (bool_op -> AND .)
+    ID              reduce using rule 92 (bool_op -> AND .)
+
+
+state 142
+
+    (93) bool_op -> OR .
+
+    THIS            reduce using rule 93 (bool_op -> OR .)
+    SUPER           reduce using rule 93 (bool_op -> OR .)
+    LPAREN          reduce using rule 93 (bool_op -> OR .)
+    NEW             reduce using rule 93 (bool_op -> OR .)
+    PLUSPLUS        reduce using rule 93 (bool_op -> OR .)
+    MINUSMINUS      reduce using rule 93 (bool_op -> OR .)
+    PLUS            reduce using rule 93 (bool_op -> OR .)
+    MINUS           reduce using rule 93 (bool_op -> OR .)
+    NOT             reduce using rule 93 (bool_op -> OR .)
+    INTCONST        reduce using rule 93 (bool_op -> OR .)
+    FLOATCONST      reduce using rule 93 (bool_op -> OR .)
+    STRINGCONST     reduce using rule 93 (bool_op -> OR .)
+    NULL            reduce using rule 93 (bool_op -> OR .)
+    TRUE            reduce using rule 93 (bool_op -> OR .)
+    FALSE           reduce using rule 93 (bool_op -> OR .)
+    ID              reduce using rule 93 (bool_op -> OR .)
+
+
+state 143
+
+    (94) bool_op -> EQUALSCOMPARE .
+
+    THIS            reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    SUPER           reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    LPAREN          reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    NEW             reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    PLUSPLUS        reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    MINUSMINUS      reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    PLUS            reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    MINUS           reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    NOT             reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    INTCONST        reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    FLOATCONST      reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    STRINGCONST     reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    NULL            reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    TRUE            reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    FALSE           reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+    ID              reduce using rule 94 (bool_op -> EQUALSCOMPARE .)
+
+
+state 144
+
+    (95) bool_op -> NOTEQUALS .
+
+    THIS            reduce using rule 95 (bool_op -> NOTEQUALS .)
+    SUPER           reduce using rule 95 (bool_op -> NOTEQUALS .)
+    LPAREN          reduce using rule 95 (bool_op -> NOTEQUALS .)
+    NEW             reduce using rule 95 (bool_op -> NOTEQUALS .)
+    PLUSPLUS        reduce using rule 95 (bool_op -> NOTEQUALS .)
+    MINUSMINUS      reduce using rule 95 (bool_op -> NOTEQUALS .)
+    PLUS            reduce using rule 95 (bool_op -> NOTEQUALS .)
+    MINUS           reduce using rule 95 (bool_op -> NOTEQUALS .)
+    NOT             reduce using rule 95 (bool_op -> NOTEQUALS .)
+    INTCONST        reduce using rule 95 (bool_op -> NOTEQUALS .)
+    FLOATCONST      reduce using rule 95 (bool_op -> NOTEQUALS .)
+    STRINGCONST     reduce using rule 95 (bool_op -> NOTEQUALS .)
+    NULL            reduce using rule 95 (bool_op -> NOTEQUALS .)
+    TRUE            reduce using rule 95 (bool_op -> NOTEQUALS .)
+    FALSE           reduce using rule 95 (bool_op -> NOTEQUALS .)
+    ID              reduce using rule 95 (bool_op -> NOTEQUALS .)
+
+
+state 145
+
+    (96) bool_op -> LESSTHAN .
+
+    THIS            reduce using rule 96 (bool_op -> LESSTHAN .)
+    SUPER           reduce using rule 96 (bool_op -> LESSTHAN .)
+    LPAREN          reduce using rule 96 (bool_op -> LESSTHAN .)
+    NEW             reduce using rule 96 (bool_op -> LESSTHAN .)
+    PLUSPLUS        reduce using rule 96 (bool_op -> LESSTHAN .)
+    MINUSMINUS      reduce using rule 96 (bool_op -> LESSTHAN .)
+    PLUS            reduce using rule 96 (bool_op -> LESSTHAN .)
+    MINUS           reduce using rule 96 (bool_op -> LESSTHAN .)
+    NOT             reduce using rule 96 (bool_op -> LESSTHAN .)
+    INTCONST        reduce using rule 96 (bool_op -> LESSTHAN .)
+    FLOATCONST      reduce using rule 96 (bool_op -> LESSTHAN .)
+    STRINGCONST     reduce using rule 96 (bool_op -> LESSTHAN .)
+    NULL            reduce using rule 96 (bool_op -> LESSTHAN .)
+    TRUE            reduce using rule 96 (bool_op -> LESSTHAN .)
+    FALSE           reduce using rule 96 (bool_op -> LESSTHAN .)
+    ID              reduce using rule 96 (bool_op -> LESSTHAN .)
+
+
+state 146
+
+    (97) bool_op -> GREATERTHAN .
+
+    THIS            reduce using rule 97 (bool_op -> GREATERTHAN .)
+    SUPER           reduce using rule 97 (bool_op -> GREATERTHAN .)
+    LPAREN          reduce using rule 97 (bool_op -> GREATERTHAN .)
+    NEW             reduce using rule 97 (bool_op -> GREATERTHAN .)
+    PLUSPLUS        reduce using rule 97 (bool_op -> GREATERTHAN .)
+    MINUSMINUS      reduce using rule 97 (bool_op -> GREATERTHAN .)
+    PLUS            reduce using rule 97 (bool_op -> GREATERTHAN .)
+    MINUS           reduce using rule 97 (bool_op -> GREATERTHAN .)
+    NOT             reduce using rule 97 (bool_op -> GREATERTHAN .)
+    INTCONST        reduce using rule 97 (bool_op -> GREATERTHAN .)
+    FLOATCONST      reduce using rule 97 (bool_op -> GREATERTHAN .)
+    STRINGCONST     reduce using rule 97 (bool_op -> GREATERTHAN .)
+    NULL            reduce using rule 97 (bool_op -> GREATERTHAN .)
+    TRUE            reduce using rule 97 (bool_op -> GREATERTHAN .)
+    FALSE           reduce using rule 97 (bool_op -> GREATERTHAN .)
+    ID              reduce using rule 97 (bool_op -> GREATERTHAN .)
+
+
+state 147
+
+    (98) bool_op -> LESSTHANOREQ .
+
+    THIS            reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    SUPER           reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    LPAREN          reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    NEW             reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    PLUSPLUS        reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    MINUSMINUS      reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    PLUS            reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    MINUS           reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    NOT             reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    INTCONST        reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    FLOATCONST      reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    STRINGCONST     reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    NULL            reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    TRUE            reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    FALSE           reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+    ID              reduce using rule 98 (bool_op -> LESSTHANOREQ .)
+
+
+state 148
+
+    (99) bool_op -> GREATERTHANOREQ .
+
+    THIS            reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    SUPER           reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    LPAREN          reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    NEW             reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    PLUSPLUS        reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    MINUSMINUS      reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    PLUS            reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    MINUS           reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    NOT             reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    INTCONST        reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    FLOATCONST      reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    STRINGCONST     reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    NULL            reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    TRUE            reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    FALSE           reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+    ID              reduce using rule 99 (bool_op -> GREATERTHANOREQ .)
+
+
+state 149
+
+    (82) expr -> unary_op expr .
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for EQUALSCOMPARE resolved as shift
+  ! shift/reduce conflict for NOTEQUALS resolved as shift
+  ! shift/reduce conflict for LESSTHAN resolved as shift
+  ! shift/reduce conflict for GREATERTHAN resolved as shift
+  ! shift/reduce conflict for LESSTHANOREQ resolved as shift
+  ! shift/reduce conflict for GREATERTHANOREQ resolved as shift
+    RPAREN          reduce using rule 82 (expr -> unary_op expr .)
+    SEMICOLON       reduce using rule 82 (expr -> unary_op expr .)
+    COMMA           reduce using rule 82 (expr -> unary_op expr .)
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+  ! PLUS            [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! MINUS           [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! TIMES           [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! DIVIDE          [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! AND             [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! OR              [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! EQUALSCOMPARE   [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! NOTEQUALS       [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! LESSTHAN        [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! GREATERTHAN     [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! LESSTHANOREQ    [ reduce using rule 82 (expr -> unary_op expr .) ]
+  ! GREATERTHANOREQ [ reduce using rule 82 (expr -> unary_op expr .) ]
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 150
+
+    (45) stmt -> WHILE LPAREN expr . RPAREN stmt
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+    RPAREN          shift and go to state 163
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 151
+
+    (46) stmt -> FOR LPAREN stmt_expr . SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+
+    SEMICOLON       shift and go to state 164
+
+
+state 152
+
+    (48) stmt -> RETURN expr SEMICOLON .
+
+    RBRACE          reduce using rule 48 (stmt -> RETURN expr SEMICOLON .)
+    ELSE            reduce using rule 48 (stmt -> RETURN expr SEMICOLON .)
+
+
+state 153
+
+    (83) assign -> lhs EQUALS expr .
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for EQUALSCOMPARE resolved as shift
+  ! shift/reduce conflict for NOTEQUALS resolved as shift
+  ! shift/reduce conflict for LESSTHAN resolved as shift
+  ! shift/reduce conflict for GREATERTHAN resolved as shift
+  ! shift/reduce conflict for LESSTHANOREQ resolved as shift
+  ! shift/reduce conflict for GREATERTHANOREQ resolved as shift
+    SEMICOLON       reduce using rule 83 (assign -> lhs EQUALS expr .)
+    RPAREN          reduce using rule 83 (assign -> lhs EQUALS expr .)
+    COMMA           reduce using rule 83 (assign -> lhs EQUALS expr .)
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+  ! PLUS            [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! MINUS           [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! TIMES           [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! DIVIDE          [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! AND             [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! OR              [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! EQUALSCOMPARE   [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! NOTEQUALS       [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! LESSTHAN        [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! GREATERTHAN     [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! LESSTHANOREQ    [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+  ! GREATERTHANOREQ [ reduce using rule 83 (assign -> lhs EQUALS expr .) ]
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 154
+
+    (76) method_invocation -> field_access LPAREN RPAREN .
+
+    SEMICOLON       reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    PERIOD          reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    RPAREN          reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    PLUS            reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    MINUS           reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    TIMES           reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    DIVIDE          reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    AND             reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    OR              reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    EQUALSCOMPARE   reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    NOTEQUALS       reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    LESSTHAN        reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    GREATERTHAN     reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    LESSTHANOREQ    reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    GREATERTHANOREQ reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+    COMMA           reduce using rule 76 (method_invocation -> field_access LPAREN RPAREN .)
+
+
+state 155
+
+    (77) method_invocation -> field_access LPAREN arguments . RPAREN
+    (71) arguments -> arguments . COMMA expr
+
+    RPAREN          shift and go to state 165
+    COMMA           shift and go to state 166
+
+
+state 156
+
+    (70) arguments -> expr .
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+    RPAREN          reduce using rule 70 (arguments -> expr .)
+    COMMA           reduce using rule 70 (arguments -> expr .)
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 157
+
+    (72) arguments -> empty .
+
+    RPAREN          reduce using rule 72 (arguments -> empty .)
+    COMMA           reduce using rule 72 (arguments -> empty .)
+
+
+state 158
+
+    (74) field_access -> primary PERIOD ID .
+
+    LPAREN          reduce using rule 74 (field_access -> primary PERIOD ID .)
+    EQUALS          reduce using rule 74 (field_access -> primary PERIOD ID .)
+    PLUSPLUS        reduce using rule 74 (field_access -> primary PERIOD ID .)
+    MINUSMINUS      reduce using rule 74 (field_access -> primary PERIOD ID .)
+    PERIOD          reduce using rule 74 (field_access -> primary PERIOD ID .)
+    RPAREN          reduce using rule 74 (field_access -> primary PERIOD ID .)
+    PLUS            reduce using rule 74 (field_access -> primary PERIOD ID .)
+    MINUS           reduce using rule 74 (field_access -> primary PERIOD ID .)
+    TIMES           reduce using rule 74 (field_access -> primary PERIOD ID .)
+    DIVIDE          reduce using rule 74 (field_access -> primary PERIOD ID .)
+    AND             reduce using rule 74 (field_access -> primary PERIOD ID .)
+    OR              reduce using rule 74 (field_access -> primary PERIOD ID .)
+    EQUALSCOMPARE   reduce using rule 74 (field_access -> primary PERIOD ID .)
+    NOTEQUALS       reduce using rule 74 (field_access -> primary PERIOD ID .)
+    LESSTHAN        reduce using rule 74 (field_access -> primary PERIOD ID .)
+    GREATERTHAN     reduce using rule 74 (field_access -> primary PERIOD ID .)
+    LESSTHANOREQ    reduce using rule 74 (field_access -> primary PERIOD ID .)
+    GREATERTHANOREQ reduce using rule 74 (field_access -> primary PERIOD ID .)
+    SEMICOLON       reduce using rule 74 (field_access -> primary PERIOD ID .)
+    COMMA           reduce using rule 74 (field_access -> primary PERIOD ID .)
+
+
+state 159
+
+    (66) primary -> NEW ID LPAREN . arguments RPAREN
+    (67) primary -> NEW ID LPAREN . RPAREN
+    (70) arguments -> . expr
+    (71) arguments -> . arguments COMMA expr
+    (72) arguments -> . empty
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (1) empty -> .
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+    RPAREN          shift and go to state 168
+    COMMA           reduce using rule 1 (empty -> .)
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+  ! RPAREN          [ reduce using rule 1 (empty -> .) ]
+
+    arguments                      shift and go to state 167
+    expr                           shift and go to state 156
+    empty                          shift and go to state 157
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 160
+
+    (43) stmt -> IF LPAREN expr RPAREN . stmt
+    (44) stmt -> IF LPAREN expr RPAREN . stmt ELSE stmt
+    (43) stmt -> . IF LPAREN expr RPAREN stmt
+    (44) stmt -> . IF LPAREN expr RPAREN stmt ELSE stmt
+    (45) stmt -> . WHILE LPAREN expr RPAREN stmt
+    (46) stmt -> . FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+    (47) stmt -> . RETURN SEMICOLON
+    (48) stmt -> . RETURN expr SEMICOLON
+    (49) stmt -> . stmt_expr SEMICOLON
+    (50) stmt -> . BREAK SEMICOLON
+    (51) stmt -> . CONTINUE SEMICOLON
+    (52) stmt -> . block
+    (53) stmt -> . var_decl SEMICOLON
+    (54) stmt -> . SEMICOLON
+    (55) stmt -> . empty
+    (103) stmt_expr -> . assign
+    (104) stmt_expr -> . method_invocation
+    (42) block -> . LBRACE stmt RBRACE
+    (20) var_decl -> . type variables
+    (1) empty -> .
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+
+    IF              shift and go to state 67
+    WHILE           shift and go to state 69
+    FOR             shift and go to state 70
+    RETURN          shift and go to state 73
+    BREAK           shift and go to state 74
+    CONTINUE        shift and go to state 75
+    SEMICOLON       shift and go to state 72
+    LBRACE          shift and go to state 58
+    ELSE            reduce using rule 1 (empty -> .)
+    RBRACE          reduce using rule 1 (empty -> .)
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 86
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    stmt                           shift and go to state 169
+    stmt_expr                      shift and go to state 71
+    block                          shift and go to state 76
+    var_decl                       shift and go to state 77
+    empty                          shift and go to state 78
+    assign                         shift and go to state 79
+    method_invocation              shift and go to state 80
+    type                           shift and go to state 81
+    lhs                            shift and go to state 82
+    field_access                   shift and go to state 85
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+
+state 161
+
+    (80) expr -> expr arith_op expr .
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for EQUALSCOMPARE resolved as shift
+  ! shift/reduce conflict for NOTEQUALS resolved as shift
+  ! shift/reduce conflict for LESSTHAN resolved as shift
+  ! shift/reduce conflict for GREATERTHAN resolved as shift
+  ! shift/reduce conflict for LESSTHANOREQ resolved as shift
+  ! shift/reduce conflict for GREATERTHANOREQ resolved as shift
+    RPAREN          reduce using rule 80 (expr -> expr arith_op expr .)
+    SEMICOLON       reduce using rule 80 (expr -> expr arith_op expr .)
+    COMMA           reduce using rule 80 (expr -> expr arith_op expr .)
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+  ! PLUS            [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! MINUS           [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! TIMES           [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! DIVIDE          [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! AND             [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! OR              [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! EQUALSCOMPARE   [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! NOTEQUALS       [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! LESSTHAN        [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! GREATERTHAN     [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! LESSTHANOREQ    [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+  ! GREATERTHANOREQ [ reduce using rule 80 (expr -> expr arith_op expr .) ]
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 162
+
+    (81) expr -> expr bool_op expr .
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for TIMES resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for AND resolved as shift
+  ! shift/reduce conflict for OR resolved as shift
+  ! shift/reduce conflict for EQUALSCOMPARE resolved as shift
+  ! shift/reduce conflict for NOTEQUALS resolved as shift
+  ! shift/reduce conflict for LESSTHAN resolved as shift
+  ! shift/reduce conflict for GREATERTHAN resolved as shift
+  ! shift/reduce conflict for LESSTHANOREQ resolved as shift
+  ! shift/reduce conflict for GREATERTHANOREQ resolved as shift
+    RPAREN          reduce using rule 81 (expr -> expr bool_op expr .)
+    SEMICOLON       reduce using rule 81 (expr -> expr bool_op expr .)
+    COMMA           reduce using rule 81 (expr -> expr bool_op expr .)
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+  ! PLUS            [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! MINUS           [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! TIMES           [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! DIVIDE          [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! AND             [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! OR              [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! EQUALSCOMPARE   [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! NOTEQUALS       [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! LESSTHAN        [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! GREATERTHAN     [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! LESSTHANOREQ    [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+  ! GREATERTHANOREQ [ reduce using rule 81 (expr -> expr bool_op expr .) ]
+
+    bool_op                        shift and go to state 136
+    arith_op                       shift and go to state 135
+
+state 163
+
+    (45) stmt -> WHILE LPAREN expr RPAREN . stmt
+    (43) stmt -> . IF LPAREN expr RPAREN stmt
+    (44) stmt -> . IF LPAREN expr RPAREN stmt ELSE stmt
+    (45) stmt -> . WHILE LPAREN expr RPAREN stmt
+    (46) stmt -> . FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+    (47) stmt -> . RETURN SEMICOLON
+    (48) stmt -> . RETURN expr SEMICOLON
+    (49) stmt -> . stmt_expr SEMICOLON
+    (50) stmt -> . BREAK SEMICOLON
+    (51) stmt -> . CONTINUE SEMICOLON
+    (52) stmt -> . block
+    (53) stmt -> . var_decl SEMICOLON
+    (54) stmt -> . SEMICOLON
+    (55) stmt -> . empty
+    (103) stmt_expr -> . assign
+    (104) stmt_expr -> . method_invocation
+    (42) block -> . LBRACE stmt RBRACE
+    (20) var_decl -> . type variables
+    (1) empty -> .
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+
+    IF              shift and go to state 67
+    WHILE           shift and go to state 69
+    FOR             shift and go to state 70
+    RETURN          shift and go to state 73
+    BREAK           shift and go to state 74
+    CONTINUE        shift and go to state 75
+    SEMICOLON       shift and go to state 72
+    LBRACE          shift and go to state 58
+    ELSE            reduce using rule 1 (empty -> .)
+    RBRACE          reduce using rule 1 (empty -> .)
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 86
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    stmt                           shift and go to state 170
+    stmt_expr                      shift and go to state 71
+    block                          shift and go to state 76
+    var_decl                       shift and go to state 77
+    empty                          shift and go to state 78
+    assign                         shift and go to state 79
+    method_invocation              shift and go to state 80
+    type                           shift and go to state 81
+    lhs                            shift and go to state 82
+    field_access                   shift and go to state 85
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+
+state 164
+
+    (46) stmt -> FOR LPAREN stmt_expr SEMICOLON . expr SEMICOLON stmt_expr RPAREN stmt
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    expr                           shift and go to state 171
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 165
+
+    (77) method_invocation -> field_access LPAREN arguments RPAREN .
+
+    SEMICOLON       reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    PERIOD          reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    RPAREN          reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    PLUS            reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    MINUS           reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    TIMES           reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    DIVIDE          reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    AND             reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    OR              reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    EQUALSCOMPARE   reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    NOTEQUALS       reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    LESSTHAN        reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    GREATERTHAN     reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    LESSTHANOREQ    reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    GREATERTHANOREQ reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+    COMMA           reduce using rule 77 (method_invocation -> field_access LPAREN arguments RPAREN .)
+
+
+state 166
+
+    (71) arguments -> arguments COMMA . expr
+    (78) expr -> . primary
+    (79) expr -> . assign
+    (80) expr -> . expr arith_op expr
+    (81) expr -> . expr bool_op expr
+    (82) expr -> . unary_op expr
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (100) unary_op -> . PLUS
+    (101) unary_op -> . MINUS
+    (102) unary_op -> . NOT
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+    (73) lhs -> . field_access
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    PLUS            shift and go to state 112
+    MINUS           shift and go to state 113
+    NOT             shift and go to state 114
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+    ID              shift and go to state 109
+
+    expr                           shift and go to state 172
+    primary                        shift and go to state 106
+    assign                         shift and go to state 107
+    unary_op                       shift and go to state 108
+    literal                        shift and go to state 88
+    lhs                            shift and go to state 110
+    method_invocation              shift and go to state 111
+    field_access                   shift and go to state 115
+
+state 167
+
+    (66) primary -> NEW ID LPAREN arguments . RPAREN
+    (71) arguments -> arguments . COMMA expr
+
+    RPAREN          shift and go to state 173
+    COMMA           shift and go to state 166
+
+
+state 168
+
+    (67) primary -> NEW ID LPAREN RPAREN .
+
+    PERIOD          reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    RPAREN          reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    PLUS            reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    MINUS           reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    TIMES           reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    DIVIDE          reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    AND             reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    OR              reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    EQUALSCOMPARE   reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    NOTEQUALS       reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    LESSTHAN        reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    GREATERTHAN     reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    LESSTHANOREQ    reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    GREATERTHANOREQ reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    SEMICOLON       reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+    COMMA           reduce using rule 67 (primary -> NEW ID LPAREN RPAREN .)
+
+
+state 169
+
+    (43) stmt -> IF LPAREN expr RPAREN stmt .
+    (44) stmt -> IF LPAREN expr RPAREN stmt . ELSE stmt
+
+  ! shift/reduce conflict for ELSE resolved as shift
+    RBRACE          reduce using rule 43 (stmt -> IF LPAREN expr RPAREN stmt .)
+    ELSE            shift and go to state 174
+
+  ! ELSE            [ reduce using rule 43 (stmt -> IF LPAREN expr RPAREN stmt .) ]
+
+
+state 170
+
+    (45) stmt -> WHILE LPAREN expr RPAREN stmt .
+
+    RBRACE          reduce using rule 45 (stmt -> WHILE LPAREN expr RPAREN stmt .)
+    ELSE            reduce using rule 45 (stmt -> WHILE LPAREN expr RPAREN stmt .)
+
+
+state 171
+
+    (46) stmt -> FOR LPAREN stmt_expr SEMICOLON expr . SEMICOLON stmt_expr RPAREN stmt
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+    SEMICOLON       shift and go to state 175
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 172
+
+    (71) arguments -> arguments COMMA expr .
+    (80) expr -> expr . arith_op expr
+    (81) expr -> expr . bool_op expr
+    (88) arith_op -> . PLUS
+    (89) arith_op -> . MINUS
+    (90) arith_op -> . TIMES
+    (91) arith_op -> . DIVIDE
+    (92) bool_op -> . AND
+    (93) bool_op -> . OR
+    (94) bool_op -> . EQUALSCOMPARE
+    (95) bool_op -> . NOTEQUALS
+    (96) bool_op -> . LESSTHAN
+    (97) bool_op -> . GREATERTHAN
+    (98) bool_op -> . LESSTHANOREQ
+    (99) bool_op -> . GREATERTHANOREQ
+
+    RPAREN          reduce using rule 71 (arguments -> arguments COMMA expr .)
+    COMMA           reduce using rule 71 (arguments -> arguments COMMA expr .)
+    PLUS            shift and go to state 137
+    MINUS           shift and go to state 138
+    TIMES           shift and go to state 139
+    DIVIDE          shift and go to state 140
+    AND             shift and go to state 141
+    OR              shift and go to state 142
+    EQUALSCOMPARE   shift and go to state 143
+    NOTEQUALS       shift and go to state 144
+    LESSTHAN        shift and go to state 145
+    GREATERTHAN     shift and go to state 146
+    LESSTHANOREQ    shift and go to state 147
+    GREATERTHANOREQ shift and go to state 148
+
+    arith_op                       shift and go to state 135
+    bool_op                        shift and go to state 136
+
+state 173
+
+    (66) primary -> NEW ID LPAREN arguments RPAREN .
+
+    PERIOD          reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    RPAREN          reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    PLUS            reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    MINUS           reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    TIMES           reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    DIVIDE          reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    AND             reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    OR              reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    EQUALSCOMPARE   reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    NOTEQUALS       reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    LESSTHAN        reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    GREATERTHAN     reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    LESSTHANOREQ    reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    GREATERTHANOREQ reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    SEMICOLON       reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+    COMMA           reduce using rule 66 (primary -> NEW ID LPAREN arguments RPAREN .)
+
+
+state 174
+
+    (44) stmt -> IF LPAREN expr RPAREN stmt ELSE . stmt
+    (43) stmt -> . IF LPAREN expr RPAREN stmt
+    (44) stmt -> . IF LPAREN expr RPAREN stmt ELSE stmt
+    (45) stmt -> . WHILE LPAREN expr RPAREN stmt
+    (46) stmt -> . FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+    (47) stmt -> . RETURN SEMICOLON
+    (48) stmt -> . RETURN expr SEMICOLON
+    (49) stmt -> . stmt_expr SEMICOLON
+    (50) stmt -> . BREAK SEMICOLON
+    (51) stmt -> . CONTINUE SEMICOLON
+    (52) stmt -> . block
+    (53) stmt -> . var_decl SEMICOLON
+    (54) stmt -> . SEMICOLON
+    (55) stmt -> . empty
+    (103) stmt_expr -> . assign
+    (104) stmt_expr -> . method_invocation
+    (42) block -> . LBRACE stmt RBRACE
+    (20) var_decl -> . type variables
+    (1) empty -> .
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+
+    IF              shift and go to state 67
+    WHILE           shift and go to state 69
+    FOR             shift and go to state 70
+    RETURN          shift and go to state 73
+    BREAK           shift and go to state 74
+    CONTINUE        shift and go to state 75
+    SEMICOLON       shift and go to state 72
+    LBRACE          shift and go to state 58
+    ELSE            reduce using rule 1 (empty -> .)
+    RBRACE          reduce using rule 1 (empty -> .)
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 86
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    stmt                           shift and go to state 176
+    stmt_expr                      shift and go to state 71
+    block                          shift and go to state 76
+    var_decl                       shift and go to state 77
+    empty                          shift and go to state 78
+    assign                         shift and go to state 79
+    method_invocation              shift and go to state 80
+    type                           shift and go to state 81
+    lhs                            shift and go to state 82
+    field_access                   shift and go to state 85
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+
+state 175
+
+    (46) stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON . stmt_expr RPAREN stmt
+    (103) stmt_expr -> . assign
+    (104) stmt_expr -> . method_invocation
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    ID              shift and go to state 109
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    stmt_expr                      shift and go to state 177
+    assign                         shift and go to state 79
+    method_invocation              shift and go to state 80
+    lhs                            shift and go to state 82
+    field_access                   shift and go to state 85
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+
+state 176
+
+    (44) stmt -> IF LPAREN expr RPAREN stmt ELSE stmt .
+
+    RBRACE          reduce using rule 44 (stmt -> IF LPAREN expr RPAREN stmt ELSE stmt .)
+    ELSE            reduce using rule 44 (stmt -> IF LPAREN expr RPAREN stmt ELSE stmt .)
+
+
+state 177
+
+    (46) stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr . RPAREN stmt
+
+    RPAREN          shift and go to state 178
+
+
+state 178
+
+    (46) stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN . stmt
+    (43) stmt -> . IF LPAREN expr RPAREN stmt
+    (44) stmt -> . IF LPAREN expr RPAREN stmt ELSE stmt
+    (45) stmt -> . WHILE LPAREN expr RPAREN stmt
+    (46) stmt -> . FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
+    (47) stmt -> . RETURN SEMICOLON
+    (48) stmt -> . RETURN expr SEMICOLON
+    (49) stmt -> . stmt_expr SEMICOLON
+    (50) stmt -> . BREAK SEMICOLON
+    (51) stmt -> . CONTINUE SEMICOLON
+    (52) stmt -> . block
+    (53) stmt -> . var_decl SEMICOLON
+    (54) stmt -> . SEMICOLON
+    (55) stmt -> . empty
+    (103) stmt_expr -> . assign
+    (104) stmt_expr -> . method_invocation
+    (42) block -> . LBRACE stmt RBRACE
+    (20) var_decl -> . type variables
+    (1) empty -> .
+    (83) assign -> . lhs EQUALS expr
+    (84) assign -> . lhs PLUSPLUS
+    (85) assign -> . PLUSPLUS lhs
+    (86) assign -> . lhs MINUSMINUS
+    (87) assign -> . MINUSMINUS lhs
+    (76) method_invocation -> . field_access LPAREN RPAREN
+    (77) method_invocation -> . field_access LPAREN arguments RPAREN
+    (21) type -> . INT
+    (22) type -> . FLOAT
+    (23) type -> . BOOLEAN
+    (24) type -> . VOID
+    (25) type -> . ID
+    (73) lhs -> . field_access
+    (74) field_access -> . primary PERIOD ID
+    (75) field_access -> . ID
+    (62) primary -> . literal
+    (63) primary -> . THIS
+    (64) primary -> . SUPER
+    (65) primary -> . LPAREN expr RPAREN
+    (66) primary -> . NEW ID LPAREN arguments RPAREN
+    (67) primary -> . NEW ID LPAREN RPAREN
+    (68) primary -> . lhs
+    (69) primary -> . method_invocation
+    (56) literal -> . INTCONST
+    (57) literal -> . FLOATCONST
+    (58) literal -> . STRINGCONST
+    (59) literal -> . NULL
+    (60) literal -> . TRUE
+    (61) literal -> . FALSE
+
+    IF              shift and go to state 67
+    WHILE           shift and go to state 69
+    FOR             shift and go to state 70
+    RETURN          shift and go to state 73
+    BREAK           shift and go to state 74
+    CONTINUE        shift and go to state 75
+    SEMICOLON       shift and go to state 72
+    LBRACE          shift and go to state 58
+    ELSE            reduce using rule 1 (empty -> .)
+    RBRACE          reduce using rule 1 (empty -> .)
+    PLUSPLUS        shift and go to state 83
+    MINUSMINUS      shift and go to state 84
+    INT             shift and go to state 29
+    FLOAT           shift and go to state 30
+    BOOLEAN         shift and go to state 31
+    VOID            shift and go to state 51
+    ID              shift and go to state 86
+    THIS            shift and go to state 89
+    SUPER           shift and go to state 90
+    LPAREN          shift and go to state 68
+    NEW             shift and go to state 91
+    INTCONST        shift and go to state 92
+    FLOATCONST      shift and go to state 93
+    STRINGCONST     shift and go to state 94
+    NULL            shift and go to state 95
+    TRUE            shift and go to state 96
+    FALSE           shift and go to state 97
+
+    stmt_expr                      shift and go to state 71
+    stmt                           shift and go to state 179
+    block                          shift and go to state 76
+    var_decl                       shift and go to state 77
+    empty                          shift and go to state 78
+    assign                         shift and go to state 79
+    method_invocation              shift and go to state 80
+    type                           shift and go to state 81
+    lhs                            shift and go to state 82
+    field_access                   shift and go to state 85
+    primary                        shift and go to state 87
+    literal                        shift and go to state 88
+
+state 179
+
+    (46) stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt .
+
+    RBRACE          reduce using rule 46 (stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt .)
+    ELSE            reduce using rule 46 (stmt -> FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for ID in state 28 resolved as shift
+WARNING: shift/reduce conflict for RPAREN in state 40 resolved as shift
+WARNING: shift/reduce conflict for RPAREN in state 43 resolved as shift
+WARNING: shift/reduce conflict for RPAREN in state 52 resolved as shift
+WARNING: shift/reduce conflict for RPAREN in state 129 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 149 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 149 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 149 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 149 resolved as shift
+WARNING: shift/reduce conflict for AND in state 149 resolved as shift
+WARNING: shift/reduce conflict for OR in state 149 resolved as shift
+WARNING: shift/reduce conflict for EQUALSCOMPARE in state 149 resolved as shift
+WARNING: shift/reduce conflict for NOTEQUALS in state 149 resolved as shift
+WARNING: shift/reduce conflict for LESSTHAN in state 149 resolved as shift
+WARNING: shift/reduce conflict for GREATERTHAN in state 149 resolved as shift
+WARNING: shift/reduce conflict for LESSTHANOREQ in state 149 resolved as shift
+WARNING: shift/reduce conflict for GREATERTHANOREQ in state 149 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 153 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 153 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 153 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 153 resolved as shift
+WARNING: shift/reduce conflict for AND in state 153 resolved as shift
+WARNING: shift/reduce conflict for OR in state 153 resolved as shift
+WARNING: shift/reduce conflict for EQUALSCOMPARE in state 153 resolved as shift
+WARNING: shift/reduce conflict for NOTEQUALS in state 153 resolved as shift
+WARNING: shift/reduce conflict for LESSTHAN in state 153 resolved as shift
+WARNING: shift/reduce conflict for GREATERTHAN in state 153 resolved as shift
+WARNING: shift/reduce conflict for LESSTHANOREQ in state 153 resolved as shift
+WARNING: shift/reduce conflict for GREATERTHANOREQ in state 153 resolved as shift
+WARNING: shift/reduce conflict for RPAREN in state 159 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 161 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 161 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 161 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 161 resolved as shift
+WARNING: shift/reduce conflict for AND in state 161 resolved as shift
+WARNING: shift/reduce conflict for OR in state 161 resolved as shift
+WARNING: shift/reduce conflict for EQUALSCOMPARE in state 161 resolved as shift
+WARNING: shift/reduce conflict for NOTEQUALS in state 161 resolved as shift
+WARNING: shift/reduce conflict for LESSTHAN in state 161 resolved as shift
+WARNING: shift/reduce conflict for GREATERTHAN in state 161 resolved as shift
+WARNING: shift/reduce conflict for LESSTHANOREQ in state 161 resolved as shift
+WARNING: shift/reduce conflict for GREATERTHANOREQ in state 161 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 162 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 162 resolved as shift
+WARNING: shift/reduce conflict for TIMES in state 162 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 162 resolved as shift
+WARNING: shift/reduce conflict for AND in state 162 resolved as shift
+WARNING: shift/reduce conflict for OR in state 162 resolved as shift
+WARNING: shift/reduce conflict for EQUALSCOMPARE in state 162 resolved as shift
+WARNING: shift/reduce conflict for NOTEQUALS in state 162 resolved as shift
+WARNING: shift/reduce conflict for LESSTHAN in state 162 resolved as shift
+WARNING: shift/reduce conflict for GREATERTHAN in state 162 resolved as shift
+WARNING: shift/reduce conflict for LESSTHANOREQ in state 162 resolved as shift
+WARNING: shift/reduce conflict for GREATERTHANOREQ in state 162 resolved as shift
+WARNING: shift/reduce conflict for ELSE in state 169 resolved as shift
+WARNING: reduce/reduce conflict in state 2 resolved using rule (empty -> <empty>)
+WARNING: rejected rule (program -> class_decl) in state 2
+WARNING: reduce/reduce conflict in state 57 resolved using rule (method_decl -> modifier ID LPAREN RPAREN block)
+WARNING: rejected rule (constructor_decl -> modifier ID LPAREN RPAREN block) in state 57
+WARNING: reduce/reduce conflict in state 98 resolved using rule (method_decl -> modifier ID LPAREN formals RPAREN block)
+WARNING: rejected rule (constructor_decl -> modifier ID LPAREN formals RPAREN block) in state 98
+WARNING: Rule (program -> class_decl) is never reduced
+WARNING: Rule (constructor_decl -> modifier ID LPAREN RPAREN block) is never reduced
+WARNING: Rule (constructor_decl -> modifier ID LPAREN formals RPAREN block) is never reduced
