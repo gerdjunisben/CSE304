@@ -26,21 +26,28 @@ def p_class_decl(p):
     '''class_decl : CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE
                   | CLASS ID LBRACE class_body_decl RBRACE'''
     if len(p) == 8:
-        p[0] = {'id':p[2], 'super_id':p[4], 'body':p[6]}
+        p[0] = {'structure_type':'class','id':p[2], 'super_id':p[4], 'body':p[6]}
     else:
-        p[0] = {'id':p[2], 'body':p[4]}
+        p[0] = {'structure_type':'class','id':p[2], 'body':p[4]}
 
 def p_class_body_decl(p):
-    '''class_body_decl : field_decl SEMICOLON
+    '''class_body_decl : class_body_sub_decls'''
+    p[0] = p[1]
+
+def p_class_body_sub_decls(p):
+    '''class_body_sub_decls : field_decl SEMICOLON
                     | method_decl
                     | constructor_decl
-                    | class_body_decl field_decl SEMICOLON
-                    | class_body_decl method_decl
-                    | class_body_decl constructor_decl'''
-    if len(p) == 2 or p[2] == ';':
+                    | field_decl SEMICOLON class_body_sub_decls
+                    | method_decl class_body_sub_decls
+                    | constructor_decl class_body_sub_decls
+                    | empty'''
+    if len(p) == 2 or (len(p) == 3 and p[2] == ';'):
         p[0] = [p[1]]  
+    elif (len(p) == 3):
+        p[0] = [p[1]] + p[2]
     else:
-        p[0] = p[1] + [p[2]]
+        p[0] = [p[1]] + p[3]
 
 
 
@@ -62,7 +69,7 @@ def p_modifier(p):
     
 def p_var_decl(p):
     '''var_decl : type variables'''
-    p[0] = {'type':p[1], 'variables':p[2]}
+    p[0] = {'structure_type':'var_decl' ,'type':p[1], 'variables':p[2]}
 
 def p_type(p):
     '''type : INT
@@ -93,29 +100,27 @@ def p_variable(p):
 
 
 def p_method_decl(p):
-    '''method_decl : modifier type ID LPAREN RPAREN block
+    '''method_decl : modifier type ID LPAREN RPAREN block            
                     | modifier VOID ID LPAREN RPAREN block
-                    | modifier type ID LPAREN formals RPAREN block
+                    | modifier type ID LPAREN formals RPAREN block   
                     | modifier VOID ID LPAREN formals RPAREN block
-                    | modifier ID LPAREN RPAREN block
-                    | modifier ID LPAREN formals RPAREN block'''
-    if len(p) == 7: 
-        if p[2] == 'void':
-            p[0] = {'modifier': p[1], 'id': p[3], 'block': p[6]}
+                    | modifier ID LPAREN RPAREN block                
+                    | modifier ID LPAREN formals RPAREN block'''     
+    if p[2] == 'void':
+        if len(p) == 7:
+            p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[3], 'block': p[6]}
         else:
-            p[0] = {'modifier': p[1], 'type': p[2], 'id': p[3], 'block': p[6]}
-    
-    elif len(p) == 8: 
-        if p[2] == 'void':
-            p[0] = {'modifier': p[1], 'id': p[3], 'formals': p[5], 'block': p[7]}
+            p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[3], 'formals': p[5], 'block': p[7]}
+    else:
+        if len(p) == 7:
+            if(p[3] == '('):
+                p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[2], 'formals': p[4],  'block': p[6]}
+            else:
+                p[0] = {'structure_type':'method_decl','modifier': p[1], 'type':p[2],'id': p[3],   'block': p[6]}
+        elif len(p) == 8:
+            p[0] = {'structure_type':'method_decl','modifier': p[1], 'type':p[2],'id': p[3], 'formals': p[5],  'block': p[7]}
         else:
-            p[0] = {'modifier': p[1], 'type': p[2], 'id': p[3], 'formals': p[5], 'block': p[7]}
-    
-    elif len(p) == 6: 
-        p[0] = {'modifier': p[1], 'id': p[2], 'block': p[5]}
-    
-    elif len(p) == 5:  # Case for method with no return type and formals
-        p[0] = {'modifier': p[1], 'id': p[2], 'formals': p[4], 'block': p[4]}
+            p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[2],  'block': p[5]}
 
 
 
@@ -155,26 +160,28 @@ def p_stmt(p):
             | FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
             | RETURN SEMICOLON
             | RETURN expr SEMICOLON
-            | stmt_expr SEMICOLON
+            | stmt_expr SEMICOLON stmt
             | BREAK SEMICOLON
             | CONTINUE SEMICOLON
             | block
-            | var_decl SEMICOLON
+            | var_decl SEMICOLON stmt
             | SEMICOLON
             | empty'''
     
     if p[1] == 'if':
         if len(p) == 6:
-            p[0] = {'expr':p[3],'stmt':p[5]}
+            p[0] = {'structure_type':'if', 'expr':p[3],'stmt':p[5]}
         else:
-            p[0] = {'expr':p[3],'stmt':p[5], 'stmt':p[7]}
+            p[0] = {'structure_type':'if', 'expr':p[3],'stmt1':p[5], 'stmt2':p[7]}
     elif p[1] == 'while':
-        p[0] = {'expr':p[3], 'stmt':p[5]}
+        p[0] = {'structure_type':'while', 'expr':p[3], 'stmt':p[5]}
     elif p[1] == 'for':
-        p[0] = {'stmt_expr': p[3], 'expr': p[5], 'stmt_expr2': p[7], 'stmt': p[9]}
+        p[0] = {'structure_type':'for','stmt_expr': p[3], 'expr': p[5], 'stmt_expr2': p[7], 'stmt': p[9]}
     elif p[1] =='return':
         if len(p) ==3:
             p[0]=p[2];
+    elif len(p) == 4 and p[2] == ';':
+        p[0] = {'var_decl':p[1],'stmt':p[3]}
     else:
         p[0] = p[1]
 
@@ -200,10 +207,10 @@ def p_primary(p):
     if p[1] == 'this' or p[1]=='super':
         p[0] = p[1]
     elif p[1] == 'new':
-        if len(p) != 5:
-            p[0] = {'id':p[2]}
+        if len(p) ==5:
+            p[0] = {'structure_type':'new' , 'id':p[2]}
         else:
-            p[0] = {'id':p[2],'arguments':p[4]}
+            p[0] = {'structure_type':'new', 'id':p[2],'arguments':p[4]}
     elif p[1] =='(':
         p[0] = p[2]
     else:
@@ -262,11 +269,11 @@ def p_assign(p):
             | lhs MINUSMINUS
             | MINUSMINUS lhs'''
     if p[2] == '=':
-        p[0] = (p[1], p[3])
+        p[0] = {'structure_type':'assignment','lhs':p[1], 'expr':p[3]}
     elif(p[1] == '++' or p[1] =='--'):
-        p[0] = p[2]
+        p[0] = {'structure_type':p[1], 'lhs':p[2]}
     else:
-        p[0] = p[1]
+        p[0] = {'structure_type':p[2], 'lhs':p[1]}
 
 def p_arith_op(p):
     '''arith_op : PLUS

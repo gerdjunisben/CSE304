@@ -171,7 +171,9 @@ def t_STRING(t):
 
 # FUNCTIONS FROM PLY RECITATION LECTURE
 # Define a rule so we can track line numbers
-
+def t_comment(t):
+    r'(//(.)*\n) | (/\*(.|\n)*?\*/)'
+    t.lexer.lineno += t.value.count('\n')
 
 # A string containing ignored characters (spaces and tabs)
 t_ignore  = ' \n\t'

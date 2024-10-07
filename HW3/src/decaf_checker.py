@@ -9,7 +9,7 @@ import decaf_lexer as lexer
 import decaf_parser as parser
 
 
-data = open('HW3/hw2_testing_subset/7.decaf').read()
+data = open('HW3/hw2_testing_subset/err3.decaf').read()
 
 
 prog = parser.parse(data);
