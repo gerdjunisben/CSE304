@@ -1,5 +1,12 @@
+# Benjamin Gerdjunis 
+# SB ID:
+# Net ID:
+# Donato Zampini
+# SB ID: 114849209
+# Net ID: dzampini
+
 import ply.yacc as yacc
-from decaf_lexer import tokens
+from src.decaf_lexer import tokens
 
 def p_empty(p):
     '''empty :'''

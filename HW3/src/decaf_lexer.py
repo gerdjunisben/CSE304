@@ -1,3 +1,10 @@
+# Benjamin Gerdjunis 
+# SB ID:
+# Net ID:
+# Donato Zampini
+# SB ID: 114849209
+# Net ID: dzampini
+
 import ply.lex as lex
 
 # List of token names
