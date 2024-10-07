@@ -120,6 +120,7 @@ t_VOID      = r'void'
 t_WHILE     = r'while'
 
 
+
 #######Things I think I need tokens for ',', ';', '.', '++', '--', '&&', '||'
 
 # Function for ID regex
@@ -163,12 +164,10 @@ def t_STRING(t):
 
 # FUNCTIONS FROM PLY RECITATION LECTURE
 # Define a rule so we can track line numbers
-def t_newline(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
+
 
 # A string containing ignored characters (spaces and tabs)
-t_ignore  = ' \t'
+t_ignore  = ' \n\t'
 
 # Error handling rule
 def t_error(t):
@@ -190,19 +189,4 @@ def t_error(t):
 #         if "::=" in line:
 #             tokenizeTerminalLine(line)
 
-lexer = lex.lex()
-data = '''
-A ::=a||aB
-B ::= b||ab
-number = 3 + 3 + -9'''
-
-
-# Give the lexer some input
-lexer.input(data)
-
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input
-    print(tok)
+lex.lex()
