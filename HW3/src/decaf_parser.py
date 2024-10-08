@@ -177,7 +177,7 @@ def p_stmt(p):
     elif p[1] == 'for':
         p[0] = {'structure_type':'for','stmt_expr': p[3], 'expr': p[5], 'stmt_expr2': p[7], 'stmt': p[9]}
     elif p[1] =='return':
-        if len(p) ==3:
+        if len(p) ==4:
             p[0]=p[2];
     elif len(p) == 4 and p[2] == ';':
         p[0] = {'var_decl':p[1],'stmt':p[3]}

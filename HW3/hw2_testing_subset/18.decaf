@@ -1,0 +1,9 @@
+class a {
+    public int a()
+    {
+        if( a && b || c && d)
+            return b;
+        else
+            return a;
+    }
+}

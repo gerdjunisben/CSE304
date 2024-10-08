@@ -4,5 +4,9 @@ class a {
     {
         x++;
         ++x;
+        if( x + x - x)
+            break;
+        else
+            continue;
     }
 }

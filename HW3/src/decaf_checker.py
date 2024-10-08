@@ -13,7 +13,7 @@ import re
 
 
 for file in os.listdir('HW3/hw2_testing_subset'):
-    #if(re.search("err",file)):
+    #if(re.search("18",file)):
         f = os.path.join('HW3/hw2_testing_subset',file)
 
 
@@ -22,7 +22,7 @@ for file in os.listdir('HW3/hw2_testing_subset'):
         data = open(f).read()
 
 
-        prog = parser.parse(data)
+        prog = parser.parse(data, debug=False)
         if(prog):
             print(f, "success")
         else:

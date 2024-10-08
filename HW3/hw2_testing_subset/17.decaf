@@ -1,0 +1,7 @@
+class a {
+    public int a()
+    {
+        for(i = 0;i<3;i++)
+            continue;
+    }
+}
