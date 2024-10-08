@@ -144,7 +144,7 @@ def t_FLOATCONST(t):
 
 # Function for INTCONST regex
 def t_INTCONST(t):
-    r'(-)?\d+'
+    r'\d+'
     t.value = int(t.value)
     return t
 

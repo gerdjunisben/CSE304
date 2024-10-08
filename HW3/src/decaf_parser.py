@@ -8,6 +8,17 @@
 import ply.yacc as yacc
 from decaf_lexer import tokens
 
+precedence = (
+    ('left','EQUALS'),
+    ('left','OR'),
+    ('left','AND'),
+    ('left','EQUALSCOMPARE','NOTEQUALS'),
+    ('left', 'LESSTHAN','GREATERTHAN','LESSTHANOREQ','GREATERTHANOREQ'),
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'TIMES', 'DIVIDE'),
+    ('right','MINUS','NOT'),
+)
+
 def p_empty(p):
     '''empty :'''
     pass
@@ -34,10 +45,7 @@ def p_class_body_decl(p):
     p[0] = p[1]
 
 def p_class_body_sub_decls(p):
-    '''class_body_sub_decls : field_decl SEMICOLON
-                    | method_decl
-                    | constructor_decl
-                    | field_decl SEMICOLON class_body_sub_decls
+    '''class_body_sub_decls : field_decl SEMICOLON class_body_sub_decls
                     | method_decl class_body_sub_decls
                     | constructor_decl class_body_sub_decls
                     | empty'''
@@ -157,14 +165,14 @@ def p_stmt(p):
             | IF LPAREN expr RPAREN stmt ELSE stmt
             | WHILE LPAREN expr RPAREN stmt
             | FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
-            | RETURN SEMICOLON
-            | RETURN expr SEMICOLON
+            | RETURN SEMICOLON stmt
+            | RETURN expr SEMICOLON stmt
             | stmt_expr SEMICOLON stmt
-            | BREAK SEMICOLON
-            | CONTINUE SEMICOLON
-            | block
+            | BREAK SEMICOLON stmt
+            | CONTINUE SEMICOLON stmt
+            | block stmt
             | var_decl SEMICOLON stmt
-            | SEMICOLON
+            | SEMICOLON stmt
             | empty'''
     
     if p[1] == 'if':
@@ -178,9 +186,16 @@ def p_stmt(p):
         p[0] = {'structure_type':'for','stmt_expr': p[3], 'expr': p[5], 'stmt_expr2': p[7], 'stmt': p[9]}
     elif p[1] =='return':
         if len(p) ==4:
-            p[0]=p[2];
+            p[0]={'stmt':p[3]}
+        else:
+            p[0]={'expr':p[2], 'stmt':p[4]}
     elif len(p) == 4 and p[2] == ';':
         p[0] = {'var_decl':p[1],'stmt':p[3]}
+    elif len(p) == 3:
+        if p[1] == ';':
+            p[0] = {'stmt':[p[2]]}
+        else:
+            p[0] = {'block':p[1], 'stmt':p[2]}
     else:
         p[0] = p[1]
 
@@ -219,10 +234,10 @@ def p_arguments(p):
     '''arguments : expr
                 | arguments COMMA expr
                 | empty'''
-    if len(p) == 1:
-        p[0] = [p[1]]
+    if len(p) == 2:
+        p[0] = p[1]
     else:
-        p[0] = p[1] + [p[3]]
+        p[0] = (p[1], p[3])
 
 def p_lhs(p):
     '''lhs : field_access'''
@@ -241,10 +256,10 @@ def p_field_access(p):
 def p_method_invocation(p):
     '''method_invocation : field_access LPAREN RPAREN
                         | field_access LPAREN arguments RPAREN'''
-    if len(p) !=5:
+    if len(p) == 4:
         p[0] = p[1]
     else:
-        p[0] = (p[1],p[3])
+        p[0] = {'field_access':p[1], 'args':p[3]}
 
 
 def p_expr(p):

@@ -13,7 +13,7 @@ import re
 
 
 for file in os.listdir('HW3/hw2_testing_subset'):
-    #if(re.search("18",file)):
+    #if(re.search("20",file)):
         f = os.path.join('HW3/hw2_testing_subset',file)
 
 
