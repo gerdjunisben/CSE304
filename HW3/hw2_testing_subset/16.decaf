@@ -1,0 +1,8 @@
+class a {
+    int x;
+    public int a()
+    {
+        x++;
+        ++x;
+    }
+}

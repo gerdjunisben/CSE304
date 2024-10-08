@@ -7,10 +7,25 @@
 
 import decaf_lexer as lexer
 import decaf_parser as parser
+import os
+import re
 
 
-data = open('HW3/hw2_testing_subset/err3.decaf').read()
+
+for file in os.listdir('HW3/hw2_testing_subset'):
+    #if(re.search("err",file)):
+        f = os.path.join('HW3/hw2_testing_subset',file)
 
 
-prog = parser.parse(data)
-print(prog)
+
+
+        data = open(f).read()
+
+
+        prog = parser.parse(data)
+        if(prog):
+            print(f, "success")
+        else:
+            print(f, "fail")
+
+        #print(prog)

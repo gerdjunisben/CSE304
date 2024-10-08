@@ -15,8 +15,7 @@ def p_empty(p):
 
 def p_program(p):
     '''program : class_decl
-                | class_decl program
-                | empty'''
+                | class_decl program'''
     if len(p) ==2:
         p[0] = [p[1]]
     else:
@@ -313,7 +312,7 @@ bparser = yacc.yacc(start = "program")
 
 
 
-def parse(data, debug=True):
+def parse(data, debug=False):
     bparser.error = 0
     p = bparser.parse(data, debug=debug)
     if bparser.error:
