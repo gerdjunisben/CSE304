@@ -7,6 +7,8 @@
 
 import ply.lex as lex
 
+newline_count = 0
+
 # List of token names
 tokens = [
     'NUMBER',
@@ -42,7 +44,8 @@ tokens = [
     'FLOATCONST',
     'STRINGCONST',
     'INTCONST',
-    'ID'
+    'ID',
+    'NEWLINE',
 ]
 
 reserved = {
@@ -166,15 +169,27 @@ def t_STRING(t):
     return str(t)
 
 
+def t_NEWLINE(t):
+    r'\n'
+    global newline_count
+    newline_count+=len(t.value)
+    pass
+
+
 # Function for lexer to interpret and ignore comments
 def t_comment(t):
     r'(//(.)*\n) | (/\*(.|\n)*?\*/)'
     t.lexer.lineno += t.value.count('\n')
 
+
+
+
 # FUNCTIONS FROM PLY RECITATION LECTURE
 
 # A string containing ignored characters (spaces and tabs)
-t_ignore  = ' \n\t'
+t_ignore  = ' \t'
+
+
 
 # Error handling rule
 def t_error(t):

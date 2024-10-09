@@ -7,6 +7,7 @@
 
 import ply.yacc as yacc
 from decaf_lexer import tokens
+from decaf_lexer import newline_count
 
 precedence = (
     ('left','EQUALS'),
@@ -321,7 +322,9 @@ def p_stmt_expr(p):
 
 def p_error(p):
     if not p:
-        print("SYNTAX ERROR AT EOF")
+        print("SYNTAX error due to EOF (possibly an incomplete body)")
+    else:
+        print(f"SYNTAX error from '{p.value}' at line {newline_count}")
 
 bparser = yacc.yacc(start = "program")
 
