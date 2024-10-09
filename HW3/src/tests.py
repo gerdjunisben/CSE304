@@ -1,5 +1,5 @@
 import os
-
+from colorama import Fore, Style
 import decaf_checker as checker
 
 
@@ -29,6 +29,7 @@ tests = [
          ('20', 'fib test2', 'YES'),
          ('21', 'various expressions test','YES'),
          ('22', 'multiclass and inheritance test','YES'),
+         ('23', 'comment test','YES'),
          ('err1', "error: eof in class declaration", 'ERROR'),
          ('err2', "error: int const class name", 'ERROR'),
          ('err3', "error: missing type for formal param", 'ERROR'),
@@ -38,9 +39,13 @@ tests = [
 def run_tests(tests):
     for test_number, test_name, test_result in tests:
         path = os.path.join("HW3/hw2_testing_subset",f"{test_number}.decaf")
-        print(f"Running test: {test_name} Expected Result: {test_result}")
-        
-        checker.check(path)
+        res = checker.check(path)
+        if((res and test_result == 'YES') or (not res and test_result == 'ERROR')):
+             print(Fore.GREEN + f"Test: {test_name} | Passed" + Style.RESET_ALL)
+             #print(f"Test: {test_name} | Passed")
+        else:
+            print(Fore.RED + f"Test: {test_name} | Failed" +Style.RESET_ALL)
+            #print(f"Test: {test_name} | Failed")
 
 if __name__ == "__main__":
     run_tests(tests)

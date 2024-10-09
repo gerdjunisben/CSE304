@@ -20,6 +20,8 @@ def check(file):
     prog = parser.parse(data, debug=False)
     if(prog):
         print("Yes")
+        return 1
+    return 0
 
 
 
