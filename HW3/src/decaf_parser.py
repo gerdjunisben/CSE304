@@ -49,11 +49,14 @@ def p_class_body_sub_decls(p):
     '''class_body_sub_decls : field_decl SEMICOLON class_body_sub_decls
                     | method_decl class_body_sub_decls
                     | constructor_decl class_body_sub_decls
+                    | field_decl SEMICOLON
+                    | constructor_decl
+                    | method_decl
                     | empty'''
-    if len(p) == 2 or (len(p) == 3 and p[2] == ';'):
-        p[0] = [p[1]]  
+    if len(p) == 2 or (len(p)==3 and p[2]==';'):
+        p[0] = [p[1]]
     elif (len(p) == 3):
-        p[0] = [p[1]] + p[2]
+        p[0] = [p[1]] +  p[2]
     else:
         p[0] = [p[1]] + p[3]
 
@@ -61,7 +64,7 @@ def p_class_body_sub_decls(p):
 
 def p_field_decl(p):
     '''field_decl : modifier var_decl'''
-    p[0] = {'modifier':p[1],'var_decl':p[2]}
+    p[0] = {'modifier':p[1],'decl':p[2]}
         
 def p_modifier(p):
     '''modifier : PUBLIC STATIC
@@ -96,7 +99,7 @@ def p_variables(p):
                 | variables COMMA variable
                 | empty'''
     if len(p)==2:
-        p[0] = [p[1]]
+        p[0] = p[1]
     elif len(p) == 4:
         p[0] = [p[1]] + [p[3]]
     else:
@@ -111,9 +114,7 @@ def p_method_decl(p):
     '''method_decl : modifier type ID LPAREN RPAREN block            
                     | modifier VOID ID LPAREN RPAREN block
                     | modifier type ID LPAREN formals RPAREN block   
-                    | modifier VOID ID LPAREN formals RPAREN block
-                    | modifier ID LPAREN RPAREN block                
-                    | modifier ID LPAREN formals RPAREN block'''     
+                    | modifier VOID ID LPAREN formals RPAREN block'''     
     if p[2] == 'void':
         if len(p) == 7:
             p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[3], 'block': p[6]}
@@ -121,24 +122,19 @@ def p_method_decl(p):
             p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[3], 'formals': p[5], 'block': p[7]}
     else:
         if len(p) == 7:
-            if(p[3] == '('):
-                p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[2], 'formals': p[4],  'block': p[6]}
-            else:
-                p[0] = {'structure_type':'method_decl','modifier': p[1], 'type':p[2],'id': p[3],   'block': p[6]}
-        elif len(p) == 8:
-            p[0] = {'structure_type':'method_decl','modifier': p[1], 'type':p[2],'id': p[3], 'formals': p[5],  'block': p[7]}
+            p[0] = {'structure_type':'method_decl','modifier': p[1], 'type':p[2],'id': p[3],   'block': p[6]}
         else:
-            p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[2],  'block': p[5]}
+            p[0] = {'structure_type':'method_decl','modifier': p[1], 'type':p[2],'id': p[3], 'formals': p[5],  'block': p[7]}
 
 
 
 def p_constructor_decl(p):
     '''constructor_decl : modifier ID LPAREN RPAREN block
                         | modifier ID LPAREN formals RPAREN block'''
-    if len(p) >4:
-        p[0] = {'modifier':p[1],  'id':p[2], 'formals':p[4],'block':p[-1]}
+    if len(p) ==7:
+        p[0] = {'structure_type':'constructor_decl','modifier':p[1],  'id':p[2], 'formals':p[4],'block':p[6]}
     else:
-        p[0] = {'modifier':p[1], 'id':p[2], 'formals':None, 'block':p[-1]}
+        p[0] = {'structure_type':'constructor_decl','modifier':p[1], 'id':p[2], 'formals':None, 'block':p[5]}
 
 
 def p_formals(p):
@@ -157,8 +153,17 @@ def p_formal_param(p):
 
 
 def p_block(p):
-    '''block : LBRACE stmt RBRACE'''
+    '''block : LBRACE block_end RBRACE'''
     p[0] = p[2]
+
+def p_block_end(p):
+    '''block_end : stmt
+                | stmt block_end
+                | empty'''
+    if(len(p) == 3):
+        p[0] = [p[1]] + p[2]
+    else:
+        p[0] = [p[1]]
 
 
 def p_stmt(p):
@@ -166,15 +171,14 @@ def p_stmt(p):
             | IF LPAREN expr RPAREN stmt ELSE stmt
             | WHILE LPAREN expr RPAREN stmt
             | FOR LPAREN stmt_expr SEMICOLON expr SEMICOLON stmt_expr RPAREN stmt
-            | RETURN SEMICOLON stmt
-            | RETURN expr SEMICOLON stmt
-            | stmt_expr SEMICOLON stmt
-            | BREAK SEMICOLON stmt
-            | CONTINUE SEMICOLON stmt
-            | block stmt
-            | var_decl SEMICOLON stmt
-            | SEMICOLON stmt
-            | empty'''
+            | RETURN SEMICOLON
+            | RETURN expr SEMICOLON
+            | stmt_expr SEMICOLON
+            | BREAK SEMICOLON
+            | CONTINUE SEMICOLON
+            | block
+            | var_decl SEMICOLON
+            | SEMICOLON'''
     
     if p[1] == 'if':
         if len(p) == 6:
@@ -187,16 +191,11 @@ def p_stmt(p):
         p[0] = {'structure_type':'for','stmt_expr': p[3], 'expr': p[5], 'stmt_expr2': p[7], 'stmt': p[9]}
     elif p[1] =='return':
         if len(p) ==4:
-            p[0]={'stmt':p[3]}
-        else:
-            p[0]={'expr':p[2], 'stmt':p[4]}
-    elif len(p) == 4 and p[2] == ';':
-        p[0] = {'var_decl':p[1],'stmt':p[3]}
-    elif len(p) == 3:
-        if p[1] == ';':
-            p[0] = {'stmt':[p[2]]}
-        else:
-            p[0] = {'block':p[1], 'stmt':p[2]}
+            p[0]={'expr':p[2]}
+    elif len(p) == 3 and p[2] == ';':
+        p[0] = p[1]
+    elif len(p) == 2:
+        p[0] = {'block':p[1]}
     else:
         p[0] = p[1]
 
@@ -236,9 +235,9 @@ def p_arguments(p):
                 | arguments COMMA expr
                 | empty'''
     if len(p) == 2:
-        p[0] = p[1]
+        p[0] = [p[1]]
     else:
-        p[0] = (p[1], p[3])
+        p[0] = p[1] + [p[3]]
 
 def p_lhs(p):
     '''lhs : field_access'''
@@ -251,16 +250,16 @@ def p_field_access(p):
     if len(p) == 2:
         p[0] = p[1]
     else:
-        p[0] = (p[1],p[3])
+        p[0] = {'primary':p[1],'id':p[3]}
 
 
 def p_method_invocation(p):
     '''method_invocation : field_access LPAREN RPAREN
                         | field_access LPAREN arguments RPAREN'''
     if len(p) == 4:
-        p[0] = p[1]
+        p[0] = {'structure_type':'method invocation','field_access':p[1]}
     else:
-        p[0] = {'field_access':p[1], 'args':p[3]}
+        p[0] = {'structure_type':'method invocation','field_access':p[1], 'args':p[3]}
 
 
 def p_expr(p):
@@ -284,11 +283,9 @@ def p_assign(p):
             | lhs MINUSMINUS
             | MINUSMINUS lhs'''
     if p[2] == '=':
-        p[0] = {'structure_type':'assignment','lhs':p[1], 'expr':p[3]}
-    elif(p[1] == '++' or p[1] =='--'):
-        p[0] = {'structure_type':p[1], 'lhs':p[2]}
+        p[0] = (p[1],'=',p[3])
     else:
-        p[0] = {'structure_type':p[2], 'lhs':p[1]}
+        p[0] = (p[1],p[2])
 
 def p_arith_op(p):
     '''arith_op : PLUS
