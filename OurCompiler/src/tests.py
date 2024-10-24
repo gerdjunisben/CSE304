@@ -38,7 +38,7 @@ tests = [
 ]
 def run_tests(tests):
     for test_number, test_name, test_result in tests:
-        path = os.path.join("HW3/hw2_testing_subset",f"{test_number}.decaf")
+        path = os.path.join("OurCompiler/hw2_testing_subset",f"{test_number}.decaf")
         res = checker.check(path)
         if((res and test_result == 'YES') or (not res and test_result == 'ERROR')):
              print(Fore.GREEN + f"Test: {test_name} | Passed" + Style.RESET_ALL)
