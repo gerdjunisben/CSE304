@@ -1,9 +1,9 @@
 class a {
-    public int a()
+    public static int a()
     {
         if( a && b || c && d)
-            return b;
+            C.farb();
         else
-            return a;
+            b=c;
     }
 }

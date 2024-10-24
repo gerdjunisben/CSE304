@@ -37,9 +37,9 @@ def p_class_decl(p):
     '''class_decl : CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE
                   | CLASS ID LBRACE class_body_decl RBRACE'''
     if len(p) == 8:
-        p[0] = {'structure_type':'class','id':p[2], 'super_id':p[4], 'body':p[6]}
+        p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':p[4], 'body':p[6]}
     else:
-        p[0] = {'structure_type':'class','id':p[2], 'body':p[4]}
+        p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':None,'body':p[4]}
 
 def p_class_body_decl(p):
     '''class_body_decl : class_body_sub_decls'''
@@ -64,23 +64,31 @@ def p_class_body_sub_decls(p):
 
 def p_field_decl(p):
     '''field_decl : modifier var_decl'''
-    p[0] = {'modifier':p[1],'decl':p[2]}
+    p[0] = {'structure_type':'field','Visibility/Applicability':p[1],'Declaration':p[2]}
         
 def p_modifier(p):
-    '''modifier : PUBLIC STATIC
-                | PRIVATE STATIC
-                | PUBLIC
-                | PRIVATE
-                | STATIC
+    '''modifier : visibility applicability
+                | visibility
+                | applicability
                 | empty'''
     if len(p) ==2:
         p[0] = p[1]
     else:
-        p[0] = None
+        p[0] ={**p[1], **p[2]}
+
+
+def p_visibility(p):
+    '''visibility : PUBLIC
+                  | PRIVATE'''
+    p[0] = {'Visibility':p[1]}
+
+def p_applicability(p):
+    '''applicability : STATIC'''
+    p[0] = {'Applicability':p[1]}
     
-def p_var_decl(p):
+def p_var_decl(p):  
     '''var_decl : type variables'''
-    p[0] = {'structure_type':'var_decl' ,'type':p[1], 'variables':p[2]}
+    p[0] = {'structure_type':'Variable Declaration' ,'Type':p[1], 'Variable Names':p[2]}
 
 def p_type(p):
     '''type : INT
@@ -117,14 +125,14 @@ def p_method_decl(p):
                     | modifier VOID ID LPAREN formals RPAREN block'''     
     if p[2] == 'void':
         if len(p) == 7:
-            p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[3], 'block': p[6]}
+            p[0] = {'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Body': p[6]}
         else:
-            p[0] = {'structure_type':'method_decl','modifier': p[1], 'id': p[3], 'formals': p[5], 'block': p[7]}
+            p[0] = {'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Parameters': p[5], 'Body': p[7]}
     else:
         if len(p) == 7:
-            p[0] = {'structure_type':'method_decl','modifier': p[1], 'type':p[2],'id': p[3],   'block': p[6]}
+            p[0] = {'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3],   'Body': p[6]}
         else:
-            p[0] = {'structure_type':'method_decl','modifier': p[1], 'type':p[2],'id': p[3], 'formals': p[5],  'block': p[7]}
+            p[0] = {'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3], 'Parameters': p[5],  'Body': p[7]}
 
 
 
@@ -132,9 +140,9 @@ def p_constructor_decl(p):
     '''constructor_decl : modifier ID LPAREN RPAREN block
                         | modifier ID LPAREN formals RPAREN block'''
     if len(p) ==7:
-        p[0] = {'structure_type':'constructor_decl','modifier':p[1],  'id':p[2], 'formals':p[4],'block':p[6]}
+        p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
     else:
-        p[0] = {'structure_type':'constructor_decl','modifier':p[1], 'id':p[2], 'formals':None, 'block':p[5]}
+        p[0] = {'structure_type':'constructor','Visibility':p[1], 'Class name':p[2], 'Parameters':None, 'body':p[5]}
 
 
 def p_formals(p):
@@ -182,22 +190,27 @@ def p_stmt(p):
     
     if p[1] == 'if':
         if len(p) == 6:
-            p[0] = {'structure_type':'if', 'expr':p[3],'stmt':p[5]}
+            p[0] = {'structure_type':'if', 'Conditional':p[3],'Then body':p[5]}
         else:
-            p[0] = {'structure_type':'if', 'expr':p[3],'stmt1':p[5], 'stmt2':p[7]}
+            p[0] = {'structure_type':'if', 'Conditional':p[3],'Then body':p[5], 'Else body':p[7]}
     elif p[1] == 'while':
-        p[0] = {'structure_type':'while', 'expr':p[3], 'stmt':p[5]}
+        p[0] = {'structure_type':'while', 'Conditional':p[3], 'While body':p[5]}
     elif p[1] == 'for':
-        p[0] = {'structure_type':'for','stmt_expr': p[3], 'expr': p[5], 'stmt_expr2': p[7], 'stmt': p[9]}
+        p[0] = {'structure_type':'for','Initialize': p[3], 'Conditional': p[5], 'Increment': p[7], 'For body': p[9]}
     elif p[1] =='return':
         if len(p) ==4:
-            p[0]={'expr':p[2]}
+            p[0]={'structure_type':'return','Return value':p[2]}
+        else:
+            p[0] = {'structure_type':'return'}
     elif len(p) == 3 and p[2] == ';':
-        p[0] = p[1]
-    elif len(p) == 2:
-        p[0] = {'block':p[1]}
-    else:
-        p[0] = p[1]
+        if p[1] == 'break':
+            p[0] = {'structure_type':'break'}
+        elif p[1] =='continue':
+            p[0] = {'structure_type':'continue'}
+        else:
+            p[0] = p[1]
+    elif len(p) == 2 and p[1] != ';':
+        p[0] = {'structure_type':'block','body':p[1]}
 
 def p_literal(p):
     '''literal : INTCONST
@@ -248,18 +261,18 @@ def p_field_access(p):
     '''field_access : primary PERIOD ID
                     | ID'''
     if len(p) == 2:
-        p[0] = p[1]
+        p[0] = {'Field name':p[1]}
     else:
-        p[0] = {'primary':p[1],'id':p[3]}
+        p[0] = {'Class name':p[1],'Field name':p[3]}
 
 
 def p_method_invocation(p):
     '''method_invocation : field_access LPAREN RPAREN
                         | field_access LPAREN arguments RPAREN'''
     if len(p) == 4:
-        p[0] = {'structure_type':'method invocation','field_access':p[1]}
+        p[0] = {'structure_type':'method invocation',**p[1]}
     else:
-        p[0] = {'structure_type':'method invocation','field_access':p[1], 'args':p[3]}
+        p[0] = {'structure_type':'method invocation',**p[1], 'args':p[3]}
 
 
 def p_expr(p):
@@ -283,9 +296,9 @@ def p_assign(p):
             | lhs MINUSMINUS
             | MINUSMINUS lhs'''
     if p[2] == '=':
-        p[0] = (p[1],'=',p[3])
+        p[0] = {'structure_type':'assignment','assignment':(p[1],'=',p[3])}
     else:
-        p[0] = (p[1],p[2])
+        p[0] = {'structure_type':'assignment','assignment':(p[1],p[2])}
 
 def p_arith_op(p):
     '''arith_op : PLUS
