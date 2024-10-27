@@ -46,8 +46,6 @@ tokens = [
     'INTCONST',
     'ID',
     'NEWLINE',
-    'TRUE',
-    'FALSE',
 ]
 
 reserved = {
@@ -114,7 +112,6 @@ t_CLASS     = r'class'
 t_DO        = r'do'
 t_ELSE      = r'else'
 t_EXTENDS   = r'extends'
-t_FALSE     = r'false'
 t_FLOAT     = r'float'
 t_FOR       = r'for'
 t_IF        = r'if'
@@ -127,7 +124,6 @@ t_RETURN    = r'return'
 t_STATIC    = r'static'
 t_SUPER     = r'super'
 t_THIS      = r'this'
-t_TRUE      = r'true'
 t_VOID      = r'void'
 t_WHILE     = r'while'
 
