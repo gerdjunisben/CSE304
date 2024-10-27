@@ -219,7 +219,16 @@ def p_literal(p):
                 | NULL
                 | TRUE
                 | FALSE'''
-    p[0] = p[1];
+    if isinstance(p[1],int):
+        p[0] = {'structure_type':'integer constant','value':p[1]}
+    elif p[1] == "true" or p[1] == "false":
+        p[0] = {'structure_type':'boolean constant','value':p[1]}
+    elif p[1] == "null":
+        p[0] = {'structure_type':'null constant','value':p[1]};
+    elif isinstance(p[1],float):
+        p[0] = {'structure_type':'float constant','value':p[1]}
+    else:
+        p[0] = {'structure_type':'string constant','value':p[1]}
 
 
 def p_primary(p):
@@ -284,9 +293,9 @@ def p_expr(p):
     if len(p) ==2:
         p[0] = p[1]
     elif len(p) ==3:
-        p[0] = (p[1], p[2])
+        p[0] = {'structure_type':'unary expression','operator':p[1],'expression':p[2]}
     else:
-        p[0] = (p[1] ,p[2], p[3])
+        p[0] = {'structure_type':'binary expression','operator':p[2],'first expression':p[1],'second expression':p[3]}
 
 
 def p_assign(p):
@@ -298,7 +307,7 @@ def p_assign(p):
     if p[2] == '=':
         p[0] = {'structure_type':'assignment','assignment':(p[1],'=',p[3])}
     else:
-        p[0] = {'structure_type':'assignment','assignment':(p[1],p[2])}
+        p[0] = {'structure_type':'auto expression','assignment':(p[1],p[2])}
 
 def p_arith_op(p):
     '''arith_op : PLUS

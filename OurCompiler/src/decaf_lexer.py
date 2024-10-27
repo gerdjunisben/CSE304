@@ -46,6 +46,8 @@ tokens = [
     'INTCONST',
     'ID',
     'NEWLINE',
+    'TRUE',
+    'FALSE',
 ]
 
 reserved = {
@@ -153,7 +155,7 @@ def t_INTCONST(t):
 
 # Function for STRINGCONST regex
 def t_STRINGCONST(t):
-    r'\".+\"'
+    r'\".*\"'
     t.value = str(t.value)
     return t
 
@@ -165,7 +167,7 @@ def t_NUMBER(t):
 
 # Function for STRING regex
 def t_STRING(t):
-    r'\".+\"'
+    r'\".*\"'
     return str(t)
 
 
