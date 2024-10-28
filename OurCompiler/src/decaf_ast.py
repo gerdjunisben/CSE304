@@ -29,6 +29,15 @@ class class_record:
         self.methods = methods
         self.fields = fields
 
+class constructor_record:
+    constructID = 0
+    def __init__(self, id, visibility, parameters, variable_table, body):
+        self.visibility = visibility
+        self.parameters = parameters
+        self.variable_table = variable_table
+        self.body = body
+        constructor_record.constructID += 1
+
 class method_record:
     methodID =0
     def __init__(self,name,className,visibility,applicability,parameters,returnType,body):
@@ -41,6 +50,16 @@ class method_record:
         self.body = body
         self.ID = method_record.methodID
         method_record.methodID +=1
+
+class field_record:
+    fieldID = 0
+    def __init__(self, name, className, visibility, applicability, type):
+        self.name = name
+        self.className = className
+        self.visibility = visibility
+        self.applicability = applicability
+        self.type = type
+        field_record.fieldID += 1
 
 class variable_record:
     varID = 0
