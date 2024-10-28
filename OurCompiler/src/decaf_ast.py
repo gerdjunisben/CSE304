@@ -17,7 +17,7 @@ import sys
 
 
 
-#>>>>>>>>>>>>>>>>>>>>>>classes<<<<<<<<<<<<<<<<<<<<<<<<<
+#>>>>>>>>>>>>>>>>>>>>>> Class Table <<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 
@@ -25,28 +25,30 @@ class class_record:
     def __init__(self, name,superName,constructors,methods,fields):
         self.name = name
         self.superName = superName
-        self.constructors = constructors
-        self.methods = methods
-        self.fields = fields
+        self.constructors = constructors #Set of all constructors defined in class
+        self.methods = methods #Set of all methods defined in class
+        self.fields = fields #Set of all fields defind in class
 
 class constructor_record:
     constructID = 0
     def __init__(self, id, visibility, parameters, variable_table, body):
         self.visibility = visibility
-        self.parameters = parameters
-        self.variable_table = variable_table
-        self.body = body
+        self.parameters = parameters #Sequence of parameters, each parameter is a variable in variable table
+        self.variable_table = variable_table #Table of all variables
+        self.body = body #Instance of statement record
+        self.ID = constructor_record.constructID
         constructor_record.constructID += 1
 
 class method_record:
     methodID =0
-    def __init__(self,name,className,visibility,applicability,parameters,returnType,body):
+    def __init__(self,name,className,visibility,applicability,parameters,returnType,variable_table,body):
         self.name = name
         self.className = className
         self.visiblity = visibility
         self.applicability = applicability
         self.parameters = parameters
         self.returnType = returnType
+        self.variable_table = variable_table
         self.body = body
         self.ID = method_record.methodID
         method_record.methodID +=1
@@ -59,7 +61,11 @@ class field_record:
         self.visibility = visibility
         self.applicability = applicability
         self.type = type
+        self.ID = field_record.fieldID
         field_record.fieldID += 1
+
+
+#>>>>>>>>>>>>>>>>>>>>>> Variable Table <<<<<<<<<<<<<<<<<<<
 
 class variable_record:
     varID = 0
