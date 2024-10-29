@@ -11,6 +11,7 @@ from decaf_lexer import newline_count
 
 from decaf_ast import constructor_record
 from decaf_ast import class_record
+from decaf_ast import method_record
 
 precedence = (
     ('left','EQUALS'),
@@ -162,7 +163,7 @@ def p_constructor_decl(p):
         p[0] = constructor_record(p[1],p[4],[],[])
         #p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
     else:
-        p[0] = constructor_record(p[1],p[4],[],[])
+        p[0] = constructor_record(p[1],[],[],[])
         #p[0] = {'structure_type':'constructor','Visibility':p[1], 'Class name':p[2], 'Parameters':None, 'body':p[5]}
 
 

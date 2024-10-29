@@ -111,7 +111,10 @@ def check(file):
     if(prog):
         print(prog)
         for clazz in prog:
-            print(clazz.constructors)
+            print(clazz.name)
+            print("constructors")
+            for const in clazz.constructors:
+                print(const.parameters)
         '''
         for clazz in prog:
             constructors = None

@@ -6,6 +6,12 @@ class Animal {
 
     }
 
+
+    Animal(int size)
+    {
+
+    }
+
     //void yap()
     //{
 
