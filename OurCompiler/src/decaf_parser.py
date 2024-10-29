@@ -9,6 +9,9 @@ import ply.yacc as yacc
 from decaf_lexer import tokens
 from decaf_lexer import newline_count
 
+from decaf_ast import constructor_record
+from decaf_ast import class_record
+
 precedence = (
     ('left','EQUALS'),
     ('left','OR'),
@@ -19,6 +22,9 @@ precedence = (
     ('left', 'TIMES', 'DIVIDE'),
     ('right','MINUS','NOT'),
 )
+
+class_records = []
+latest_class = None
 
 def p_empty(p):
     '''empty :'''
@@ -36,10 +42,23 @@ def p_program(p):
 def p_class_decl(p):
     '''class_decl : CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE
                   | CLASS ID LBRACE class_body_decl RBRACE'''
+    global latest_class
+
+
     if len(p) == 8:
-        p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':p[4], 'body':p[6]}
+        constructors = []
+        for thing in p[6]:
+            if isinstance(thing,constructor_record):
+                constructors = constructors + [thing]
+        p[0] = class_record(p[2],p[4],constructors,[],[])
+        #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':p[4], 'body':p[6]}
     else:
-        p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':None,'body':p[4]}
+        constructors = []
+        for thing in p[4]:
+            if isinstance(thing,constructor_record):
+                constructors = constructors + [thing]
+        p[0] = class_record(p[2],None,constructors,[],[])
+        #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':None,'body':p[4]}
 
 def p_class_body_decl(p):
     '''class_body_decl : class_body_sub_decls'''
@@ -140,9 +159,11 @@ def p_constructor_decl(p):
     '''constructor_decl : modifier ID LPAREN RPAREN block
                         | modifier ID LPAREN formals RPAREN block'''
     if len(p) ==7:
-        p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
+        p[0] = constructor_record(p[1],p[4],[],[])
+        #p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
     else:
-        p[0] = {'structure_type':'constructor','Visibility':p[1], 'Class name':p[2], 'Parameters':None, 'body':p[5]}
+        p[0] = constructor_record(p[1],p[4],[],[])
+        #p[0] = {'structure_type':'constructor','Visibility':p[1], 'Class name':p[2], 'Parameters':None, 'body':p[5]}
 
 
 def p_formals(p):

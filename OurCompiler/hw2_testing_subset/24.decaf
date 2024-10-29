@@ -1,21 +1,21 @@
 class Animal {
-    int size;
+    //int size;
 
     Animal()
     {
 
     }
 
-    void yap()
-    {
+    //void yap()
+    //{
 
-    }
+    //}
 
 
 }
 class Monkey extends Animal{
-    void eatBananas()
-    {
+    //void eatBananas()
+    //{
         
-    }
+    //}
 }

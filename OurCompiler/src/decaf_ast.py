@@ -31,7 +31,7 @@ class class_record:
 
 class constructor_record:
     constructID = 0
-    def __init__(self, id, visibility, parameters, variable_table, body):
+    def __init__(self, visibility, parameters, variable_table, body):
         self.visibility = visibility
         self.parameters = parameters #Sequence of parameters, each parameter is a variable in variable table
         self.variable_table = variable_table #Table of all variables
@@ -81,16 +81,16 @@ class variable_record:
 
 
 #<<<<<<<<<<<<<<<<<In>>>>>>>>>>>>>>>>>>>>
-scan_int = method_record("scan_int","In","public","static",None,"int",None)
-scan_float = method_record("scan_float","In","public","static",None,"float",None)
+scan_int = method_record("scan_int","In","public","static",None,"int",None,None)
+scan_float = method_record("scan_float","In","public","static",None,"float",None,None)
 In = class_record("In",None,None,[scan_int,scan_float],None)
 
 
 #<<<<<<<<<<<<<<<<Out>>>>>>>>>>>>>>>>>>>>>>
-t1_print = method_record("print","Out","public","static",[variable_record("i","formal","int")],None,None)
-t2_print = method_record("print","Out","public","static",[variable_record("f","formal","float")],None,None)
-t3_print = method_record("print","Out","public","static",[variable_record("b","formal","boolean")],None,None)
-t4_print = method_record("print","Out","public","static",[variable_record("s","formal","string")],None,None)
+t1_print = method_record("print","Out","public","static",[variable_record("i","formal","int")],None,None,None)
+t2_print = method_record("print","Out","public","static",[variable_record("f","formal","float")],None,None,None)
+t3_print = method_record("print","Out","public","static",[variable_record("b","formal","boolean")],None,None,None)
+t4_print = method_record("print","Out","public","static",[variable_record("s","formal","string")],None,None,None)
 Out = class_record("Out",None,None,[t1_print,t2_print,t3_print,t4_print],None)
 
 #>>>>>>>>>>>>>>>>>>>>>>data structures<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -110,6 +110,9 @@ def check(file):
     prog = parser.parse(data, debug=False)
     if(prog):
         print(prog)
+        for clazz in prog:
+            print(clazz.constructors)
+        '''
         for clazz in prog:
             constructors = None
             methods = None
@@ -131,6 +134,7 @@ def check(file):
         ###Print to see it worked
         for i in class_table:
             print(i.name)
+        '''
         return 1
     return 0
 
