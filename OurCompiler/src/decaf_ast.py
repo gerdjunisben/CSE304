@@ -119,8 +119,6 @@ def check(file):
             print(">>>>>>>>>>>>methods")
             for method in clazz.methods:
                 print(vars(method))
-                for i in method.variable_table:
-                    print(i.name)
             print(">>>>>>>>>>>>>fields")
             for field in clazz.fields:
                 print(vars(field))

@@ -58,8 +58,8 @@ def p_class_decl(p):
             elif isinstance(thing,method_record):
                 thing.className = p[2]
                 methods = methods + [thing]
-            else:
-                print(thing)
+            elif isinstance(thing,list)  and isinstance(thing[0],field_record):
+                fields = fields + thing
         p[0] = class_record(p[2],p[4],constructors,methods,fields)
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':p[4], 'body':p[6]}
     else:
