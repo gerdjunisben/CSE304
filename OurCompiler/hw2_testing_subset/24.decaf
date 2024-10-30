@@ -3,7 +3,17 @@ class Animal {
 
     Animal()
     {
+        for(i =0;i<3;i++)
+        {
 
+        }
+
+        while(i=3)
+        {
+
+        }
+
+        
     }
 
 
@@ -25,6 +35,8 @@ class Monkey extends Animal{
 
     int eatBananas(int nanaCount)
     {
-        int peels,oranges;
+        if(nanaCount > monkeyStrength){
+            monkeyStrength = nanaCount;
+        }
     }
 }

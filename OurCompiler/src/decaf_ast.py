@@ -11,13 +11,10 @@ import decaf_parser as parser
 import sys
 
 
-#create a class that holds a Decaf class, then make a data structure of them
-#make additional classes for things like fields, methods and vars and additional data structures
-#for clarity
 
 
 
-#>>>>>>>>>>>>>>>>>>>>>> Class Table <<<<<<<<<<<<<<<<<<<<<<<<<
+#>>>>>>>>>>>>>>>>>>>>>> Record classes <<<<<<<<<<<<<<<<<<<<<<<<<
 
 
 
@@ -65,7 +62,6 @@ class field_record:
         field_record.fieldID += 1
 
 
-#>>>>>>>>>>>>>>>>>>>>>> Variable Table <<<<<<<<<<<<<<<<<<<
 
 class variable_record:
     varID = 0
@@ -75,6 +71,122 @@ class variable_record:
         self.type = type
         self.ID = variable_record.varID
         variable_record.varID +=1
+
+
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Statement records
+class statement_record:  #This exists so that we can easily check instance
+    def __init__(self):
+        pass
+
+
+class if_record(statement_record):
+    def __init__(self,conditional,then_block,else_block):
+        super().__init__()  #this line calls the super constructor which lets us do isinstance on an if to check if it's a statement
+        self.conditional = conditional
+        self.then_block = then_block
+        self.else_block = else_block
+
+class while_record(statement_record):
+    def __init__(self,conditional,loop_block):
+        super().__init__()  
+        self.conditional = conditional
+        self.loop_block = loop_block
+
+class for_record(statement_record):
+    def __init__(self,initializer,conditional,update_expr,loop_body):
+        super().__init__()  
+        self.initializer = initializer
+        self.conditional = conditional
+        self.update_expr = update_expr
+        self.loop_body = loop_body
+
+class return_record(statement_record):
+    def __init__(self,return_val):
+        super().__init__()  
+        self.return_val = return_val
+
+class expressionStatement_record(statement_record):
+    def __init__(self,expression):
+        super().__init__()  
+        self.expression = expression
+
+class block_record(statement_record):
+    def __init__(self,block):
+        super().__init__()  
+        self.block = block
+
+class controlFlow_record(statement_record):
+    def __init__(self,type):
+        super().__init__()  
+        self.type = type
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>Expression records
+class expression_record:  #This exists so that we can easily check instance
+    def __init__(self):
+        pass
+
+class const_record(expression_record):
+    def __init__(self,type,value):
+        super().__init__()  
+        self.type = type
+        self.value = value
+
+class varExpression_record(expression_record):
+    def __init__(self,name,id):   #ID needs to be filled in after parsing
+        super().__init__()  
+        self.name = name
+        self.id = id
+
+class unaryExpression_record(expression_record):
+    def __init__(self,operation,operand):  
+        super().__init__()  
+        self.operand = operand
+        self.operation = operation
+
+class binaryExpression_record(expression_record):
+    def __init__(self,leftOperand,operation,rightOperand): 
+        super().__init__()  
+        self.leftOperand = leftOperand
+        self.operation = operation
+        self.rightOperand = rightOperand
+
+class assignExpression_record(expression_record):
+    def __init__(self,assignee,assigner):  
+        super().__init__()  
+        self.assignee = assignee
+        self.assigner = assigner
+
+class autoExpression_record(expression_record):
+    def __init__(self,operand,auto_type,tense):  
+        super().__init__() 
+        self.operand = operand
+        self.auto_type = auto_type
+        self.tense = tense
+
+class fieldAccessExpression_record(expression_record):
+    def __init__(self,base,field):  
+        super().__init__()  
+        self.base = base
+        self.field = field
+
+class methodCallExpression_record(expression_record):
+    def __init__(self,base,method_name,args):  
+        super().__init__()  
+        self.base = base
+        self.method_name = method_name
+        self.args = args
+
+class newExpression_record(expression_record):
+    def __init__(self,base,args):  
+        super().__init__()  
+        self.base = base
+        self.args = args
+
+class referenceExpression_record(expression_record):
+    def __init__(self,ref_type):  
+        super().__init__()  
+        self.ref_type = ref_type
 
 
 #>>>>>>>>>>>>>>>>>>>>>>make base library stuffs<<<<<<<<<<<<<<<<<<<
@@ -108,6 +220,11 @@ def check(file):
 
 
     prog = parser.parse(data, debug=False)
+
+
+
+
+    #Shitty printer to make sure what I think is happening is happening, use for inspiration
     if(prog):
         print(prog)
         for clazz in prog:
