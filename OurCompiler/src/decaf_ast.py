@@ -111,33 +111,20 @@ def check(file):
     if(prog):
         print(prog)
         for clazz in prog:
-            print(clazz.name)
-            print("constructors")
+            print(">>>>>>>>>>CLASS<<<<<<<<<<<<,")
+            print(vars(clazz))
+            print(">>>>>>>>>>>>constructors")
             for const in clazz.constructors:
-                print(const.parameters)
-        '''
-        for clazz in prog:
-            constructors = None
-            methods = None
-            fields = None
-            for thing in clazz['body']:   #############Probably start adding here
-                if thing == None:
-                    pass
-                elif thing['structure_type'] == 'method':
-                    pass
-                elif thing['structure_type'] == 'constructor':
-                    pass
-                else:
-                    pass
-            newClass = class_record(clazz['Class name'],clazz['Super class name'],constructors,methods,fields)
-            class_table.append(newClass)
-
-
-
-        ###Print to see it worked
-        for i in class_table:
-            print(i.name)
-        '''
+                print(vars(const))
+            print(">>>>>>>>>>>>methods")
+            for method in clazz.methods:
+                print(vars(method))
+                for i in method.variable_table:
+                    print(i.name)
+            print(">>>>>>>>>>>>>fields")
+            for field in clazz.fields:
+                print(vars(field))
+        
         return 1
     return 0
 

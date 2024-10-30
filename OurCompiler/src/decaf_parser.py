@@ -12,6 +12,8 @@ from decaf_lexer import newline_count
 from decaf_ast import constructor_record
 from decaf_ast import class_record
 from decaf_ast import method_record
+from decaf_ast import field_record
+from decaf_ast import variable_record
 
 precedence = (
     ('left','EQUALS'),
@@ -45,20 +47,31 @@ def p_class_decl(p):
                   | CLASS ID LBRACE class_body_decl RBRACE'''
     global latest_class
 
-
+    constructors = []
+    methods = []
+    fields =[]
     if len(p) == 8:
-        constructors = []
+        
         for thing in p[6]:
             if isinstance(thing,constructor_record):
                 constructors = constructors + [thing]
-        p[0] = class_record(p[2],p[4],constructors,[],[])
+            elif isinstance(thing,method_record):
+                thing.className = p[2]
+                methods = methods + [thing]
+            else:
+                print(thing)
+        p[0] = class_record(p[2],p[4],constructors,methods,fields)
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':p[4], 'body':p[6]}
     else:
-        constructors = []
         for thing in p[4]:
             if isinstance(thing,constructor_record):
                 constructors = constructors + [thing]
-        p[0] = class_record(p[2],None,constructors,[],[])
+            elif isinstance(thing,method_record):
+                thing.className = p[2]
+                methods = methods + [thing]
+            elif isinstance(thing,list)  and isinstance(thing[0],field_record):
+                fields = fields + thing
+        p[0] = class_record(p[2],None,constructors,methods,fields)
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':None,'body':p[4]}
 
 def p_class_body_decl(p):
@@ -84,7 +97,19 @@ def p_class_body_sub_decls(p):
 
 def p_field_decl(p):
     '''field_decl : modifier var_decl'''
-    p[0] = {'structure_type':'field','Visibility/Applicability':p[1],'Declaration':p[2]}
+    app = None
+    vis = None
+
+    if(p[1] != None and p[1]['Visibility'] != None):
+        vis = p[1]['Visibility']
+    elif(p[1] != None and p[1]['Applicability'] != None):
+        app = p[1]['Applicability']
+
+    fields = []
+    for var in p[2]:
+        fields = fields + [field_record(var.name,None,vis,app,var.type)]
+    p[0] = fields
+    #{'structure_type':'field','Visibility/Applicability':p[1],'Declaration':p[2]}
         
 def p_modifier(p):
     '''modifier : visibility applicability
@@ -108,7 +133,15 @@ def p_applicability(p):
     
 def p_var_decl(p):  
     '''var_decl : type variables'''
-    p[0] = {'structure_type':'Variable Declaration' ,'Type':p[1], 'Variable Names':p[2]}
+    names = p[2]
+    if(isinstance(names,str)):
+        p[0] = [variable_record(names,None,p[1])]
+    else:
+        vars = []
+        for name in names:
+            vars = vars + [variable_record(name,None,p[1])]
+        p[0] = vars
+    #{'structure_type':'Variable Declaration' ,'Type':p[1], 'Variable Names':p[2]}
 
 def p_type(p):
     '''type : INT
@@ -142,17 +175,42 @@ def p_method_decl(p):
     '''method_decl : modifier type ID LPAREN RPAREN block            
                     | modifier VOID ID LPAREN RPAREN block
                     | modifier type ID LPAREN formals RPAREN block   
-                    | modifier VOID ID LPAREN formals RPAREN block'''     
+                    | modifier VOID ID LPAREN formals RPAREN block'''    
+    vis = None
+    app = None
+    if(p[1] != None and p[1]['Visibility'] != None):
+        vis = p[1]['Visibility']
+    elif(p[1] != None and p[1]['Applicability'] != None):
+        app = p[1]['Applicability']
+    var_tab = []
     if p[2] == 'void':
         if len(p) == 7:
-            p[0] = {'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Body': p[6]}
+            for statement in p[6]:
+                if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                    var_tab = var_tab + statement
+            p[0] = method_record(p[3],None,vis,app,[],'void',var_tab,[])
+            #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Body': p[6]}
         else:
-            p[0] = {'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Parameters': p[5], 'Body': p[7]}
+            var_tab = var_tab + p[5]
+            for statement in p[7]:
+                if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                    var_tab = var_tab + statement
+            p[0] = method_record(p[3],None,vis,app,p[5],'void',var_tab,[])
+            #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Parameters': p[5], 'Body': p[7]}
     else:
         if len(p) == 7:
-            p[0] = {'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3],   'Body': p[6]}
+            for statement in p[6]:
+                if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                    var_tab = var_tab + statement
+            p[0] = method_record(p[3],None,vis,app,[],p[2],var_tab,[])
+            #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3],   'Body': p[6]}
         else:
-            p[0] = {'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3], 'Parameters': p[5],  'Body': p[7]}
+            var_tab = var_tab + p[5]
+            for statement in p[7]:
+                if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                    var_tab = var_tab + statement
+            p[0] = method_record(p[3],None,vis,app,p[5],p[2],var_tab,[])
+            #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3], 'Parameters': p[5],  'Body': p[7]}
 
 
 
@@ -179,7 +237,7 @@ def p_formals(p):
 
 def p_formal_param(p):
     '''formal_param : type variable'''
-    p[0] = {'type':p[1], 'variable':p[2]}
+    p[0] = variable_record(p[2],'formal',p[1])
 
 
 def p_block(p):

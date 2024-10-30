@@ -1,5 +1,5 @@
 class Animal {
-    //int size;
+    int eyeCount, footCount;
 
     Animal()
     {
@@ -12,16 +12,16 @@ class Animal {
 
     }
 
-    //void yap()
-    //{
+    void yap()
+    {
 
-    //}
+    }
 
 
 }
 class Monkey extends Animal{
-    //void eatBananas()
-    //{
-        
-    //}
+    void eatBananas(int nanaCount)
+    {
+        int peels,oranges;
+    }
 }
