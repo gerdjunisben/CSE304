@@ -231,66 +231,10 @@ def check(file):
 
     prog = parser.parse(data, debug=False)
     
-    for item in prog:
-        class_table.append(item)
+    # for item in prog:
+    #     class_table.append(item)
 
-    if(prog):
-        for clazz in class_table:
-            print("-------------------------------------------------------------------------")
-            print("- Class Name: "+clazz.name)
-            print("Superclass Name: "+str(clazz.superName))
-            print("Fields:")
-            if(clazz.fields):
-                for field in clazz.fields:
-                    print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", "+str(field.visibility)+", "+str(field.applicability)+", "+str(field.type))
-            print("Constructors:")
-            if(clazz.constructors):
-                for constructor in clazz.constructors:
-                    print("CONSTRUCTOR: "+str(constructor.ID)+", "+str(constructor.visibility))
-                    if(constructor.parameters):
-                        print("Constructor parameters: ",end="")
-                        idx = 0
-                        for param in constructor.parameters:
-                            if(idx != len(constructor.parameters) - 1):
-                                print(str(param.ID)+ ", ",end="")
-                            else:
-                                print(str(param.ID),end="")
-                            idx += 1
-                    else:
-                        print("Constructor parameters:", end="")
-                    print("\nVariable Table:")
-                    if(constructor.variable_table):
-                        for variable in constructor.variable_table:
-                            print("VARIABLE "+str(variable.ID)+ ", "+str(variable.name)+", "+str(variable.kind)+", "+str(variable.type))
-                    if(constructor.body):
-                        print("Constructor Body:\n"+str(constructor.body)) #NEEDS TO BE FIXE
-                        #FIX THE STATEMENT ABOVE
-                    else:
-                        print("Constructor Body")
-            print("Methods:")
-            if(clazz.methods):
-                for method in clazz.methods:
-                    print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", "+str(method.visibility)+", "+str(method.applicability)+", "+str(method.returnType))
-                    if(method.parameters):
-                        print("Method parameters: ",end="")
-                        idx = 0
-                        for param in method.parameters:
-                            if(idx != len(method.parameters) - 1):
-                                print(str(param.ID)+ ", ",end="")
-                            else:
-                                print(str(param.ID),end="")
-                            idx += 1
-                    else:
-                        print("Method parameters:", end="")
-                    print("\nVariable Table:")
-                    if(method.variable_table):
-                        for variable in method.variable_table:
-                            print("VARIABLE "+str(variable.ID)+ ", "+str(variable.name)+", "+str(variable.kind)+", "+str(variable.type))
-                    if(method.body):
-                        print("Method Body:\n"+str(method.body)) #NEEDS TO BE FIXE
-                        #FIX THE STATEMENT ABOVE
-                    else:
-                        print("Method Body")
+    
 
 
     for classes in prog:
@@ -360,28 +304,55 @@ def check(file):
             print("Fields:")
             if(clazz.fields):
                 for field in clazz.fields:
-                    print(str(field))
+                    print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", "+str(field.visibility)+", "+str(field.applicability)+", "+str(field.type))
             print("Constructors:")
             if(clazz.constructors):
                 for constructor in clazz.constructors:
                     print("CONSTRUCTOR: "+str(constructor.ID)+", "+str(constructor.visibility))
-                    print("Variable Table:")
-                    for variable in constructor.variable_table:
-                        print("VARIABLE "+str(variable.ID)+ ", "+str(variable.name)+", "+str(variable.kind)+", "+str(variable.type))
-                    print("Constructor Body:\n"+str(constructor.body))
+                    if(constructor.parameters):
+                        print("Constructor parameters: ",end="")
+                        idx = 0
+                        for param in constructor.parameters:
+                            if(idx != len(constructor.parameters) - 1):
+                                print(str(param.ID)+ ", ",end="")
+                            else:
+                                print(str(param.ID),end="")
+                            idx += 1
+                    else:
+                        print("Constructor parameters:", end="")
+                    print("\nVariable Table:")
+                    if(constructor.variable_table):
+                        for variable in constructor.variable_table:
+                            print("VARIABLE "+str(variable.ID)+ ", "+str(variable.name)+", "+str(variable.kind)+", "+str(variable.type))
+                    if(constructor.body):
+                        print("Constructor Body:\n"+str(constructor.body)) #NEEDS TO BE FIXE
+                        #FIX THE STATEMENT ABOVE
+                    else:
+                        print("Constructor Body")
             print("Methods:")
             if(clazz.methods):
                 for method in clazz.methods:
                     print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", "+str(method.visibility)+", "+str(method.applicability)+", "+str(method.returnType))
-                    print("Method Parameters:")
                     if(method.parameters):
+                        print("Method parameters: ",end="")
+                        idx = 0
                         for param in method.parameters:
-                            print(str(param))
-                    print("Variable Table:")
+                            if(idx != len(method.parameters) - 1):
+                                print(str(param.ID)+ ", ",end="")
+                            else:
+                                print(str(param.ID),end="")
+                            idx += 1
+                    else:
+                        print("Method parameters:", end="")
+                    print("\nVariable Table:")
                     if(method.variable_table):
-                        print(str(method.variable_table))
+                        for variable in method.variable_table:
+                            print("VARIABLE "+str(variable.ID)+ ", "+str(variable.name)+", "+str(variable.kind)+", "+str(variable.type))
                     if(method.body):
-                        print("Block"+str(method.body))
+                        print("Method Body:\n"+str(method.body)) #NEEDS TO BE FIXE
+                        #FIX THE STATEMENT ABOVE
+                    else:
+                        print("Method Body")
 
 
 if __name__ == "__main__":
