@@ -112,9 +112,10 @@ class expressionStatement_record(statement_record):
         self.expression = expression
 
 class block_record(statement_record):
-    def __init__(self,block):
+    def __init__(self,block,variable_table):
         super().__init__()  
         self.block = block
+        self.variable_table = variable_table
 
 class controlFlow_record(statement_record):
     def __init__(self,type):

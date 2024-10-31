@@ -210,6 +210,8 @@ def p_method_decl(p):
             for statement in p[6]:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
                     var_tab = var_tab + statement
+                if isinstance(statement,block_record):
+                    statement.variable_table = statement.variable_table + var_tab
             p[0] = method_record(p[3],None,vis,app,[],'void',var_tab,p[6])
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Body': p[6]}
         else:
@@ -217,6 +219,8 @@ def p_method_decl(p):
             for statement in p[7]:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
                     var_tab = var_tab + statement
+                if isinstance(statement,block_record):
+                    statement.variable_table = statement.variable_table + var_tab
             p[0] = method_record(p[3],None,vis,app,p[5],'void',var_tab,p[7])
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Parameters': p[5], 'Body': p[7]}
     else:
@@ -224,6 +228,8 @@ def p_method_decl(p):
             for statement in p[6]:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
                     var_tab = var_tab + statement
+                if isinstance(statement,block_record):
+                    statement.variable_table = statement.variable_table + var_tab
             p[0] = method_record(p[3],None,vis,app,[],p[2],var_tab,p[6])
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3],   'Body': p[6]}
         else:
@@ -231,6 +237,8 @@ def p_method_decl(p):
             for statement in p[7]:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
                     var_tab = var_tab + statement
+                if isinstance(statement,block_record):
+                    statement.variable_table = statement.variable_table + var_tab
             p[0] = method_record(p[3],None,vis,app,p[5],p[2],var_tab,p[7])
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3], 'Parameters': p[5],  'Body': p[7]}
 
@@ -240,10 +248,22 @@ def p_constructor_decl(p):
     '''constructor_decl : modifier ID LPAREN RPAREN block
                         | modifier ID LPAREN formals RPAREN block'''
     if len(p) ==7:
-        p[0] = constructor_record(p[1],p[4],[],p[6])
+        var_tab = p[4]
+        for statement in p[6]:
+            if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                var_tab = var_tab + statement
+            if isinstance(statement,block_record):
+                statement.variable_table = statement.variable_table + var_tab
+        p[0] = constructor_record(p[1],p[4],var_tab,p[6])
         #p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
     else:
-        p[0] = constructor_record(p[1],[],[],p[5])
+        var_tab = []
+        for statement in p[5]:
+            if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                var_tab = var_tab + statement
+            if isinstance(statement,block_record):
+                statement.variable_table = statement.variable_table + var_tab
+        p[0] = constructor_record(p[1],[],var_tab,p[5])
         #p[0] = {'structure_type':'constructor','Visibility':p[1], 'Class name':p[2], 'Parameters':None, 'body':p[5]}
 
 
@@ -320,7 +340,7 @@ def p_stmt(p):
         else:
             p[0] = p[1]
     elif len(p) == 2 and p[1] != ';':
-        p[0] = block_record(p[1])
+        p[0] = block_record(p[1],[])
         #{'structure_type':'block','body':p[1]}
 
 def p_literal(p):
