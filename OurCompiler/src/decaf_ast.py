@@ -297,8 +297,8 @@ def check(file):
     if(prog):
         for clazz in class_table:
             print("-------------------------------------------------------------------------")
-            print("- Class Name:"+clazz.name)
-            print("Superclass Name:"+str(clazz.superName))
+            print("- Class Name: "+clazz.name)
+            print("Superclass Name: "+str(clazz.superName))
             print("Fields:")
             if(clazz.fields):
                 for field in clazz.fields:
