@@ -43,7 +43,7 @@ class method_record:
     def __init__(self,name,className,visibility,applicability,parameters,returnType,variable_table,body,line):
         self.name = name
         self.className = className
-        self.visiblity = visibility
+        self.visibility = visibility
         self.applicability = applicability
         self.parameters = parameters
         self.returnType = returnType
@@ -216,6 +216,8 @@ Out = class_record("Out",None,None,[t1_print,t2_print,t3_print,t4_print],None,0)
 #>>>>>>>>>>>>>>>>>>>>>>data structures<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 class_table = [In,Out]
 method_table = [scan_int,scan_float,t1_print,t2_print,t3_print,t4_print]
+field_table = []
+constructor_table = []
 
 
 
@@ -228,8 +230,36 @@ def check(file):
 
 
     prog = parser.parse(data, debug=False)
+    
+    for item in prog:
+        class_table.append(item)
 
 
+    for classes in prog:
+        class_table.append(classes)
+        for methods in classes.methods:
+            method_table.append(methods)
+    #Check for duplicate classes
+    class_set = set(class_table)
+    if(len(class_set) != len(class_table)):
+        print("Error, duplicate class name")
+        return -1
+    
+    #Check for duplicate methods
+    counter = 1
+    length = len(method_table)
+    # for methods in method_table:
+    #     print(str(vars(methods))+"\n")
+    for methods in method_table:
+        name = methods.name
+        params = methods.parameters
+        class1 = methods.className
+        line = methods.line
+        for i in range(counter, length):
+            if(name == method_table[i].name and class1 == method_table[i].className and params == method_table[i].parameters):
+                print("Error, invalid method.\nMethod is "+name+" in class "+class1+" at line "+str(line)+".\nMethod has duplicate name, class, and parameters.")
+                return -2
+        counter += 1
 
 
     #Shitty printer to make sure what I think is happening is happening, use for inspiration
@@ -263,6 +293,35 @@ def check(file):
         return 1
     return 0
 
+    # Real printer
+    if(prog):
+        for clazz in class_table:
+            print("-------------------------------------------------------------------------")
+            print("- Class Name:"+clazz.name)
+            print("Superclass Name:"+str(clazz.superName))
+            print("Fields:")
+            if(clazz.fields):
+                for field in clazz.fields:
+                    print(str(field))
+            print("Constructors:")
+            if(clazz.constructors):
+                for constructor in clazz.constructors:
+                    print("CONSTRUCTOR: "+str(constructor.ID)+", "+str(constructor.visibility))
+                    print("Variable Table:\n"+str(constructor.variable_table))
+                    print("Constructor Body:\n"+str(constructor.body))
+            print("Methods:")
+            if(clazz.methods):
+                for method in clazz.methods:
+                    print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", "+str(method.visibility)+", "+str(method.applicability)+", "+str(method.returnType))
+                    print("Method Parameters:")
+                    if(method.parameters):
+                        for param in method.parameters:
+                            print(str(param))
+                    print("Variable Table:")
+                    if(method.variable_table):
+                        print(str(method.variable_table))
+                    if(method.body):
+                        print("Block"+str(method.body))
 
 
 if __name__ == "__main__":
