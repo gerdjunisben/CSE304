@@ -7,7 +7,6 @@
 
 import ply.yacc as yacc
 from decaf_lexer import tokens
-from decaf_lexer import newline_count
 
 from decaf_ast import constructor_record
 from decaf_ast import class_record
@@ -82,7 +81,7 @@ def p_class_decl(p):
                 methods = methods + [thing]
             elif isinstance(thing,list)  and isinstance(thing[0],field_record):
                 fields = fields + thing
-        p[0] = class_record(p[2],p[4],constructors,methods,fields)
+        p[0] = class_record(p[2],p[4],constructors,methods,fields,p.lineno(1))
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':p[4], 'body':p[6]}
     else:
         for thing in p[4]:
@@ -93,7 +92,7 @@ def p_class_decl(p):
                 methods = methods + [thing]
             elif isinstance(thing,list)  and isinstance(thing[0],field_record):
                 fields = fields + thing
-        p[0] = class_record(p[2],None,constructors,methods,fields)
+        p[0] = class_record(p[2],None,constructors,methods,fields,p.lineno(1))
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':None,'body':p[4]}
 
 def p_class_body_decl(p):
@@ -129,7 +128,7 @@ def p_field_decl(p):
 
     fields = []
     for var in p[2]:
-        fields = fields + [field_record(var.name,None,vis,app,var.type)]
+        fields = fields + [field_record(var.name,None,vis,app,var.type,var.line)]
     p[0] = fields
     #{'structure_type':'field','Visibility/Applicability':p[1],'Declaration':p[2]}
         
@@ -156,12 +155,12 @@ def p_applicability(p):
 def p_var_decl(p):  
     '''var_decl : type variables'''
     names = p[2]
-    if(isinstance(names,str)):
-        p[0] = [variable_record(names,None,p[1])]
+    if(isinstance(names,tuple)):
+        p[0] = [variable_record(names[0],None,p[1],names[1])]
     else:
         vars = []
         for name in names:
-            vars = vars + [variable_record(name,None,p[1])]
+            vars = vars + [variable_record(name[0],None,p[1],name[1])]
         p[0] = vars
     #{'structure_type':'Variable Declaration' ,'Type':p[1], 'Variable Names':p[2]}
 
@@ -190,7 +189,7 @@ def p_variables(p):
 
 def p_variable(p):
     '''variable : ID'''
-    p[0] = p[1]
+    p[0] = (p[1],p.lineno(1))
 
 
 def p_method_decl(p):
@@ -198,6 +197,7 @@ def p_method_decl(p):
                     | modifier VOID ID LPAREN RPAREN block
                     | modifier type ID LPAREN formals RPAREN block   
                     | modifier VOID ID LPAREN formals RPAREN block'''    
+
     vis = None
     app = None
     if(p[1] != None and p[1]['Visibility'] != None):
@@ -212,7 +212,7 @@ def p_method_decl(p):
                     var_tab = var_tab + statement
                 if isinstance(statement,block_record):
                     statement.variable_table = statement.variable_table + var_tab
-            p[0] = method_record(p[3],None,vis,app,[],'void',var_tab,p[6])
+            p[0] = method_record(p[3],None,vis,app,[],'void',var_tab,p[6],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Body': p[6]}
         else:
             var_tab = var_tab + p[5]
@@ -221,7 +221,7 @@ def p_method_decl(p):
                     var_tab = var_tab + statement
                 if isinstance(statement,block_record):
                     statement.variable_table = statement.variable_table + var_tab
-            p[0] = method_record(p[3],None,vis,app,p[5],'void',var_tab,p[7])
+            p[0] = method_record(p[3],None,vis,app,p[5],'void',var_tab,p[7],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Parameters': p[5], 'Body': p[7]}
     else:
         if len(p) == 7:
@@ -230,7 +230,7 @@ def p_method_decl(p):
                     var_tab = var_tab + statement
                 if isinstance(statement,block_record):
                     statement.variable_table = statement.variable_table + var_tab
-            p[0] = method_record(p[3],None,vis,app,[],p[2],var_tab,p[6])
+            p[0] = method_record(p[3],None,vis,app,[],p[2],var_tab,p[6],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3],   'Body': p[6]}
         else:
             var_tab = var_tab + p[5]
@@ -239,7 +239,7 @@ def p_method_decl(p):
                     var_tab = var_tab + statement
                 if isinstance(statement,block_record):
                     statement.variable_table = statement.variable_table + var_tab
-            p[0] = method_record(p[3],None,vis,app,p[5],p[2],var_tab,p[7])
+            p[0] = method_record(p[3],None,vis,app,p[5],p[2],var_tab,p[7],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3], 'Parameters': p[5],  'Body': p[7]}
 
 
@@ -254,7 +254,7 @@ def p_constructor_decl(p):
                 var_tab = var_tab + statement
             if isinstance(statement,block_record):
                 statement.variable_table = statement.variable_table + var_tab
-        p[0] = constructor_record(p[1],p[4],var_tab,p[6])
+        p[0] = constructor_record(p[1],p[4],var_tab,p[6],p.lineno(2))
         #p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
     else:
         var_tab = []
@@ -263,7 +263,7 @@ def p_constructor_decl(p):
                 var_tab = var_tab + statement
             if isinstance(statement,block_record):
                 statement.variable_table = statement.variable_table + var_tab
-        p[0] = constructor_record(p[1],[],var_tab,p[5])
+        p[0] = constructor_record(p[1],[],var_tab,p[5],p.lineno(2))
         #p[0] = {'structure_type':'constructor','Visibility':p[1], 'Class name':p[2], 'Parameters':None, 'body':p[5]}
 
 
@@ -279,7 +279,7 @@ def p_formals(p):
 
 def p_formal_param(p):
     '''formal_param : type variable'''
-    p[0] = variable_record(p[2],'formal',p[1])
+    p[0] = variable_record(p[2],'formal',p[1],p.lineno(1))
 
 
 def p_block(p):
@@ -312,35 +312,35 @@ def p_stmt(p):
     
     if p[1] == 'if':
         if len(p) == 6:
-            p[0] = if_record(p[3],p[5],[])
+            p[0] = if_record(p[3],p[5],[],p.lineno(1))
             #{'structure_type':'if', 'Conditional':p[3],'Then body':p[5]}
         else:
-            p[0] = if_record(p[3],p[5],p[7])
+            p[0] = if_record(p[3],p[5],p[7],p.lineno(1))
             #{'structure_type':'if', 'Conditional':p[3],'Then body':p[5], 'Else body':p[7]}
     elif p[1] == 'while':
-        p[0] = while_record(p[3],p[5])
+        p[0] = while_record(p[3],p[5],p.lineno(1))
         #{'structure_type':'while', 'Conditional':p[3], 'While body':p[5]}
     elif p[1] == 'for':
-        p[0] = for_record(p[3],p[5],p[7],p[9])
+        p[0] = for_record(p[3],p[5],p[7],p[9],p.lineno(1))
         #{'structure_type':'for','Initialize': p[3], 'Conditional': p[5], 'Increment': p[7], 'For body': p[9]}
     elif p[1] =='return':
         if len(p) ==4:
-            p[0]=return_record(p[2])
+            p[0]=return_record(p[2],p.lineno(1))
             #{'structure_type':'return','Return value':p[2]}
         else:
-            p[0] = return_record(None)
+            p[0] = return_record(None,p.lineno(1))
             #{'structure_type':'return'}
     elif len(p) == 3 and p[2] == ';':
         if p[1] == 'break':
-            p[0] = controlFlow_record('break')
+            p[0] = controlFlow_record('break',p.lineno(1))
             #{'structure_type':'break'}
         elif p[1] =='continue':
-            p[0] = controlFlow_record('continue')
+            p[0] = controlFlow_record('continue',p.lineno(1))
             #{'structure_type':'continue'}
         else:
             p[0] = p[1]
     elif len(p) == 2 and p[1] != ';':
-        p[0] = block_record(p[1],[])
+        p[0] = block_record(p[1],[],p.lineno(1))
         #{'structure_type':'block','body':p[1]}
 
 def p_literal(p):
@@ -351,19 +351,19 @@ def p_literal(p):
                 | TRUE
                 | FALSE'''
     if isinstance(p[1],int):
-        p[0] = const_record('int',p[1])
+        p[0] = const_record('int',p[1],p.lineno(1))
         #{'structure_type':'integer constant','value':p[1]}
     elif p[1] == "true" or p[1] == "false":
-        p[0] = const_record('bool',p[1])
+        p[0] = const_record('bool',p[1],p.lineno(1))
         #{'structure_type':'boolean constant','value':p[1]}
     elif p[1] == "null":
-        p[0] = const_record('null',p[1])
+        p[0] = const_record('null',p[1],p.lineno(1))
         #{'structure_type':'null constant','value':p[1]};
     elif isinstance(p[1],float):
-        p[0] = const_record('float',p[1])
+        p[0] = const_record('float',p[1],p.lineno(1))
         #{'structure_type':'float constant','value':p[1]}
     else:
-        p[0] = const_record('string',p[1])
+        p[0] = const_record('string',p[1],p.lineno(1))
         #{'structure_type':'string constant','value':p[1]}
 
 
@@ -380,10 +380,10 @@ def p_primary(p):
         p[0] = referenceExpression_record(p[1])
     elif p[1] == 'new':
         if len(p) ==5:
-            p[0] = newExpression_record(p[2],[])
+            p[0] = newExpression_record(p[2],[],p.lineno(1))
             #{'structure_type':'new' , 'id':p[2]}
         else:
-            p[0] = newExpression_record(p[2],[4])
+            p[0] = newExpression_record(p[2],[4],p.lineno(1))
             #{'structure_type':'new', 'id':p[2],'arguments':p[4]}
     elif p[1] =='(':
         p[0] = p[2]
@@ -408,10 +408,10 @@ def p_field_access(p):
     '''field_access : primary PERIOD ID
                     | ID'''
     if len(p) == 2:
-        p[0] = varExpression_record(p[1],None)
+        p[0] = varExpression_record(p[1],None,p.lineno(1))
         #{'Field name':p[1]}
     else:
-        p[0] = fieldAccessExpression_record(p[1],p[3])
+        p[0] = fieldAccessExpression_record(p[1],p[3],p.lineno(1))
         #{'Class name':p[1],'Field name':p[3]}
 
 
@@ -419,10 +419,10 @@ def p_method_invocation(p):
     '''method_invocation : field_access LPAREN RPAREN
                         | field_access LPAREN arguments RPAREN'''
     if len(p) == 4:
-        p[0] = methodCallExpression_record(p[1].base,p[1].field,[])
+        p[0] = methodCallExpression_record(p[1].base,p[1].field,[],p.lineno(1))
         #{'structure_type':'method invocation',**p[1]}
     else:
-        p[0] = methodCallExpression_record(p[1].base,p[1].field,p[3])
+        p[0] = methodCallExpression_record(p[1].base,p[1].field,p[3],p.lineno(1))
         #{'structure_type':'method invocation',**p[1], 'args':p[3]}
 
 
@@ -435,10 +435,10 @@ def p_expr(p):
     if len(p) ==2:
         p[0] = p[1]
     elif len(p) ==3:
-        p[0] = unaryExpression_record(p[1],p[2])
+        p[0] = unaryExpression_record(p[1],p[2],p.lineno(1))
         #{'structure_type':'unary expression','operator':p[1],'expression':p[2]}
     else:
-        p[0] = binaryExpression_record(p[1],p[2],p[3])
+        p[0] = binaryExpression_record(p[1],p[2],p[3],p.lineno(1))
         #{'structure_type':'binary expression','operator':p[2],'first expression':p[1],'second expression':p[3]}
 
 
@@ -449,13 +449,13 @@ def p_assign(p):
             | lhs MINUSMINUS
             | MINUSMINUS lhs'''
     if p[2] == '=':
-        p[0] = assignExpression_record(p[1],p[3])
+        p[0] = assignExpression_record(p[1],p[3],p.lineno(1))
         #{'structure_type':'assignment','assignment':(p[1],'=',p[3])}
     else:
         if(p[1] == '++' or p[1] =='--'):
-            p[0] = autoExpression_record(p[2],p[1],'pre')
+            p[0] = autoExpression_record(p[2],p[1],'pre',p.lineno(1))
         else:
-            p[0] = autoExpression_record(p[1],p[2],'post')
+            p[0] = autoExpression_record(p[1],p[2],'post',p.lineno(1))
         #{'structure_type':'auto expression','assignment':(p[1],p[2])}
 
 def p_arith_op(p):
@@ -485,7 +485,7 @@ def p_unary_op(p):
 def p_stmt_expr(p):
     '''stmt_expr : assign
                 | method_invocation'''
-    p[0] = expressionStatement_record(p[1]) 
+    p[0] = expressionStatement_record(p[1],p.lineno(1)) 
     #p[1]
 
 
@@ -493,7 +493,7 @@ def p_error(p):
     if not p:
         print("SYNTAX error due to EOF (possibly an incomplete body)")
     else:
-        print(f"SYNTAX error from '{p.value}' at line {newline_count}")
+        print(f"SYNTAX error from '{p.value}' at line {p.lineno}")
 
 bparser = yacc.yacc(start = "program")
 

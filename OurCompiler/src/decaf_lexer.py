@@ -7,7 +7,6 @@
 
 import ply.lex as lex
 
-newline_count = 0
 
 # List of token names
 tokens = [
@@ -45,7 +44,6 @@ tokens = [
     'STRINGCONST',
     'INTCONST',
     'ID',
-    'NEWLINE',
 ]
 
 reserved = {
@@ -167,11 +165,9 @@ def t_STRING(t):
     return str(t)
 
 
-def t_NEWLINE(t):
-    r'\n'
-    global newline_count
-    newline_count+=len(t.value)
-    pass
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno+=len(t.value)
 
 
 # Function for lexer to interpret and ignore comments

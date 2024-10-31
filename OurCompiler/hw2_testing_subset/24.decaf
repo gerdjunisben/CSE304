@@ -5,7 +5,7 @@ class Animal {
     {
         for(i =0;i<3;i++)
         {
-
+            int j;
         }
 
         while(i=3)
@@ -27,6 +27,11 @@ class Animal {
 
     }
 
+    void yap() ///SHOULD THROW AN ERROR
+    {
+        
+    }
+
 
 }
 class Monkey extends Animal{
@@ -35,6 +40,7 @@ class Monkey extends Animal{
 
     int eatBananas(int nanaCount)
     {
+        string treeName;
         if(nanaCount > monkeyStrength){
             monkeyStrength = nanaCount;
         }

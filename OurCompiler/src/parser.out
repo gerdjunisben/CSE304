@@ -5,7 +5,6 @@ Unused terminals:
     DECLARE
     DO
     LBRACKET
-    NEWLINE
     NUMBER
     RBRACKET
     STRING
@@ -155,7 +154,6 @@ LPAREN               : 32 33 34 35 36 37 46 47 48 49 67 68 69 78 79
 MINUS                : 91 103
 MINUSMINUS           : 88 89
 NEW                  : 68 69
-NEWLINE              : 
 NOT                  : 104
 NOTEQUALS            : 97
 NULL                 : 61
