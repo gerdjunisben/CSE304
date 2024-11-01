@@ -220,6 +220,32 @@ field_table = []
 constructor_table = []
 
 
+def createPrintRecurr(line):
+    
+    if line.__class__.__name__ == 'block_record':
+        output = "Block([\n"
+        for l in line.block:
+            if l == None:
+                break
+            output += createPrintRecurr(l)
+            output += ' , '
+        output += "])"
+        return output
+    elif line.__class__.__name__ == 'expressionStatement_record':
+        output = "Expr( "
+        output += createPrintRecurr(line.expression)
+        output += ")"
+        return output
+    elif line.__class__.__name__ == 'assignExpression_record':
+        return "Assign(" + createPrintRecurr(line.assignee) + ", " + createPrintRecurr(line.assigner) + ")"
+    elif line.__class__.__name__ == 'fieldAccessExpression_record':
+        return "Field-access(" + line.base.ref_type + ", " + str(line.field) + ")"
+    elif line.__class__.__name__ == 'const_record':
+        return "Constant (" + line.type +"-constant(" + str(line.value) + ")"
+    elif line.__class__.__name__ == 'newExpression_record':
+        return "New-object(" + line.base + ", " + str(line.args) + ")"
+    else:
+        return (line.__class__.__name__)
 
 #>>>>>>>>>>>>>>>>>>>>>Turn parse tree into needed classes<<<<<<<<<<<<<<<<<<<,,,
 def check(file):
@@ -241,6 +267,9 @@ def check(file):
         class_table.append(classes)
         for methods in classes.methods:
             method_table.append(methods)
+        for fields in classes.fields:
+            fields.className = classes.name
+            field_table.append(fields)
     #Check for duplicate classes
     class_set = set(class_table)
     if(len(class_set) != len(class_table)):
@@ -265,6 +294,7 @@ def check(file):
 
 
     #Shitty printer to make sure what I think is happening is happening, use for inspiration
+    '''
     if(prog):
         print(prog)
         for clazz in prog:
@@ -293,11 +323,13 @@ def check(file):
                 print(vars(field))
         
         return 1
-    return 0
+    return 0'''
 
-    # Real printer
+#>>>>>>>>>>>>>>>>>>>>print out of classes data structure<<<<<<<<<<<<<<<<<<
     if(prog):
         for clazz in class_table:
+            if clazz.name == 'In' or clazz.name == 'Out':
+                continue
             print("-------------------------------------------------------------------------")
             print("- Class Name: "+clazz.name)
             print("Superclass Name: "+str(clazz.superName))
@@ -325,7 +357,8 @@ def check(file):
                         for variable in constructor.variable_table:
                             print("VARIABLE "+str(variable.ID)+ ", "+str(variable.name)+", "+str(variable.kind)+", "+str(variable.type))
                     if(constructor.body):
-                        print("Constructor Body:\n"+str(constructor.body)) #NEEDS TO BE FIXE
+                        print("Constructor Body:\n" + createPrintRecurr(constructor.body)) #NEEDS TO BE FIXE
+                        
                         #FIX THE STATEMENT ABOVE
                     else:
                         print("Constructor Body")
@@ -366,5 +399,4 @@ if __name__ == "__main__":
 
 
 
-#>>>>>>>>>>>>>>>>>>>>print out of classes data structure<<<<<<<<<<<<<<<<<<
 

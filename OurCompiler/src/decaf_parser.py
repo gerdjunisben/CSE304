@@ -207,7 +207,7 @@ def p_method_decl(p):
     var_tab = []
     if p[2] == 'void':
         if len(p) == 7:
-            for statement in p[6]:
+            for statement in p[6].block:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
                     var_tab = var_tab + statement
                 if isinstance(statement,block_record):
@@ -216,7 +216,7 @@ def p_method_decl(p):
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Body': p[6]}
         else:
             var_tab = var_tab + p[5]
-            for statement in p[7]:
+            for statement in p[7].block:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
                     var_tab = var_tab + statement
                 if isinstance(statement,block_record):
@@ -225,7 +225,7 @@ def p_method_decl(p):
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Parameters': p[5], 'Body': p[7]}
     else:
         if len(p) == 7:
-            for statement in p[6]:
+            for statement in p[6].block:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
                     var_tab = var_tab + statement
                 if isinstance(statement,block_record):
@@ -234,7 +234,7 @@ def p_method_decl(p):
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3],   'Body': p[6]}
         else:
             var_tab = var_tab + p[5]
-            for statement in p[7]:
+            for statement in p[7].block:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
                     var_tab = var_tab + statement
                 if isinstance(statement,block_record):
@@ -249,7 +249,7 @@ def p_constructor_decl(p):
                         | modifier ID LPAREN formals RPAREN block'''
     if len(p) ==7:
         var_tab = p[4]
-        for statement in p[6]:
+        for statement in p[6].block:
             if isinstance(statement,list) and isinstance(statement[0],variable_record):
                 var_tab = var_tab + statement
             if isinstance(statement,block_record):
@@ -258,7 +258,7 @@ def p_constructor_decl(p):
         #p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
     else:
         var_tab = []
-        for statement in p[5]:
+        for statement in p[5].block:
             if isinstance(statement,list) and isinstance(statement[0],variable_record):
                 var_tab = var_tab + statement
             if isinstance(statement,block_record):
@@ -284,7 +284,13 @@ def p_formal_param(p):
 
 def p_block(p):
     '''block : LBRACE block_end RBRACE'''
-    p[0] = p[2]
+    var_tab = []
+    for statement in p[2]:
+        if isinstance(statement,list) and isinstance(statement[0],variable_record):
+            var_tab = var_tab + statement
+        if isinstance(statement,block_record):
+            statement.variable_table = statement.variable_table + var_tab
+    p[0] = block_record(p[2],var_tab,p.lineno(1))
 
 def p_block_end(p):
     '''block_end : stmt
@@ -377,7 +383,7 @@ def p_primary(p):
             | lhs
             | method_invocation'''
     if p[1] == 'this' or p[1]=='super':
-        p[0] = referenceExpression_record(p[1])
+        p[0] = referenceExpression_record(p[1],p.lineno(1))
     elif p[1] == 'new':
         if len(p) ==5:
             p[0] = newExpression_record(p[2],[],p.lineno(1))

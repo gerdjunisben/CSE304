@@ -27,10 +27,6 @@ class Animal {
 
     }
 
-    void yap() ///SHOULD THROW AN ERROR
-    {
-        
-    }
 
 
 }
