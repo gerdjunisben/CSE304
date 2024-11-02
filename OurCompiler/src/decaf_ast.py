@@ -19,12 +19,13 @@ import sys
 
 
 class class_record:
-    def __init__(self, name,superName,constructors,methods,fields,line):
+    def __init__(self, name,superName,constructors,methods,fields,body,line):
         self.name = name
         self.superName = superName
         self.constructors = constructors #Set of all constructors defined in class
         self.methods = methods #Set of all methods defined in class
         self.fields = fields #Set of all fields defind in class
+        self.body = body
         self.line = line
 
 class constructor_record:
@@ -203,7 +204,7 @@ class referenceExpression_record(expression_record):
 #<<<<<<<<<<<<<<<<<In>>>>>>>>>>>>>>>>>>>>
 scan_int = method_record("scan_int","In","public","static",None,"int",None,None,0)
 scan_float = method_record("scan_float","In","public","static",None,"float",None,None,0)
-In = class_record("In",None,None,[scan_int,scan_float],None,0)
+In = class_record("In",None,None,[scan_int,scan_float],None,[],0)
 
 
 #<<<<<<<<<<<<<<<<Out>>>>>>>>>>>>>>>>>>>>>>
@@ -211,7 +212,7 @@ t1_print = method_record("print","Out","public","static",[variable_record("i","f
 t2_print = method_record("print","Out","public","static",[variable_record("f","formal","float",0)],None,None,None,0)
 t3_print = method_record("print","Out","public","static",[variable_record("b","formal","boolean",0)],None,None,None,0)
 t4_print = method_record("print","Out","public","static",[variable_record("s","formal","string",0)],None,None,None,0)
-Out = class_record("Out",None,None,[t1_print,t2_print,t3_print,t4_print],None,0)
+Out = class_record("Out",None,None,[t1_print,t2_print,t3_print,t4_print],None,[],0)
 
 #>>>>>>>>>>>>>>>>>>>>>>data structures<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 class_table = [In,Out]
@@ -224,11 +225,14 @@ def createPrintRecurr(line):
     
     if line.__class__.__name__ == 'block_record':
         output = "Block([\n"
+        first = True
         for l in line.block:
             if l == None:
                 break
+            if not first:
+                output += ' , '
+                first = False
             output += createPrintRecurr(l)
-            output += ' , '
         output += "])"
         return output
     elif line.__class__.__name__ == 'expressionStatement_record':
@@ -236,16 +240,34 @@ def createPrintRecurr(line):
         output += createPrintRecurr(line.expression)
         output += ")"
         return output
+    elif line.__class__.__name__ == 'autoExpression_record':
+        return "Auto(" + createPrintRecurr(line.operand) + ", " + line.auto_type + ", " + line.tense + ")"
     elif line.__class__.__name__ == 'assignExpression_record':
         return "Assign(" + createPrintRecurr(line.assignee) + ", " + createPrintRecurr(line.assigner) + ")"
+    elif line.__class__.__name__ == 'binaryExpression_record':
+        return "Binary(" + line.operation +", " + createPrintRecurr(line.leftOperand) + ", " + createPrintRecurr(line.rightOperand) + ")"
     elif line.__class__.__name__ == 'fieldAccessExpression_record':
         return "Field-access(" + line.base.ref_type + ", " + str(line.field) + ")"
     elif line.__class__.__name__ == 'const_record':
         return "Constant (" + line.type +"-constant(" + str(line.value) + ")"
     elif line.__class__.__name__ == 'newExpression_record':
-        return "New-object(" + line.base + ", " + str(line.args) + ")"
+        return "New-object(" + line.base + ", [" + (", ".join(createPrintRecurr(e) for e in line.args) if len(line.args) != 0 else "") + "])"
+    elif line.__class__.__name__ == 'return_record':
+        if (line.return_val != None):
+            return "Return(" + createPrintRecurr(line.return_val) +  ")"
+        else:
+            return "Return( )"
+    elif line.__class__.__name__ == 'methodCallExpression_record':
+        return "Method-call(" + createPrintRecurr(line.base) + ", " + line.method_name + ", [" + (", ".join(createPrintRecurr(e) for e in line.args) if len(line.args) != 0 else "") + "])"
+    elif line.__class__.__name__ == 'varExpression_record':
+        return "Variable(" + str(line.id) + ")"
+    elif line.__class__.__name__ == 'referenceExpression_record':
+        return line.ref_type
     else:
         return (line.__class__.__name__)
+    
+
+
 
 #>>>>>>>>>>>>>>>>>>>>>Turn parse tree into needed classes<<<<<<<<<<<<<<<<<<<,,,
 def check(file):
@@ -261,7 +283,7 @@ def check(file):
     #     class_table.append(item)
 
     
-
+    
 
     for classes in prog:
         class_table.append(classes)
@@ -382,13 +404,14 @@ def check(file):
                         for variable in method.variable_table:
                             print("VARIABLE "+str(variable.ID)+ ", "+str(variable.name)+", "+str(variable.kind)+", "+str(variable.type))
                     if(method.body):
-                        print("Method Body:\n"+str(method.body)) #NEEDS TO BE FIXE
-                        #FIX THE STATEMENT ABOVE
+                        print("Method Body:\n" + createPrintRecurr(method.body)) #NEEDS TO BE FIXE
+                        
                     else:
                         print("Method Body")
 
 
 if __name__ == "__main__":
+    sys.argv.append("OurCompiler/hw2_testing_subset/25.decaf");
     if( len(sys.argv)<2):
         print("Too few args")
         sys.exit(1)

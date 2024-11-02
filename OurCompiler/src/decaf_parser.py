@@ -81,7 +81,7 @@ def p_class_decl(p):
                 methods = methods + [thing]
             elif isinstance(thing,list)  and isinstance(thing[0],field_record):
                 fields = fields + thing
-        p[0] = class_record(p[2],p[4],constructors,methods,fields,p.lineno(1))
+        p[0] = class_record(p[2],p[4],constructors,methods,fields,p[6],p.lineno(1))
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':p[4], 'body':p[6]}
     else:
         for thing in p[4]:
@@ -92,7 +92,7 @@ def p_class_decl(p):
                 methods = methods + [thing]
             elif isinstance(thing,list)  and isinstance(thing[0],field_record):
                 fields = fields + thing
-        p[0] = class_record(p[2],None,constructors,methods,fields,p.lineno(1))
+        p[0] = class_record(p[2],None,constructors,methods,fields,p[4],p.lineno(1))
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':None,'body':p[4]}
 
 def p_class_body_decl(p):
