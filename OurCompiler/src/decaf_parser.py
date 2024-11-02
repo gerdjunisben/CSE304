@@ -36,6 +36,13 @@ from decaf_ast import methodCallExpression_record
 from decaf_ast import newExpression_record
 from decaf_ast import referenceExpression_record
 
+
+
+
+from decaf_scoper import SymbolTable
+
+global_symbol_table = SymbolTable()
+
 precedence = (
     ('left','EQUALS'),
     ('left','OR'),
@@ -47,8 +54,7 @@ precedence = (
     ('right','MINUS','NOT'),
 )
 
-class_records = []
-latest_class = None
+
 
 def p_empty(p):
     '''empty :'''
@@ -81,6 +87,8 @@ def p_class_decl(p):
                 methods = methods + [thing]
             elif isinstance(thing,list)  and isinstance(thing[0],field_record):
                 fields = fields + thing
+                for field in thing:
+                    global_symbol_table.add({'name':field.name,'id':field.ID})
         p[0] = class_record(p[2],p[4],constructors,methods,fields,p[6],p.lineno(1))
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':p[4], 'body':p[6]}
     else:
@@ -92,6 +100,8 @@ def p_class_decl(p):
                 methods = methods + [thing]
             elif isinstance(thing,list)  and isinstance(thing[0],field_record):
                 fields = fields + thing
+                for field in thing:
+                    global_symbol_table.add({'name':field.name,'id':field.ID})
         p[0] = class_record(p[2],None,constructors,methods,fields,p[4],p.lineno(1))
         #p[0] = {'structure_type':'class','Class name':p[2], 'Super class name':None,'body':p[4]}
 
@@ -205,67 +215,93 @@ def p_method_decl(p):
     elif(p[1] != None and p[1]['Applicability'] != None):
         app = p[1]['Applicability']
     var_tab = []
+    global_symbol_table.enterScope(p[3])
     if p[2] == 'void':
         if len(p) == 7:
             for statement in p[6].block:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
-                    var_tab = var_tab + statement
-                if isinstance(statement,block_record):
-                    statement.variable_table = statement.variable_table + var_tab
+                    for var in statement:
+                        global_symbol_table.add({'name':var.name,'id':var.ID})
+                #if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                    #var_tab = var_tab + statement
+                #if isinstance(statement,block_record):
+                    #statement.variable_table = statement.variable_table + var_tab
             p[0] = method_record(p[3],None,vis,app,[],'void',var_tab,p[6],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Body': p[6]}
         else:
             var_tab = var_tab + p[5]
+            for formal in p[5]:
+                global_symbol_table.add({'name':formal.name,'id':formal.ID})
             for statement in p[7].block:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
-                    var_tab = var_tab + statement
-                if isinstance(statement,block_record):
-                    statement.variable_table = statement.variable_table + var_tab
+                    for var in statement:
+                        global_symbol_table.add({'name':var.name,'id':var.ID})
+                #if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                    #var_tab = var_tab + statement
+               # if isinstance(statement,block_record):
+                    #statement.variable_table = statement.variable_table + var_tab
             p[0] = method_record(p[3],None,vis,app,p[5],'void',var_tab,p[7],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Parameters': p[5], 'Body': p[7]}
     else:
         if len(p) == 7:
             for statement in p[6].block:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
-                    var_tab = var_tab + statement
-                if isinstance(statement,block_record):
-                    statement.variable_table = statement.variable_table + var_tab
+                    for var in statement:
+                        global_symbol_table.add({'name':var.name,'id':var.ID})
+                #if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                    #var_tab = var_tab + statement
+                #if isinstance(statement,block_record):
+                    #statement.variable_table = statement.variable_table + var_tab
             p[0] = method_record(p[3],None,vis,app,[],p[2],var_tab,p[6],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3],   'Body': p[6]}
         else:
             var_tab = var_tab + p[5]
+            for formal in p[5]:
+                global_symbol_table.add({'name':formal.name,'id':formal.ID})
             for statement in p[7].block:
                 if isinstance(statement,list) and isinstance(statement[0],variable_record):
-                    var_tab = var_tab + statement
-                if isinstance(statement,block_record):
-                    statement.variable_table = statement.variable_table + var_tab
+                    for var in statement:
+                        global_symbol_table.add({'name':var.name,'id':var.ID})
+                #if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                    #var_tab = var_tab + statement
+                #if isinstance(statement,block_record):
+                    #statement.variable_table = statement.variable_table + var_tab
             p[0] = method_record(p[3],None,vis,app,p[5],p[2],var_tab,p[7],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3], 'Parameters': p[5],  'Body': p[7]}
-
+    global_symbol_table.exitScope()
 
 
 def p_constructor_decl(p):
     '''constructor_decl : modifier ID LPAREN RPAREN block
                         | modifier ID LPAREN formals RPAREN block'''
+    global_symbol_table.enterScope(p[2])
     if len(p) ==7:
         var_tab = p[4]
+        for formal in p[4]:
+                global_symbol_table.add({'name':formal.name,'id':formal.ID})
         for statement in p[6].block:
             if isinstance(statement,list) and isinstance(statement[0],variable_record):
-                var_tab = var_tab + statement
-            if isinstance(statement,block_record):
-                statement.variable_table = statement.variable_table + var_tab
+                    for var in statement:
+                        global_symbol_table.add({'name':var.name,'id':var.ID})
+            #if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                #var_tab = var_tab + statement
+            #if isinstance(statement,block_record):
+                #statement.variable_table = statement.variable_table + var_tab
         p[0] = constructor_record(p[1],p[4],var_tab,p[6],p.lineno(2))
         #p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
     else:
         var_tab = []
         for statement in p[5].block:
             if isinstance(statement,list) and isinstance(statement[0],variable_record):
-                var_tab = var_tab + statement
-            if isinstance(statement,block_record):
-                statement.variable_table = statement.variable_table + var_tab
+                    for var in statement:
+                        global_symbol_table.add({'name':var.name,'id':var.ID})
+            #if isinstance(statement,list) and isinstance(statement[0],variable_record):
+                #ar_tab = var_tab + statement
+            #if isinstance(statement,block_record):
+                #statement.variable_table = statement.variable_table + var_tab
         p[0] = constructor_record(p[1],[],var_tab,p[5],p.lineno(2))
         #p[0] = {'structure_type':'constructor','Visibility':p[1], 'Class name':p[2], 'Parameters':None, 'body':p[5]}
-
+    global_symbol_table.exitScope()
 
 def p_formals(p):
     '''formals : formals COMMA formal_param 
@@ -285,12 +321,17 @@ def p_formal_param(p):
 def p_block(p):
     '''block : LBRACE block_end RBRACE'''
     var_tab = []
+    global_symbol_table.enterNewScope()
     for statement in p[2]:
         if isinstance(statement,list) and isinstance(statement[0],variable_record):
-            var_tab = var_tab + statement
-        if isinstance(statement,block_record):
-            statement.variable_table = statement.variable_table + var_tab
+                    for var in statement:
+                        global_symbol_table.add({'name':var.name,'id':var.ID})
+        #if isinstance(statement,list) and isinstance(statement[0],variable_record):
+            #var_tab = var_tab + statement
+        #if isinstance(statement,block_record):
+            #statement.variable_table = statement.variable_table + var_tab
     p[0] = block_record(p[2],var_tab,p.lineno(1))
+    global_symbol_table.exitScope()
 
 def p_block_end(p):
     '''block_end : stmt
@@ -414,7 +455,11 @@ def p_field_access(p):
     '''field_access : primary PERIOD ID
                     | ID'''
     if len(p) == 2:
-        p[0] = varExpression_record(p[1],None,p.lineno(1))
+        id = global_symbol_table.lookUp(p[1])
+        if(id == -1):
+            p[0] = 'p_error'
+        else:
+            p[0] = varExpression_record(p[1],id[1],p.lineno(1))
         #{'Field name':p[1]}
     else:
         p[0] = fieldAccessExpression_record(p[1],p[3],p.lineno(1))
@@ -508,6 +553,8 @@ bparser = yacc.yacc(start = "program")
 def parse(data, debug=False):
     bparser.error = 0
     p = bparser.parse(data, debug=debug)
+    for name,scope in global_symbol_table.globalTable.minis.items():
+        print(name + " : " + str(vars(scope)))
     if bparser.error:
         return None
     return p
