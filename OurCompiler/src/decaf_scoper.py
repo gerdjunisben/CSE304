@@ -5,19 +5,23 @@ class SymbolTable:
         self.id = 0
 
     def enterScope(self,mini):
+        print("IN")
         self.cur.minis[mini] = MiniTable(self.cur)
         self.cur = self.cur.minis[mini]
 
     def enterNewScope(self):
+        print("IN")
         self.cur.minis[str(self.id) + "mini"] = MiniTable(self.cur)
         self.cur = self.cur.minis[str(self.id) + "mini"]
         self.id +=1
 
     def exitScope(self):
+        print("OUT")
         if self.cur.upper is not None:
             self.cur = self.cur.upper
     
     def lookUp(self,var):
+        print("LOOPUP")
         temp_cur = self.cur
         while temp_cur is not None:
             if var in temp_cur.names:
@@ -26,6 +30,7 @@ class SymbolTable:
         return -1;
 
     def add(self,var):
+        print("ADD")
         self.cur.names[var['name']] = var['id']
 
         

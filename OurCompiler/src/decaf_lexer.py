@@ -7,6 +7,10 @@
 
 import ply.lex as lex
 
+from decaf_scoper import SymbolTable
+
+global_symbol_table = SymbolTable()
+
 
 # List of token names
 tokens = [
@@ -94,10 +98,8 @@ t_TERMINALS = r'[A-Z]'
 t_SYMBOLS   = r'[a-z]'
 t_LPAREN    = r'\('
 t_LBRACKET  = r'\['
-t_LBRACE    = r'\{'
 t_RPAREN    = r'\)'
 t_RBRACKET  = r'\]'
-t_RBRACE    = r'\}'
 t_COMMA     = r','
 t_SEMICOLON = r';'
 t_PERIOD    = r'.'
@@ -126,13 +128,23 @@ t_VOID      = r'void'
 t_WHILE     = r'while'
 
 
+def t_LBRACE(t):
+    r'\{'
+    global_symbol_table.enterNewScope()
+    return t
 
+def t_RBRACE(t):
+    r'\}'
+    global_symbol_table.exitScope()
+    return t
 
 # Function for ID regex
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     if t.value in reserved:
         t.type = reserved[t.value]
+    else:
+        global_symbol_table.add({'name':t.value,'id':0})
     return t
 
 # Function for FLOATCONST regex

@@ -281,7 +281,7 @@ def check(file):
     
     # for item in prog:
     #     class_table.append(item)
-
+    print(prog)
     
     
 
