@@ -135,7 +135,6 @@ def t_LBRACE(t):
 
 def t_RBRACE(t):
     r'\}'
-    global_symbol_table.exitScope()
     return t
 
 # Function for ID regex
@@ -143,8 +142,8 @@ def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     if t.value in reserved:
         t.type = reserved[t.value]
-    else:
-        global_symbol_table.add({'name':t.value,'id':0})
+    #else:
+        #global_symbol_table.add({'name':t.value,'id':0})
     return t
 
 # Function for FLOATCONST regex

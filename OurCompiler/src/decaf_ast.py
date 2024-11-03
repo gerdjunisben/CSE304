@@ -9,7 +9,7 @@
 import decaf_lexer as lexer
 import decaf_parser as parser
 import sys
-
+from decaf_lexer import global_symbol_table
 
 
 
@@ -30,13 +30,14 @@ class class_record:
 
 class constructor_record:
     constructID = 0
-    def __init__(self, visibility, parameters, variable_table, body,line):
+    def __init__(self,className, visibility, parameters, variable_table, body,line):
         self.visibility = visibility
         self.parameters = parameters #Sequence of parameters, each parameter is a variable in variable table
         self.variable_table = variable_table #Table of all variables
         self.body = body #Instance of statement record
         self.line = line
         self.ID = constructor_record.constructID
+        global_symbol_table.setIDConst(className,self.ID)
         constructor_record.constructID += 1
 
 class method_record:
@@ -52,6 +53,7 @@ class method_record:
         self.body = body
         self.line = line
         self.ID = method_record.methodID
+        global_symbol_table.setID(name,self.ID)
         method_record.methodID +=1
 
 class field_record:
@@ -64,6 +66,7 @@ class field_record:
         self.type = type
         self.line = line
         self.ID = field_record.fieldID
+        global_symbol_table.setID(name,self.ID)
         field_record.fieldID += 1
 
 
@@ -76,6 +79,7 @@ class variable_record:
         self.type = type
         self.line = line
         self.ID = variable_record.varID
+        global_symbol_table.recordParam(name,self.ID)
         variable_record.varID +=1
 
 
@@ -123,6 +127,8 @@ class block_record(statement_record):
         super().__init__(line) 
         self.block = block
         self.variable_table = variable_table
+        global_symbol_table.addParams()
+        global_symbol_table.exitScope()
 
 class controlFlow_record(statement_record):
     def __init__(self,type,line):

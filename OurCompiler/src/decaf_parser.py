@@ -264,7 +264,7 @@ def p_constructor_decl(p):
                 #var_tab = var_tab + statement
             #if isinstance(statement,block_record):
                 #statement.variable_table = statement.variable_table + var_tab
-        p[0] = constructor_record(p[1],p[4],var_tab,p[6],p.lineno(2))
+        p[0] = constructor_record(p[2],p[1],p[4],var_tab,p[6],p.lineno(2))
         #p[0] = {'structure_type':'constructor','Visibility':p[1],  'Class name':p[2], 'Parameters':p[4],'body':p[6]}
     else:
         var_tab = []
@@ -274,7 +274,7 @@ def p_constructor_decl(p):
                 #ar_tab = var_tab + statement
             #if isinstance(statement,block_record):
                 #statement.variable_table = statement.variable_table + var_tab
-        p[0] = constructor_record(p[1],[],var_tab,p[5],p.lineno(2))
+        p[0] = constructor_record(p[2],p[1],[],var_tab,p[5],p.lineno(2))
         #p[0] = {'structure_type':'constructor','Visibility':p[1], 'Class name':p[2], 'Parameters':None, 'body':p[5]}
 
 
@@ -290,7 +290,7 @@ def p_formals(p):
 
 def p_formal_param(p):
     '''formal_param : type variable'''
-    p[0] = variable_record(p[2],'formal',p[1],p.lineno(1))
+    p[0] = variable_record(p[2][0],'formal',p[1],p.lineno(1))
 
 
 def p_block(p):
@@ -427,11 +427,11 @@ def p_field_access(p):
     '''field_access : primary PERIOD ID
                     | ID'''
     if len(p) == 2:
-        #id = global_symbol_table.lookUp(p[1])
-        #if(id == -1):
-            #p[0] = 'p_error'
-        #else:
-            p[0] = varExpression_record(p[1],-1,p.lineno(1))
+        id = global_symbol_table.lookUp(p[1])
+        if(id == -1):
+            p[0] = 'p_error'
+        else:
+            p[0] = varExpression_record(p[1],id,p.lineno(1))
         #{'Field name':p[1]}
     else:
         p[0] = fieldAccessExpression_record(p[1],p[3],p.lineno(1))
@@ -521,12 +521,14 @@ def p_error(p):
 bparser = yacc.yacc(start = "program")
 
 
-
 def parse(data, debug=False):
     bparser.error = 0
     p = bparser.parse(data, debug=debug)
     for name,scope in global_symbol_table.globalTable.minis.items():
         print(name + " : " + str(vars(scope)))
+        if(len(scope.minis)>0):
+            for name2,scope2 in scope.minis.items():
+                print(name2 + " : " + str(vars(scope2)))
     if bparser.error:
         return None
     return p

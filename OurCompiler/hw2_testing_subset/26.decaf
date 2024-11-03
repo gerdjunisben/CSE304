@@ -1,12 +1,27 @@
 class A {
     int x;
-    A () {
-        int y;
-        if(x == 1) {
-            int z;
-            this.x = 2;
-        }
+    int y;
+
+    A()
+    {
+
     }
+
+    A(int p)
+    {
+
+    }
+
+    void addIt (int q) {
+        int z;
+        y++;
+    }
+
+    void subIt (){
+        int y;
+        y--;
+    }
+
 }
 
 class B{
