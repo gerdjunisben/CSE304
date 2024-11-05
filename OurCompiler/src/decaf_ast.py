@@ -27,6 +27,9 @@ class class_record:
         self.fields = fields #Set of all fields defind in class
         self.body = body
         self.line = line
+        global_symbol_table.addParams()
+        #print(str(line) + "," + str(global_symbol_table.cur.names))
+        global_symbol_table.exitScope()
 
 class constructor_record:
     constructID = 0
@@ -34,10 +37,13 @@ class constructor_record:
         self.visibility = visibility
         self.parameters = parameters #Sequence of parameters, each parameter is a variable in variable table
         self.variable_table = variable_table #Table of all variables
+        if body!=None:
+            self.variable_table+= body.variable_table
         self.body = body #Instance of statement record
         self.line = line
         self.ID = constructor_record.constructID
-        global_symbol_table.setIDConst(className,self.ID)
+        global_symbol_table.setIDConst(className,(self,self.ID))
+
         constructor_record.constructID += 1
 
 class method_record:
@@ -49,11 +55,13 @@ class method_record:
         self.applicability = applicability
         self.parameters = parameters
         self.returnType = returnType
-        self.variable_table = variable_table
+        self.variable_table = variable_table 
+        if body!=None:
+            self.variable_table+= body.variable_table
         self.body = body
         self.line = line
         self.ID = method_record.methodID
-        global_symbol_table.setID(name,self.ID)
+        global_symbol_table.setID(name,(self,self.ID))
         method_record.methodID +=1
 
 class field_record:
@@ -66,7 +74,7 @@ class field_record:
         self.type = type
         self.line = line
         self.ID = field_record.fieldID
-        global_symbol_table.setID(name,self.ID)
+        global_symbol_table.setID(name,(self,self.ID))
         field_record.fieldID += 1
 
 
@@ -79,7 +87,7 @@ class variable_record:
         self.type = type
         self.line = line
         self.ID = variable_record.varID
-        global_symbol_table.recordParam(name,self.ID)
+        global_symbol_table.recordParam(name,(self,self.ID))
         variable_record.varID +=1
 
 
@@ -126,8 +134,9 @@ class block_record(statement_record):
     def __init__(self,block,variable_table,line):
         super().__init__(line) 
         self.block = block
-        self.variable_table = variable_table
         global_symbol_table.addParams()
+        self.variable_table = variable_table + global_symbol_table.returnAllVars()
+        #print(self.variable_table)
         global_symbol_table.exitScope()
 
 class controlFlow_record(statement_record):
@@ -269,6 +278,8 @@ def createPrintRecurr(line):
         return "Variable(" + str(line.id) + ")"
     elif line.__class__.__name__ == 'referenceExpression_record':
         return line.ref_type
+    elif line.__class__.__name__ == 'list':
+        return ""
     else:
         return (line.__class__.__name__)
     
@@ -287,7 +298,7 @@ def check(file):
     
     # for item in prog:
     #     class_table.append(item)
-    # print(prog)
+    #print(prog)
     
     
 
@@ -332,7 +343,7 @@ def check(file):
             for const in clazz.constructors:
                 print(vars(const))
                 print("==========BODY========")
-                for line in const.body:
+                for line in const.body.block:
                     print(type(line))
                     if line!=None:
                         print(vars(line))
@@ -341,7 +352,7 @@ def check(file):
             for method in clazz.methods:
                 print(vars(method))
                 print("==========BODY========")
-                for line in const.body:
+                for line in const.body.block:
                     print(type(line))
                     if line!=None:
                         print(vars(line))
@@ -349,9 +360,8 @@ def check(file):
             print(">>>>>>>>>>>>>fields")
             for field in clazz.fields:
                 print(vars(field))
-        
-        return 1
-    return 0'''
+        '''
+
 
 #>>>>>>>>>>>>>>>>>>>>print out of classes data structure<<<<<<<<<<<<<<<<<<
     if(prog):

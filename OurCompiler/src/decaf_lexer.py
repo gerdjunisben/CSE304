@@ -130,6 +130,7 @@ t_WHILE     = r'while'
 
 def t_LBRACE(t):
     r'\{'
+    global_symbol_table.addParams()
     global_symbol_table.enterNewScope()
     return t
 

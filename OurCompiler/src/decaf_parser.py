@@ -220,7 +220,6 @@ def p_method_decl(p):
             p[0] = method_record(p[3],None,vis,app,[],'void',var_tab,p[6],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Method name': p[3], 'Body': p[6]}
         else:
-            var_tab = var_tab + p[5]
             #for statement in p[7].block:
 
                 #if isinstance(statement,list) and isinstance(statement[0],variable_record):
@@ -239,7 +238,6 @@ def p_method_decl(p):
             p[0] = method_record(p[3],None,vis,app,[],p[2],var_tab,p[6],p.lineno(3))
             #{'structure_type':'method','Visibility/Applicability': p[1], 'Return type':p[2],'Method name': p[3],   'Body': p[6]}
         else:
-            var_tab = var_tab + p[5]
             
             #for statement in p[7].block:
                 
