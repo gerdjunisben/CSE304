@@ -287,7 +287,7 @@ def check(file):
     
     # for item in prog:
     #     class_table.append(item)
-    print(prog)
+    # print(prog)
     
     
 
@@ -360,15 +360,30 @@ def check(file):
                 continue
             print("-------------------------------------------------------------------------")
             print("- Class Name: "+clazz.name)
-            print("Superclass Name: "+str(clazz.superName))
+            if(clazz.superName == None):
+                print("Superclass Name:")
+            else:
+                print("Superclass Name: "+str(clazz.superName))
             print("Fields:")
             if(clazz.fields):
                 for field in clazz.fields:
-                    print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", "+str(field.visibility)+", "+str(field.applicability)+", "+str(field.type))
+                    if(field.applicability == None):
+                        if(field.visibility == None):
+                            print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", public, instance, "+str(field.type))
+                        else:
+                            print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", "+str(field.visibility)+", instance, "+str(field.type))
+                    else:
+                        if(field.visibility == None):
+                            print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", public, "+str(field.applicability)+", "+str(field.type))
+                        else:
+                            print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", "+str(field.visibility)+", "+str(field.applicability)+", "+str(field.type))
             print("Constructors:")
             if(clazz.constructors):
                 for constructor in clazz.constructors:
-                    print("CONSTRUCTOR: "+str(constructor.ID)+", "+str(constructor.visibility))
+                    if(constructor.visibility == None):
+                        print("CONSTRUCTOR: "+str(constructor.ID)+", public")
+                    else:
+                        print("CONSTRUCTOR: "+str(constructor.ID)+", "+str(constructor.visibility))
                     if(constructor.parameters):
                         print("Constructor parameters: ",end="")
                         idx = 0
@@ -393,7 +408,16 @@ def check(file):
             print("Methods:")
             if(clazz.methods):
                 for method in clazz.methods:
-                    print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", "+str(method.visibility)+", "+str(method.applicability)+", "+str(method.returnType))
+                    if(method.visibility == None):
+                        if(method.applicability == None):
+                            print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", public, instance, "+str(method.returnType))
+                        else:
+                            print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", public, "+str(method.applicability)+", "+str(method.returnType))
+                    else:
+                        if(method.applicability == None):
+                            print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", "+str(method.visibility)+", instance, "+str(method.returnType))
+                        else:
+                            print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", "+str(method.visibility)+", "+str(method.applicability)+", "+str(method.returnType))
                     if(method.parameters):
                         print("Method parameters: ",end="")
                         idx = 0
@@ -417,7 +441,7 @@ def check(file):
 
 
 if __name__ == "__main__":
-    sys.argv.append("OurCompiler/hw2_testing_subset/25.decaf");
+    sys.argv.append("OurCompiler/hw2_testing_subset/25.decaf")
     if( len(sys.argv)<2):
         print("Too few args")
         sys.exit(1)
