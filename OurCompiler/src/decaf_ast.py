@@ -419,11 +419,9 @@ def check(file):
                         for variable in constructor.variable_table:
                             print("VARIABLE "+str(variable.ID)+ ", "+str(variable.name)+", "+str(variable.kind)+", "+str(variable.type))
                     if(constructor.body):
-                        print("Constructor Body:\n" + createPrintRecurr(constructor.body)) #NEEDS TO BE FIXE
-                        
-                        #FIX THE STATEMENT ABOVE
+                        print("Constructor Body:\n" + createPrintRecurr(constructor.body)) #NEEDS TO BE FIXED
                     else:
-                        print("Constructor Body")
+                        print("Constructor Body:")
             print("Methods:")
             if(clazz.methods):
                 for method in clazz.methods:
@@ -456,7 +454,7 @@ def check(file):
                         print("Method Body:\n" + createPrintRecurr(method.body)) #NEEDS TO BE FIXE
                         
                     else:
-                        print("Method Body")
+                        print("Method Body:")
 
 
 if __name__ == "__main__":
