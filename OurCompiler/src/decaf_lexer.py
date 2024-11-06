@@ -130,7 +130,7 @@ t_WHILE     = r'while'
 
 def t_LBRACE(t):
     r'\{'
-    global_symbol_table.addParams()
+    #global_symbol_table.addParams()
     global_symbol_table.enterNewScope()
     return t
 
@@ -143,8 +143,6 @@ def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     if t.value in reserved:
         t.type = reserved[t.value]
-    #else:
-        #global_symbol_table.add({'name':t.value,'id':0})
     return t
 
 # Function for FLOATCONST regex

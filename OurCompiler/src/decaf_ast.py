@@ -29,7 +29,7 @@ class class_record:
         self.line = line
         global_symbol_table.addParams()
         #print(str(line) + "," + str(global_symbol_table.cur.names))
-        global_symbol_table.exitScope()
+        #self.miniName = global_symbol_table.exitScope()
 
 class constructor_record:
     constructID = 0
@@ -137,7 +137,7 @@ class block_record(statement_record):
         global_symbol_table.addParams()
         self.variable_table = variable_table + global_symbol_table.returnAllVars()
         #print(self.variable_table)
-        global_symbol_table.exitScope()
+        self.miniName = global_symbol_table.exitScope()
 
 class controlFlow_record(statement_record):
     def __init__(self,type,line):
@@ -193,6 +193,7 @@ class fieldAccessExpression_record(expression_record):
         super().__init__(line) 
         self.base = base
         self.field = field
+        global_symbol_table.fieldLookUp(base,field)
 
 class methodCallExpression_record(expression_record):
     def __init__(self,base,method_name,args,line):  
@@ -217,21 +218,29 @@ class referenceExpression_record(expression_record):
 
 
 #<<<<<<<<<<<<<<<<<In>>>>>>>>>>>>>>>>>>>>
+'''
+global_symbol_table.enterNewScope()
 scan_int = method_record("scan_int","In","public","static",None,"int",None,None,0)
 scan_float = method_record("scan_float","In","public","static",None,"float",None,None,0)
 In = class_record("In",None,None,[scan_int,scan_float],None,[],0)
-
+'''
 
 #<<<<<<<<<<<<<<<<Out>>>>>>>>>>>>>>>>>>>>>>
+'''
+global_symbol_table.enterNewScope()
 t1_print = method_record("print","Out","public","static",[variable_record("i","formal","int",0)],None,None,None,0)
 t2_print = method_record("print","Out","public","static",[variable_record("f","formal","float",0)],None,None,None,0)
 t3_print = method_record("print","Out","public","static",[variable_record("b","formal","boolean",0)],None,None,None,0)
 t4_print = method_record("print","Out","public","static",[variable_record("s","formal","string",0)],None,None,None,0)
 Out = class_record("Out",None,None,[t1_print,t2_print,t3_print,t4_print],None,[],0)
-
+'''
 #>>>>>>>>>>>>>>>>>>>>>>data structures<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+'''
 class_table = [In,Out]
 method_table = [scan_int,scan_float,t1_print,t2_print,t3_print,t4_print]
+'''
+class_table = []
+method_table = []
 field_table = []
 constructor_table = []
 

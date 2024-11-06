@@ -7,11 +7,6 @@ class A {
 
     }
 
-    A(int p)
-    {
-
-    }
-
     void addIt (int q) {
         int z;
         y++;
@@ -25,5 +20,16 @@ class A {
 }
 
 class B{
+    public A s;
+
+    void boogie (){
+        
+    }
+
+    B()
+    {
+        //this.boogie();
+        s.subIt();
+    }
 
 }
