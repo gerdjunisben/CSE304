@@ -30,6 +30,7 @@ class class_record:
         global_symbol_table.addParams()
         #print(str(line) + "," + str(global_symbol_table.cur.names))
         self.miniName = global_symbol_table.exitScope()
+        global_symbol_table.setID(name,-1)
 
 class constructor_record:
     constructID = 1
@@ -307,12 +308,12 @@ def check(file):
 
 
     prog = parser.parse(data, debug=False)
+    if not isinstance(prog,list):
+        prog = [prog]
     
     # for item in prog:
     #     class_table.append(item)
     #print(prog)
-    
-    
 
     for classes in prog:
         class_table.append(classes)
@@ -378,6 +379,7 @@ def check(file):
 
 
 #>>>>>>>>>>>>>>>>>>>>print out of classes data structure<<<<<<<<<<<<<<<<<<
+    
     if(prog):
         for clazz in class_table:
             if clazz.name == 'In' or clazz.name == 'Out':
