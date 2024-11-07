@@ -316,6 +316,8 @@ def check(file):
 
     for classes in prog:
         class_table.append(classes)
+        for constructor in classes.constructors:
+            constructor_table.append(constructor)
         for methods in classes.methods:
             method_table.append(methods)
         for fields in classes.fields:
