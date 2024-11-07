@@ -53,33 +53,33 @@ class SymbolTable:
             self.fieldLookUp(l[0],l[1])
 
     def fieldLookUp(self,base,name):   
-        print(name) 
-        print(base)
+        #print(name) 
+        #print(base)
         if base.__class__.__name__ == 'referenceExpression_record':
             
             if base.ref_type == 'super':
                 #handle super
-                print("FIELD LOOKUP " + str(base) + ", " + str(name))
+                #print("FIELD LOOKUP " + str(base) + ", " + str(name))
                 self.addParams()
                 res = None
                 temp_cur = self.cur
                 while temp_cur is not None:
                     if temp_cur.upper != None:
                         clazz = False
-                        print(temp_cur.upper.minis)
+                        #print(temp_cur.upper.minis)
                         for n in temp_cur.upper.names.values():
-                            print(n)
+                            #print(n)
                             if (n[0].__class__.__name__ == 'class_record'):
                                     clazz = True
                                     break
                         if clazz:
-                            print(vars(temp_cur))
-                            print(vars(temp_cur.upper))
+                            #print(vars(temp_cur))
+                            #print(vars(temp_cur.upper))
                             supName = None
                             for k,v in temp_cur.upper.names.items():
                                 if(temp_cur.upper.minis[v[0].miniName] == temp_cur):
-                                    print(v[0])
-                                    print(v[0].superName)
+                                    #print(v[0])
+                                    #print(v[0].superName)
                                     supName = v[0].superName
                                     break
                             if(supName == None):
@@ -88,7 +88,7 @@ class SymbolTable:
                             supMini = None
                             for k,v in temp_cur.upper.names.items():
                                 if(k == supName):
-                                    print(v[0])
+                                    #print(v[0])
                                     supMini = v[0].miniName
                                     break
                             if(supMini == None):
@@ -99,7 +99,7 @@ class SymbolTable:
                                     return v[1]
                             return -1
                             
-                            return -1
+                        return -1
                     temp_cur = temp_cur.upper
                 return -1
                         
@@ -109,20 +109,20 @@ class SymbolTable:
             else:
 
                 #handle this
-                print("FIELD LOOKUP " + str(base) + ", " + str(name))
+                #print("FIELD LOOKUP " + str(base) + ", " + str(name))
                 self.addParams()
                 res = None
                 temp_cur = self.cur
                 while temp_cur is not None:
                     if temp_cur.upper != None:
                         clazz = False
-                        print(temp_cur.upper.minis)
+                        #print(temp_cur.upper.minis)
                         for n in temp_cur.upper.names.values():
-                            print(n)
+                            #print(n)
                             if (n[0].__class__.__name__ == 'class_record'):
                                 clazz = True
                         if clazz == True:
-                            print("we found it " + str(vars(temp_cur)))
+                            #print("we found it " + str(vars(temp_cur)))
                             for k,v in temp_cur.names.items():
                                 if k == name :
                                     return v[1]
@@ -187,6 +187,15 @@ class SymbolTable:
         for param in self.params:
             self.setID(param[0],param[1])
         self.params = []
+
+    def removeParam(self,name):
+        print(str(self.params))
+        print(name)
+        for i in range(0, len(self.params)):
+            if self.params[i][0] == name:
+                del self.params[i]
+                break
+        print(str(self.params))
 
     def returnAllVars(self):
         vars = []

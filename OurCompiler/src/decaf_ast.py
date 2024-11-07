@@ -30,10 +30,9 @@ class class_record:
         global_symbol_table.addParams()
         #print(str(line) + "," + str(global_symbol_table.cur.names))
         self.miniName = global_symbol_table.exitScope()
-        global_symbol_table.setID(name,(self,-1))
 
 class constructor_record:
-    constructID = 0
+    constructID = 1
     def __init__(self,className, visibility, parameters, variable_table, body,line):
         self.visibility = visibility
         self.parameters = parameters #Sequence of parameters, each parameter is a variable in variable table
@@ -48,7 +47,7 @@ class constructor_record:
         constructor_record.constructID += 1
 
 class method_record:
-    methodID =0
+    methodID =1
     def __init__(self,name,className,visibility,applicability,parameters,returnType,variable_table,body,line):
         self.name = name
         self.className = className
@@ -66,7 +65,7 @@ class method_record:
         method_record.methodID +=1
 
 class field_record:
-    fieldID = 0
+    fieldID = 1
     def __init__(self, name, className, visibility, applicability, type,line):
         self.name = name
         self.className = className
@@ -76,12 +75,13 @@ class field_record:
         self.line = line
         self.ID = field_record.fieldID
         global_symbol_table.setID(name,(self,self.ID))
+        global_symbol_table.removeParam(name)
         field_record.fieldID += 1
 
 
 
 class variable_record:
-    varID = 0
+    varID = 1
     def __init__(self,name,kind,type,line):
         self.name = name
         self.kind = kind  #local or formal <3
@@ -139,6 +139,7 @@ class block_record(statement_record):
         self.variable_table = variable_table + global_symbol_table.returnAllVars()
         #print(self.variable_table)
         self.miniName = global_symbol_table.exitScope()
+        variable_record.varID=1
 
 class controlFlow_record(statement_record):
     def __init__(self,type,line):
