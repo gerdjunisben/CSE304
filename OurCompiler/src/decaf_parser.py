@@ -481,6 +481,9 @@ bparser = yacc.yacc(start = "program")
 def parse(data, debug=False):
     bparser.error = 0
     p = bparser.parse(data, debug=debug)
+    global_symbol_table.executeFieldLookUps()
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<")
+    print(vars(global_symbol_table.globalTable))
     for name,scope in global_symbol_table.globalTable.minis.items():
         print(name + " : " + str(vars(scope)))
         if(len(scope.minis)>0):

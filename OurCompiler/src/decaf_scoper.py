@@ -8,6 +8,7 @@ class SymbolTable:
         self.cur = self.globalTable
         self.id = 0
         self.params = []
+        self.lookUps = []
 
 
 
@@ -43,11 +44,19 @@ class SymbolTable:
             temp_cur = temp_cur.upper
         return -1;
 
-    def fieldLookUp(self,base,name):    
+    def addFieldLookUp(self,base,name):
+        self.lookUps += [(base,name,self.cur)]
+
+    def executeFieldLookUps(self):
+        for l in self.lookUps:
+            self.cur = l[2]
+            self.fieldLookUp(l[0],l[1])
+
+    def fieldLookUp(self,base,name):   
+        print(name) 
         print(base)
         if base.__class__.__name__ == 'referenceExpression_record':
-            return -1
-        '''
+            
             if base.ref_type == 'super':
                 #handle super
                 print("FIELD LOOKUP " + str(base) + ", " + str(name))
@@ -56,13 +65,42 @@ class SymbolTable:
                 temp_cur = self.cur
                 while temp_cur is not None:
                     if temp_cur.upper != None:
-                        clazzes = []
-                        for name in temp_cur.upper.minis.values():
-                            if (name[0].__class__.__name__ == 'class_record'):
-                                clazz += name
-                        if len(clazzes)>0:
-                            print("CLAZZES " + clazzes)
-                            #for clazz in clazzes
+                        clazz = False
+                        print(temp_cur.upper.minis)
+                        for n in temp_cur.upper.names.values():
+                            print(n)
+                            if (n[0].__class__.__name__ == 'class_record'):
+                                    clazz = True
+                                    break
+                        if clazz:
+                            print(vars(temp_cur))
+                            print(vars(temp_cur.upper))
+                            supName = None
+                            for k,v in temp_cur.upper.names.items():
+                                if(temp_cur.upper.minis[v[0].miniName] == temp_cur):
+                                    print(v[0])
+                                    print(v[0].superName)
+                                    supName = v[0].superName
+                                    break
+                            if(supName == None):
+                                return -1
+                            
+                            supMini = None
+                            for k,v in temp_cur.upper.names.items():
+                                if(k == supName):
+                                    print(v[0])
+                                    supMini = v[0].miniName
+                                    break
+                            if(supMini == None):
+                                return -1
+
+                            for k,v in temp_cur.upper.minis[supMini].names.items():
+                                if k == name :
+                                    return v[1]
+                            return -1
+                            
+                            return -1
+                    temp_cur = temp_cur.upper
                 return -1
                         
 
@@ -79,20 +117,20 @@ class SymbolTable:
                     if temp_cur.upper != None:
                         clazz = False
                         print(temp_cur.upper.minis)
-                        for name in temp_cur.upper.names.values():
-                            print(name)
-                            if (name[0].__class__.__name__ == 'class_record'):
+                        for n in temp_cur.upper.names.values():
+                            print(n)
+                            if (n[0].__class__.__name__ == 'class_record'):
                                 clazz = True
                         if clazz == True:
-                            print("we found it " + str(vars(temp_cur.minis)))
-                            for k,v in temp_cur.minis.items():
-                                if k == name:
+                            print("we found it " + str(vars(temp_cur)))
+                            for k,v in temp_cur.names.items():
+                                if k == name :
                                     return v[1]
                             return -1
                     temp_cur = temp_cur.upper
                 return -1
 
-        '''     
+          
                 
 
 

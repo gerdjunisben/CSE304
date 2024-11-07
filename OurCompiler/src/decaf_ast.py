@@ -29,7 +29,8 @@ class class_record:
         self.line = line
         global_symbol_table.addParams()
         #print(str(line) + "," + str(global_symbol_table.cur.names))
-        #self.miniName = global_symbol_table.exitScope()
+        self.miniName = global_symbol_table.exitScope()
+        global_symbol_table.setID(name,(self,-1))
 
 class constructor_record:
     constructID = 0
@@ -193,7 +194,8 @@ class fieldAccessExpression_record(expression_record):
         super().__init__(line) 
         self.base = base
         self.field = field
-        global_symbol_table.fieldLookUp(base,field)
+        #returns -1 if invalid
+        global_symbol_table.addFieldLookUp(base,field)
 
 class methodCallExpression_record(expression_record):
     def __init__(self,base,method_name,args,line):  
@@ -458,7 +460,7 @@ def check(file):
 
 
 if __name__ == "__main__":
-    sys.argv.append("OurCompiler/hw2_testing_subset/25.decaf")
+    sys.argv.append("OurCompiler/hw2_testing_subset/26.decaf")
     if( len(sys.argv)<2):
         print("Too few args")
         sys.exit(1)

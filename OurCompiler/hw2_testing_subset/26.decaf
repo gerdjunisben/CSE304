@@ -1,35 +1,18 @@
 class A {
-    int x;
-    int y;
-
-    A()
-    {
-
-    }
-
-    void addIt (int q) {
-        int z;
-        y++;
-    }
-
-    void subIt (){
-        int y;
-        y--;
-    }
+    void boogie (){
+        
+    }  
 
 }
 
-class B{
-    public A s;
+class B extends A{
 
-    void boogie (){
-        
-    }
+
+   
 
     B()
     {
-        //this.boogie();
-        s.subIt();
+        super.boogie();
     }
 
 }
