@@ -482,6 +482,7 @@ def parse(data, debug=False):
     bparser.error = 0
     p = bparser.parse(data, debug=debug)
     global_symbol_table.executeFieldLookUps()
+    '''
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<")
     print(vars(global_symbol_table.globalTable))
     for name,scope in global_symbol_table.globalTable.minis.items():
@@ -489,6 +490,7 @@ def parse(data, debug=False):
         if(len(scope.minis)>0):
             for name2,scope2 in scope.minis.items():
                 print(name2 + " : " + str(vars(scope2)))
+    '''
     if bparser.error:
         return None
     return p
