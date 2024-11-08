@@ -263,6 +263,38 @@ def createPrintRecurr(line):
             output += createPrintRecurr(l)
         output += "])"
         return output
+    elif line.__class__.__name__ == 'if_record':
+        output = "If([\n"
+        output += "Condition(\n"+createPrintRecurr(line.conditional)
+        output += ")\n"
+        output += "Then(\n"+createPrintRecurr(line.then_block)
+        output += ")\n"
+        output += "Else(\n"+createPrintRecurr(line.else_block)
+        output += ")\n])"
+        return output
+    elif line.__class__.__name__ == 'while_record':
+        output += "While([\n"
+        output += "Condition(\n"+createPrintRecurr(line.conditional)
+        output += ")\n"
+        output += createPrintRecurr(line.loop_block)
+        output += "\n])"
+        return output
+    elif line.__class__.__name__ == 'for_record':
+        output += "For([\n"
+        output += "Initializer(\n"+createPrintRecurr(line.initializer)
+        output += ")\n"
+        output += "Condition(\n"+createPrintRecurr(line.conditional)
+        output += ")\n"
+        output += "UpdateExpr(\n"+createPrintRecurr(line.update_expr)
+        output += ")\n"
+        output += createPrintRecurr(line.loop_body)
+        output += "\n])"
+        return output
+    elif line.__class__.__name__ == 'return_record':
+        output += "Return(\n"
+        output += createPrintRecurr(line.return_val)
+        output += ")"
+        return output
     elif line.__class__.__name__ == 'expressionStatement_record':
         output = "Expr( "
         output += createPrintRecurr(line.expression)
