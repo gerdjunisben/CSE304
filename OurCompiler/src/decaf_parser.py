@@ -384,11 +384,7 @@ def p_field_access(p):
     '''field_access : primary PERIOD ID
                     | ID'''
     if len(p) == 2:
-        id = global_symbol_table.lookUp(p[1])
-        if(id == -1):
-            p[0] = 'p_error'
-        else:
-            p[0] = varExpression_record(p[1],id[1],p.lineno(1))
+        p[0] = varExpression_record(p[1],p.lineno(1))
         #{'Field name':p[1]}
     else:
         p[0] = fieldAccessExpression_record(p[1],p[3],p.lineno(1))
@@ -481,7 +477,6 @@ bparser = yacc.yacc(start = "program")
 def parse(data, debug=False):
     bparser.error = 0
     p = bparser.parse(data, debug=debug)
-    global_symbol_table.executeFieldLookUps()
     '''
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<")
     print(vars(global_symbol_table.globalTable))

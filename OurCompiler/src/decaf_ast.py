@@ -160,10 +160,10 @@ class const_record(expression_record):
         self.value = value
 
 class varExpression_record(expression_record):
-    def __init__(self,name,id,line):   #ID needs to be filled in after parsing
+    def __init__(self,name,line):   #ID needs to be filled in after parsing
         super().__init__(line)  
         self.name = name
-        self.id = id
+        self.id = global_symbol_table.lookUp(name)[1]
 
 class unaryExpression_record(expression_record):
     def __init__(self,operation,operand,line):  
@@ -342,6 +342,8 @@ def check(file):
     prog = parser.parse(data, debug=False)
     if not isinstance(prog,list):
         prog = [prog]
+
+    global_symbol_table.executeFieldLookUps()
     
     # for item in prog:
     #     class_table.append(item)
