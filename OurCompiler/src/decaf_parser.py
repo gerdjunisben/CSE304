@@ -223,12 +223,10 @@ def p_constructor_decl(p):
                         | modifier ID LPAREN formals RPAREN block'''
 
     if len(p) ==7:
-        var_tab = p[4]
 
-        p[0] = constructor_record(p[2],p[1],p[4],var_tab,p[6],p.lineno(2))
+        p[0] = constructor_record(p[2],p[1],p[4],[],p[6],p.lineno(2))
     else:
-        var_tab = []
-        p[0] = constructor_record(p[2],p[1],[],var_tab,p[5],p.lineno(2))
+        p[0] = constructor_record(p[2],p[1],[],[],p[5],p.lineno(2))
 
 
 def p_formals(p):
@@ -335,7 +333,7 @@ def p_primary(p):
         if len(p) ==5:
             p[0] = newExpression_record(p[2],[],p.lineno(1))
         else:
-            p[0] = newExpression_record(p[2],[4],p.lineno(1))
+            p[0] = newExpression_record(p[2],p[4],p.lineno(1))
     elif p[1] =='(':
         p[0] = p[2]
     else:

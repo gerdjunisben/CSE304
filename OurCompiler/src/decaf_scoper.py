@@ -70,7 +70,7 @@ class SymbolTable:
             self.cur = l[2]
             if(len(l)<5):
                 l+=([],)
-            self.fieldLookUp(l[0],l[1],l[4])
+            l[3].id = self.fieldLookUp(l[0],l[1],l[4])
 
     def fieldLookUp(self,base,name,args):   
         #print(name) 
@@ -85,15 +85,16 @@ class SymbolTable:
                 #print(k + " " + str(v))
                 if k == name and v[0].visibility != None:
                     if (v[0].__class__.__name__ =='method_record' or v[0].__class__.__name__ =='constructor_record') and v[0].applicability == None :
-                        valid = True
-                        for i in range(0,len(v[0].parameters)):
-                            if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
-                                valid=False
-                                break
-                        if(valid):
-                            print("Found self/super:" + name + " in " + base)
-                            return v[1]
-                        return -1
+                        if(len(args) == len(v[0].parameters)):
+                            valid = True
+                            for i in range(0,len(v[0].parameters)):
+                                if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
+                                    valid=False
+                                    break
+                            if(valid):
+                                print("Found self/super:" + name + " in " + base)
+                                return v[1]
+                            return -1
                     print("Found self/super:" + name + " in " + base)
                     return v[1]
             return -1;
@@ -106,15 +107,16 @@ class SymbolTable:
                 if k == name and isinstance(v,list): #go through the constructor list
                     for c in v:
                         if  (c[0].__class__.__name__ =='method_record' or c[0].__class__.__name__ =='constructor_record') :
-                            valid = True
-                            for i in range(0,len(c[0].parameters)):
-                                if not typeChecker.validTypes(c[0].parameters[i].type,args[i].type):
-                                    valid=False
-                                    break
-                            if(valid):
-                                print("Found constructor:" + name + " in " + base)
-                                return c[1]
-                            return -1
+                            if(len(args) == len(c[0].parameters)):
+                                valid = True
+                                for i in range(0,len(c[0].parameters)):
+                                    if not typeChecker.validTypes(c[0].parameters[i].type,args[i].type):
+                                        valid=False
+                                        break
+                                if(valid):
+                                    print("Found constructor:" + name + " in " + base)
+                                    return c[1]
+                                return -1
             return -1;
         #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>handle class literal
         elif(base.name in typeChecker.types):
@@ -125,15 +127,16 @@ class SymbolTable:
                 #print(k + " " + str(v))
                 if k == name and v[0].visibility != None:
                     if (v[0].__class__.__name__ =='method_record' or v[0].__class__.__name__ =='constructor_record') and v[0].applicability != None:
-                        valid = True
-                        for i in range(0,len(v[0].parameters)):
-                            if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
-                                valid=False
-                                break
-                        if(valid):
-                            print("Found literal:" + name + " in " + base)
-                            return v[1]
-                        return -1
+                        if(len(args) == len(v[0].parameters)):
+                            valid = True
+                            for i in range(0,len(v[0].parameters)):
+                                if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
+                                    valid=False
+                                    break
+                            if(valid):
+                                print("Found literal:" + name + " in " + base)
+                                return v[1]
+                            return -1
                     print("Found literal:" + name + " in " + base)
                     return v[1]
             return -1;

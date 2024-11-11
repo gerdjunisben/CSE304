@@ -145,17 +145,20 @@ def t_ID(t):
         t.type = reserved[t.value]
     return t
 
+# Function for INTCONST regex
+def t_INTCONST(t):
+    r'\d+'
+    t.value = int(t.value)
+    return t
+
+
 # Function for FLOATCONST regex
 def t_FLOATCONST(t):
     r'(-)?\d+(\.)?\d+'
     t.value = float(t.value)
     return t
 
-# Function for INTCONST regex
-def t_INTCONST(t):
-    r'\d+'
-    t.value = int(t.value)
-    return t
+
 
 # Function for STRINGCONST regex
 def t_STRINGCONST(t):

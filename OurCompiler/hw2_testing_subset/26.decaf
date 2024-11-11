@@ -1,7 +1,7 @@
 class A {
     public int funkScore;
 
-    public A(){
+    public A(int b){
 
      }
 
@@ -18,7 +18,7 @@ class B extends A{
 
     B()
     {
-        s = new A();
+        s = new A(10);
         s.boogie();
         A.funkScore = 0;
     }

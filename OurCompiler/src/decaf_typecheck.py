@@ -23,10 +23,10 @@ class typeTree:
     
     def validTypes(self,main,sub):
         
-        while(self.types[main].parent!=None):
-            if(main == sub):
+        while(self.types[sub].parent!=None):
+            if(main == sub or sub =='null'):
                 return True
-            main = self.types[main].parent
+            sub = self.types[sub].parent
 
         return False
 
