@@ -1,18 +1,22 @@
 class A {
-    void boogie (){
+     A(){
+
+     }
+
+    public void boogie (int a){
         
-    }  
+    } 
 
 }
 
 class B extends A{
 
-
+    public A s;
    
 
     B()
     {
-        super.boogie();
+        super.boogie(10);
     }
 
 }

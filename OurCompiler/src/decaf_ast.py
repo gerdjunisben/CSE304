@@ -10,6 +10,7 @@ import decaf_lexer as lexer
 import decaf_parser as parser
 import sys
 from decaf_lexer import global_symbol_table
+from decaf_typecheck import typeChecker
 
 
 
@@ -30,7 +31,13 @@ class class_record:
         global_symbol_table.addParams()
         #print(str(line) + "," + str(global_symbol_table.cur.names))
         self.miniName = global_symbol_table.exitScope()
+        if(superName==None):
+            typeChecker.addUsertype(name,'object',self.miniName)
+        else:
+            typeChecker.addUsertype(name,superName,self.miniName)
+        global_symbol_table.setRefs(self.name)
         global_symbol_table.setID(name,-1)
+        global_symbol_table.executeFieldLookUps()
 
 class constructor_record:
     constructID = 1
@@ -163,7 +170,10 @@ class varExpression_record(expression_record):
     def __init__(self,name,line):   #ID needs to be filled in after parsing
         super().__init__(line)  
         self.name = name
-        self.id = global_symbol_table.lookUp(name)[1]
+        lookup = global_symbol_table.lookUp(name)
+        print(lookup)
+        self.id = lookup[1]
+        self.type = lookup[0]
 
 class unaryExpression_record(expression_record):
     def __init__(self,operation,operand,line):  
@@ -197,25 +207,32 @@ class fieldAccessExpression_record(expression_record):
         self.base = base
         self.field = field
         #returns -1 if invalid
-        global_symbol_table.addFieldLookUp(base,field)
+        global_symbol_table.addFieldLookUp(base,field,self)
 
 class methodCallExpression_record(expression_record):
-    def __init__(self,base,method_name,args,line):  
+    def __init__(self,fieldAccess,args,line):  
         super().__init__(line) 
-        self.base = base
-        self.method_name = method_name
+        self.base = fieldAccess.base
+        self.method_name = fieldAccess.field
+        if(not isinstance(args,list)):
+            args = [args]
         self.args = args
+        global_symbol_table.addArgs(fieldAccess,args)
 
 class newExpression_record(expression_record):
     def __init__(self,base,args,line):  
         super().__init__(line) 
         self.base = base
         self.args = args
+        global_symbol_table.addFieldLookUp(base,base,self)
+        global_symbol_table.addArgs(self,args)
 
 class referenceExpression_record(expression_record):
     def __init__(self,ref_type,line):  
         super().__init__(line) 
         self.ref_type = ref_type
+        self.className = None
+        global_symbol_table.addRef(self)
 
 
 #>>>>>>>>>>>>>>>>>>>>>>make base library stuffs<<<<<<<<<<<<<<<<<<<
@@ -340,11 +357,10 @@ def check(file):
 
 
     prog = parser.parse(data, debug=False)
-    if not isinstance(prog,list):
-        prog = [prog]
-
-    global_symbol_table.executeFieldLookUps()
-    
+    if not isinstance(prog,tuple):
+        prog = (prog,)
+    for i in typeChecker.types.values():
+        print(vars(i))
     # for item in prog:
     #     class_table.append(item)
     #print(prog)

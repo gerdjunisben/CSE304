@@ -1,6 +1,5 @@
 
-
-
+from decaf_typecheck import typeChecker
 
 class SymbolTable:
     def __init__(self):
@@ -9,8 +8,18 @@ class SymbolTable:
         self.id = 0
         self.params = []
         self.lookUps = []
+        self.refs = []
 
+    def addRef(self,reference):
+        self.refs += [reference]
 
+    def setRefs(self,className):
+        for r in self.refs:
+            if r.ref_type == 'this':
+                r.className = className
+            else:
+                r.className = typeChecker.types[className].parent
+        self.refs = []
 
     def enterScope(self,mini):
         #print("IN")
@@ -30,138 +39,107 @@ class SymbolTable:
             self.cur = self.cur.upper
             for key, value in self.cur.minis.items():
                 if value == temp:
-                    return key 
+                    return value 
         return None
     
     def lookUp(self,var):
-        #print("LOOKUP " + var)
+        print("LOOKUP " + var)
         self.addParams()
+        if(var in typeChecker.types):
+            return (var,var)
         temp_cur = self.cur
         while temp_cur is not None:
             #print(temp_cur.names)
+            print(temp_cur.names)
             if var in temp_cur.names:
                 return temp_cur.names[var]
             temp_cur = temp_cur.upper
         return -1;
 
-    def addFieldLookUp(self,base,name):
-        self.lookUps += [(base,name,self.cur)]
+    def addArgs(self,thing,args):
+        for i in range(0,len(self.lookUps)):
+            if self.lookUps[i][3] == thing:
+                self.lookUps[i]+= (args,)
+                break
+
+    def addFieldLookUp(self,base,name,thing):
+        self.lookUps += [(base,name,self.cur,thing)]
 
     def executeFieldLookUps(self):
         for l in self.lookUps:
             self.cur = l[2]
-            self.fieldLookUp(l[0],l[1])
+            if(len(l)<5):
+                l+=([],)
+            self.fieldLookUp(l[0],l[1],l[4])
 
-    def fieldLookUp(self,base,name):   
+    def fieldLookUp(self,base,name,args):   
         #print(name) 
         #print(base)
-        if base.__class__.__name__ == 'referenceExpression_record':
-            
-            if base.ref_type == 'super':
-                #handle super
-                #print("FIELD LOOKUP " + str(base) + ", " + str(name))
-                self.addParams()
-                res = None
-                temp_cur = self.cur
-                while temp_cur is not None:
-                    if temp_cur.upper != None:
-                        clazz = False
-                        #print(temp_cur.upper.minis)
-                        for n in temp_cur.upper.names.values():
-                            #print(n)
-                            if (n[0].__class__.__name__ == 'class_record'):
-                                    clazz = True
-                                    break
-                        if clazz:
-                            #print(vars(temp_cur))
-                            #print(vars(temp_cur.upper))
-                            supName = None
-                            for k,v in temp_cur.upper.names.items():
-                                if(temp_cur.upper.minis[v[0].miniName] == temp_cur):
-                                    #print(v[0])
-                                    #print(v[0].superName)
-                                    supName = v[0].superName
-                                    break
-                            if(supName == None):
-                                return -1
-                            
-                            supMini = None
-                            for k,v in temp_cur.upper.names.items():
-                                if(k == supName):
-                                    #print(v[0])
-                                    supMini = v[0].miniName
-                                    break
-                            if(supMini == None):
-                                return -1
-
-                            for k,v in temp_cur.upper.minis[supMini].names.items():
-                                if k == name :
-                                    return v[1]
-                            return -1
-                            
-                        return -1
-                    temp_cur = temp_cur.upper
-                return -1
-                        
-
-
-
-            else:
-
-                #handle this
-                #print("FIELD LOOKUP " + str(base) + ", " + str(name))
-                self.addParams()
-                res = None
-                temp_cur = self.cur
-                while temp_cur is not None:
-                    if temp_cur.upper != None:
-                        clazz = False
-                        #print(temp_cur.upper.minis)
-                        for n in temp_cur.upper.names.values():
-                            #print(n)
-                            if (n[0].__class__.__name__ == 'class_record'):
-                                clazz = True
-                        if clazz == True:
-                            #print("we found it " + str(vars(temp_cur)))
-                            for k,v in temp_cur.names.items():
-                                if k == name :
-                                    return v[1]
-                            return -1
-                    temp_cur = temp_cur.upper
-                return -1
-
-          
-                
-
-
-
-
-        #This part is normal look up
-        base = base.name
-        print("FIELD LOOKUP " + str(base) + ", " + str(name))
         self.addParams()
-        res = None
-        temp_cur = self.cur
-        while temp_cur is not None:
-            print(temp_cur.names)
-            print(temp_cur.names.keys())
-            if base in temp_cur.names.keys():
-                print(temp_cur.names[base][0])
-                if temp_cur.names[base][0].__class__.__name__ == 'variable_record':
-                    base = temp_cur.names[base][0].type
-                    print("New base " + base)
-                else:
-                    res = temp_cur.names[base][0]
-                    print("Found the base " + str(res))
-                    break
-            temp_cur = temp_cur.upper
-        if res !=None:
-            print(str(temp_cur.minis))
-            for k,v in temp_cur.minis.items():
-                if k == name:
+        #handle self and super
+        if base.__class__.__name__ == 'referenceExpression_record':
+            base = base.className
+            if(typeChecker.types[base].miniTable == None):
+                return -1
+            for k,v in typeChecker.types[base].miniTable.names.items():
+                #print(k + " " + str(v))
+                if k == name and v[0].visibility != None and v[0].applicability == None:
+                    if v[0].__class__.__name__ =='method_record' or v[0].__class__.__name__ =='constructor_record' :
+                        valid = True
+                        for i in range(0,len(v[0].parameters)):
+                            if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
+                                valid=False
+                                break
+                        if(valid):
+                            print("Found " + name + " in " + base)
+                            return v[1]
+                    print("Found " + name + " in " + base)
                     return v[1]
-        print("FIELD LOOKUP")
-        return -1
+            return -1;
+        #handle class literal
+        elif(base.name in typeChecker.types):
+            base = base.name
+            if(typeChecker.types[base].miniTable == None):
+                return -1
+            for k,v in typeChecker.types[base].miniTable.names.items():
+                #print(k + " " + str(v))
+                if k == name and v[0].visibility != None and v[0].applicability != None:
+                    if v[0].__class__.__name__ =='method_record' or v[0].__class__.__name__ =='constructor_record' :
+                        valid = True
+                        for i in range(0,len(v[0].parameters)):
+                            if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
+                                valid=False
+                                break
+                        if(valid):
+                            print("Found " + name + " in " + base)
+                            return v[1]
+                    print("Found " + name + " in " + base)
+                    return v[1]
+            return -1;
+        else: #handle instance
+            base = base.type.type
+            if(typeChecker.types[base].miniTable == None):
+                return -1
+            for k,v in typeChecker.types[base].miniTable.names.items():
+                #print(k + " " + str(v))
+                if k == name and v[0].visibility != None and v[0].applicability == None:
+                    if v[0].__class__.__name__ =='method_record' or v[0].__class__.__name__ =='constructor_record' :
+                        valid = True
+                        for i in range(0,len(v[0].parameters)):
+                            if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
+                                valid=False
+                                break
+                        if(valid):
+                            print("Found " + name + " in " + base)
+                            return v[1]
+                    print("Found " + name + " in " + base)
+                    return v[1]
+            return -1;
+
+
+
+
+        
 
     def add(self,var):
         #print("ADD")
