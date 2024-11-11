@@ -171,7 +171,7 @@ class varExpression_record(expression_record):
         super().__init__(line)  
         self.name = name
         lookup = global_symbol_table.lookUp(name)
-        print(lookup)
+        #print(lookup)
         self.id = lookup[1]
         self.type = lookup[0]
 
@@ -324,7 +324,7 @@ def createPrintRecurr(line):
     elif line.__class__.__name__ == 'binaryExpression_record':
         return "Binary(" + line.operation +", " + createPrintRecurr(line.leftOperand) + ", " + createPrintRecurr(line.rightOperand) + ")"
     elif line.__class__.__name__ == 'fieldAccessExpression_record':
-        return "Field-access(" + line.base.ref_type + ", " + str(line.field) + ")"
+        return "Field-access(" + line.base.name + ", " + str(line.field) + ")"
     elif line.__class__.__name__ == 'const_record':
         return "Constant (" + line.type +"-constant(" + str(line.value) + ")"
     elif line.__class__.__name__ == 'newExpression_record':
