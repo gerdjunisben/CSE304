@@ -330,7 +330,7 @@ def createPrintRecurr(line):
     elif line.__class__.__name__ == 'binaryExpression_record':
         return "Binary(" + line.operation +", " + createPrintRecurr(line.leftOperand) + ", " + createPrintRecurr(line.rightOperand) + ")"
     elif line.__class__.__name__ == 'fieldAccessExpression_record':
-        return "Field-access(" + line.base.name + ", " + str(line.field) + ")"
+        return "Field-access(" + createPrintRecurr(line.base) + ", " + str(line.field) + ")"
     elif line.__class__.__name__ == 'const_record':
         return "Constant (" + line.type +"-constant(" + str(line.value) + ")"
     elif line.__class__.__name__ == 'newExpression_record':

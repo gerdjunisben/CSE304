@@ -72,7 +72,12 @@ class SymbolTable:
                 l+=([],)
             temp = self.fieldLookUp(l[0],l[1],l[4])
             l[3].id = temp[1]
-            l[3].type = temp[0].type
+            if temp[0].__class__.__name__ == 'method_record':
+                l[3].type = temp[0].returnType
+            elif temp[0].__class__.__name__ == 'field_record':
+                l[3].type = temp[0].type
+            else:
+                l[3].type = l[1]
 
     def fieldLookUp(self,base,name,args):   
         #print(name) 
@@ -108,7 +113,7 @@ class SymbolTable:
                 #print(k + " " + str(v))
                 if k == name and isinstance(v,list): #go through the constructor list
                     for c in v:
-                        if  (c[0].__class__.__name__ =='method_record' or c[0].__class__.__name__ =='constructor_record') :
+                        if  ( c[0].__class__.__name__ =='constructor_record') :
                             if(len(args) == len(c[0].parameters)):
                                 valid = True
                                 for i in range(0,len(c[0].parameters)):

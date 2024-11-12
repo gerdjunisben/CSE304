@@ -1,11 +1,11 @@
 class A {
-    public static int funkScore;
+    public static float funkScore;
 
-    public A(int b){
+    public A(){
 
      }
 
-    public void boogie (int a){
+    public int boogie (int a){
         
     } 
 
@@ -18,7 +18,7 @@ class B extends A{
 
     B()
     {
-        A.funkScore++;
+        this.s = new A();
     }
 
 }
