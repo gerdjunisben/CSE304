@@ -451,19 +451,19 @@ def check(file):
                 for field in clazz.fields:
                     if(field.applicability == None):
                         if(field.visibility == None):
-                            print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", public, instance, "+str(field.type))
+                            print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", private, instance, "+str(field.type))
                         else:
                             print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", "+str(field.visibility)+", instance, "+str(field.type))
                     else:
                         if(field.visibility == None):
-                            print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", public, "+str(field.applicability)+", "+str(field.type))
+                            print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", private, "+str(field.applicability)+", "+str(field.type))
                         else:
                             print("FIELD "+str(field.ID)+", "+str(field.name)+", "+str(field.className)+", "+str(field.visibility)+", "+str(field.applicability)+", "+str(field.type))
             print("Constructors:")
             if(clazz.constructors):
                 for constructor in clazz.constructors:
                     if(constructor.visibility == None):
-                        print("CONSTRUCTOR: "+str(constructor.ID)+", public")
+                        print("CONSTRUCTOR: "+str(constructor.ID)+", private")
                     else:
                         print("CONSTRUCTOR: "+str(constructor.ID)+", "+str(constructor.visibility))
                     if(constructor.parameters):
@@ -490,9 +490,9 @@ def check(file):
                 for method in clazz.methods:
                     if(method.visibility == None):
                         if(method.applicability == None):
-                            print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", public, instance, "+str(method.returnType))
+                            print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", private, instance, "+str(method.returnType))
                         else:
-                            print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", public, "+str(method.applicability)+", "+str(method.returnType))
+                            print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", private, "+str(method.applicability)+", "+str(method.returnType))
                     else:
                         if(method.applicability == None):
                             print("METHOD: "+str(method.ID)+", "+method.name+", "+method.className+", "+str(method.visibility)+", instance, "+str(method.returnType))
