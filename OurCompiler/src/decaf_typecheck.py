@@ -29,6 +29,13 @@ class typeTree:
             sub = self.types[sub].parent
 
         return False
+    
+    def checkValid(self,thing,types):
+        if(thing.__class__.__name__ == 'varExpression_record'):
+            thing = thing.type
+        if(thing.type in types):
+            return thing.type
+        return None
 
 
 

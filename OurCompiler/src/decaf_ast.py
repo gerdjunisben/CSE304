@@ -197,6 +197,12 @@ class assignExpression_record(expression_record):
 class autoExpression_record(expression_record):
     def __init__(self,operand,auto_type,tense,line):  
         super().__init__(line) 
+        global_symbol_table.executeFieldLookUps()
+        res = typeChecker.checkValid(operand,{'int','float'})
+        if(res != None):
+            self.type = res
+        else:
+            self.type = 'error'
         self.operand = operand
         self.auto_type = auto_type
         self.tense = tense

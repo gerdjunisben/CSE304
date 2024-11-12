@@ -70,7 +70,9 @@ class SymbolTable:
             self.cur = l[2]
             if(len(l)<5):
                 l+=([],)
-            l[3].id = self.fieldLookUp(l[0],l[1],l[4])
+            temp = self.fieldLookUp(l[0],l[1],l[4])
+            l[3].id = temp[1]
+            l[3].type = temp[0].type
 
     def fieldLookUp(self,base,name,args):   
         #print(name) 
@@ -93,10 +95,10 @@ class SymbolTable:
                                     break
                             if(valid):
                                 print("Found self/super:" + name + " in " + base)
-                                return v[1]
+                                return v
                             return -1
                     print("Found self/super:" + name + " in " + base)
-                    return v[1]
+                    return v
             return -1;
         #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>handle new
         elif(isinstance(base,str) and base in typeChecker.types):
@@ -115,7 +117,7 @@ class SymbolTable:
                                         break
                                 if(valid):
                                     print("Found constructor:" + name + " in " + base)
-                                    return c[1]
+                                    return c
                                 return -1
             return -1;
         #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>handle class literal
@@ -135,10 +137,10 @@ class SymbolTable:
                                     break
                             if(valid):
                                 print("Found literal:" + name + " in " + base)
-                                return v[1]
+                                return v
                             return -1
                     print("Found literal:" + name + " in " + base)
-                    return v[1]
+                    return v
             return -1;
         else: #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>handle instance
             base = base.type.type
@@ -156,10 +158,10 @@ class SymbolTable:
                                     break
                             if(valid):
                                 print("Found instance:" + name + " in " + base)
-                                return v[1]
+                                return v
                             return -1
                     print("Found instance:" + name + " in " + base)
-                    return v[1]
+                    return v
             return -1;
 
 
