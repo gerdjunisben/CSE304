@@ -38,6 +38,7 @@ class class_record:
         global_symbol_table.setRefs(self.name)
         global_symbol_table.setID(name,-1)
         global_symbol_table.executeFieldLookUps()
+        typeChecker.executeQueue()
 
 class constructor_record:
     constructID = 1
@@ -173,13 +174,17 @@ class varExpression_record(expression_record):
         lookup = global_symbol_table.lookUp(name)
         #print(lookup)
         self.id = lookup[1]
-        self.type = lookup[0]
+        self.type = lookup[0].type
 
 class unaryExpression_record(expression_record):
     def __init__(self,operation,operand,line):  
         super().__init__(line) 
         self.operand = operand
         self.operation = operation
+        if(operation == '!'):
+            typeChecker.addValidTypes(operand,{'boolean'},self)
+        else:
+            typeChecker.addValidTypes(operand,{'int','float'},self)
 
 class binaryExpression_record(expression_record):
     def __init__(self,leftOperand,operation,rightOperand,line): 
@@ -187,22 +192,27 @@ class binaryExpression_record(expression_record):
         self.leftOperand = leftOperand
         self.operation = operation
         self.rightOperand = rightOperand
+        op = "equality"
+        if(operation in {'-','+','*','/'}):
+            op = 'arithmetic'
+        elif(operation in {'||','&&'}):
+            op = 'boolean'
+        elif(operation in {'<','>','>=','<='}):
+            op = 'comparison'
+        typeChecker.addValidBinary(leftOperand,rightOperand,op,self)
 
 class assignExpression_record(expression_record):
     def __init__(self,assignee,assigner,line):  
         super().__init__(line) 
         self.assignee = assignee
         self.assigner = assigner
+        typeChecker.addValidTypes(assignee,assigner,self)
+
 
 class autoExpression_record(expression_record):
     def __init__(self,operand,auto_type,tense,line):  
-        super().__init__(line) 
-        global_symbol_table.executeFieldLookUps()
-        res = typeChecker.checkValid(operand,{'int','float'})
-        if(res != None):
-            self.type = res
-        else:
-            self.type = 'error'
+        super().__init__(line)
+        res = typeChecker.addCheckValid(operand,{'int','float'},self)
         self.operand = operand
         self.auto_type = auto_type
         self.tense = tense
