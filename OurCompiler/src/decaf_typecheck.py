@@ -65,22 +65,22 @@ class typeTree:
             else:
                 return None
         elif(op == "boolean"):
-            leftRes = self.checkValid(left,{'boolean'})
-            rightRes = self.checkValid(right,{'boolean'})
+            leftRes = self.checkValid(left,{'bool'})
+            rightRes = self.checkValid(right,{'bool'})
             if(leftRes != None and rightRes != None):
-                return 'boolean'
+                return 'bool'
             else:
                 return None
         elif(op == "comparison"):
             leftRes = self.checkValid(left,{'float','int'})
             rightRes = self.checkValid(right,{'float','int'})
             if(leftRes != None and rightRes != None):
-                return 'boolean'
+                return 'bool'
             else:
                 return None
         else:
             if(self.validTypes(left,right) or self.validTypes(right,left)):
-                return 'boolean'
+                return 'bool'
             else:
                 return None
     
@@ -109,5 +109,5 @@ class typeNode:
 typeChecker = typeTree()
 typeChecker.addType('float','void')
 typeChecker.addType('int','float')
-typeChecker.addType('boolean','void')
+typeChecker.addType('bool','void')
 typeChecker.addType('object','void')

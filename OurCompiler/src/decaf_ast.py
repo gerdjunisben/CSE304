@@ -182,9 +182,9 @@ class unaryExpression_record(expression_record):
         self.operand = operand
         self.operation = operation
         if(operation == '!'):
-            typeChecker.addValidTypes(operand,{'boolean'},self)
+            typeChecker.addCheckValid(operand,{'bool'},self)
         else:
-            typeChecker.addValidTypes(operand,{'int','float'},self)
+            typeChecker.addCheckValid(operand,{'int','float'},self)
 
 class binaryExpression_record(expression_record):
     def __init__(self,leftOperand,operation,rightOperand,line): 
