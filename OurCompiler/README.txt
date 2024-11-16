@@ -28,7 +28,7 @@ We didn't finish again but it's mostly done.
     and most cases can be fused and further modularized.
 
     Type checking:
-    We have checking on all expressions so that's nice, it does the same thing that the
+    We have checking on all expressions so that's nice. It does the same thing that the
     scoper does by delaying the actual checking because it could refer to something else
     in scope. I'm not 100% sure if this is exactly the scoping you're hoping for in the doc
     but it's pretty much top to bottom plus anything in your object's scope.
@@ -36,11 +36,11 @@ We didn't finish again but it's mostly done.
     but I doubt it.
 
     Printing:
-    Donato is gonna get on it
+    Donato is going to work on this, I (Donato) have been preoccupied by family commitments
 
     Other notes:
     I'm not entirely sure what you want us to do on type error, like do you want us to 
-    throw and error or just write and leave. Other than that we should have more than
+    throw an error or just write and leave. Other than that we should have more than
     enough time after this to finish up the compiler.
 
 
