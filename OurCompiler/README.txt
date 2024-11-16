@@ -16,6 +16,38 @@ additional info yet such as id on access but we do get field classname. We're go
 the coming days and then we'll be ready for the next part.
 
 
+A5 report:
+We didn't finish again but it's mostly done.
+
+    Scoping: 
+    I started writing the scoper before I saw the A5 doc so it's in a separate file
+    but I'm also unsure if it is or is not a part of A4, but I don't really know what I'm
+    getting at other than that it's weird. So it builds a tree of scopes with names, it
+    sometimes stores names for later and resolves them once the scope is properly created.
+    The method it uses for handling field access/new is certainly needlessly complicated
+    and most cases can be fused and further modularized.
+
+    Type checking:
+    We have checking on all expressions so that's nice, it does the same thing that the
+    scoper does by delaying the actual checking because it could refer to something else
+    in scope. I'm not 100% sure if this is exactly the scoping you're hoping for in the doc
+    but it's pretty much top to bottom plus anything in your object's scope.
+    We are gonna take care of statements later but it's not as hard, return may be weird
+    but I doubt it.
+
+    Printing:
+    Donato is gonna get on it
+
+    Other notes:
+    I'm not entirely sure what you want us to do on type error, like do you want us to 
+    throw and error or just write and leave. Other than that we should have more than
+    enough time after this to finish up the compiler.
+
+
+
+    
+
+
 hw2_testing_subset:
     Contains folder of test files for testing the program
     1-15 + err1-err3 are made by mr. Osborne
@@ -26,12 +58,21 @@ hw2_testing_subset:
 
 
 src:
-    decaf_ast.py:      <<<<NEW
+    decaf_ast.py:       <<<<NEW
         contains the classes for our AST and the printer/error checker
+
+    decaf_scoper.py:    <<<<NEW
+        contains the classes for the scoper which tracks scope during parsing and handles adding names
+        to scopes.
+
+    decaf_typecheck.py: <<<<NEW
+        contains the classes for the type checker that tracks the type hierarchy and checks types
+        according to various constraints
+
     decaf_lexer.py:    
         this file containts the lexical rules for our language
     
-    decaf_parser.py:   <<<<NEW
+    decaf_parser.py: 
         this file containts the parser rules for our language
     
     decaf_checker.py:
