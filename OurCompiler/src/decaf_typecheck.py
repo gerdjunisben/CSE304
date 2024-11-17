@@ -92,6 +92,8 @@ class typeTree:
                 return None
     
     def validTypes(self,main,sub):
+        if(sub== 'error' or main == 'error'):
+            return False
         while(self.types[sub].parent!=None):
             if(main == sub or sub =='null'):
                 return True
