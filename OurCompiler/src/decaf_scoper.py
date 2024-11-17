@@ -62,10 +62,10 @@ class SymbolTable:
             temp_cur = temp_cur.upper
         return -1;
 
-    def addArgs(self,thing,args):
+    def addArgs(self,thing,args,method):
         for i in range(0,len(self.lookUps)):
             if self.lookUps[i][3] == thing:
-                self.lookUps[i]+= (args,)
+                self.lookUps[i] = self.lookUps[i][:3] + (method,) + (args,)
                 break
 
     def addFieldLookUp(self,base,name,thing):
@@ -84,97 +84,45 @@ class SymbolTable:
                 l[3].type = temp[0].type
             else:
                 l[3].type = l[1]
+        self.lookUps = []
 
-    def fieldLookUp(self,base,name,args):   
-        #print(name) 
-        #print(base)
+    def fieldLookUp(self, base, name, args):
         self.addParams()
-        #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>handle self and super
-        if base.__class__.__name__ == 'referenceExpression_record':
-            base = base.className
-            if(typeChecker.types[base].miniTable == None):
-                return -1
-            for k,v in typeChecker.types[base].miniTable.names.items():
-                #print(k + " " + str(v))
-                if k == name and v[0].visibility != None:
-                    if (v[0].__class__.__name__ =='method_record' or v[0].__class__.__name__ =='constructor_record') and v[0].applicability == None :
-                        if(len(args) == len(v[0].parameters)):
-                            valid = True
-                            for i in range(0,len(v[0].parameters)):
-                                if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
-                                    valid=False
-                                    break
-                            if(valid):
-                                print("Found self/super:" + name + " in " + base)
-                                return v
-                            return -1
-                    print("Found self/super:" + name + " in " + base)
-                    return v
-            return -1;
-        #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>handle new
-        elif(isinstance(base,str) and base in typeChecker.types):
-            if(typeChecker.types[base].miniTable == None):
-                return -1
-            for k,v in typeChecker.types[base].miniTable.names.items():
-                #print(k + " " + str(v))
-                if k == name and isinstance(v,list): #go through the constructor list
-                    for c in v:
-                        if  ( c[0].__class__.__name__ =='constructor_record') :
-                            if(len(args) == len(c[0].parameters)):
-                                valid = True
-                                for i in range(0,len(c[0].parameters)):
-                                    if not typeChecker.validTypes(c[0].parameters[i].type,args[i].type):
-                                        valid=False
-                                        break
-                                if(valid):
-                                    print("Found constructor:" + name + " in " + base)
-                                    return c
-                                return -1
-            return -1;
-        #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>handle class literal
-        elif(base.name in typeChecker.types):
-            base = base.name
-            if(typeChecker.types[base].miniTable == None):
-                return -1
-            for k,v in typeChecker.types[base].miniTable.names.items():
-                #print(k + " " + str(v))
-                if k == name and v[0].visibility != None:
-                    if (v[0].__class__.__name__ =='method_record' or v[0].__class__.__name__ =='constructor_record') and v[0].applicability != None:
-                        if(len(args) == len(v[0].parameters)):
-                            valid = True
-                            for i in range(0,len(v[0].parameters)):
-                                if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
-                                    valid=False
-                                    break
-                            if(valid):
-                                print("Found literal:" + name + " in " + base)
-                                return v
-                            return -1
-                    print("Found literal:" + name + " in " + base)
-                    return v
-            return -1;
-        else: #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>handle instance
-            base = base.type.type
-            if(typeChecker.types[base].miniTable == None):
-                return -1
-            for k,v in typeChecker.types[base].miniTable.names.items():
-                #print(k + " " + str(v))
-                if k == name and v[0].visibility != None :
-                    if (v[0].__class__.__name__ =='method_record' or v[0].__class__.__name__ =='constructor_record') and v[0].applicability == None :
-                        if(len(args) == len(v[0].parameters)):
-                            valid = True
-                            for i in range(0,len(v[0].parameters)):
-                                if not typeChecker.validTypes(v[0].parameters[i].type,args[i].type):
-                                    valid=False
-                                    break
-                            if(valid):
-                                print("Found instance:" + name + " in " + base)
-                                return v
-                            return -1
-                    print("Found instance:" + name + " in " + base)
-                    return v
-            return -1;
+        def validate_parameters(expected_params, given_args):
+            if len(expected_params) != len(given_args):
+                return False
+            for param, arg in zip(expected_params, given_args):
+                if not typeChecker.validTypes(param.type, arg.type):
+                    return False
+            return True
 
+        def find_in_table(table, name, args):
+            if not table or name not in table.names:
+                return None
+            entries = table.names[name]
+            if isinstance(entries, list):  # Constructor list
+                for entry in entries:
+                    if entry[0].__class__.__name__ == 'constructor_record' and validate_parameters(entry[0].parameters, args):
+                        return entry
+            elif entries[0].visibility and (not hasattr(entries, 'parameters') or validate_parameters(entries[0].parameters, args)):
+                return entries
+            return None
+
+        if base.__class__.__name__ == 'referenceExpression_record':  # self/super
+            base = base.className
+            return find_in_table(typeChecker.types.get(base).miniTable, name, args)
+
+        if isinstance(base, str) and base in typeChecker.types:  # new keyword
+            return find_in_table(typeChecker.types[base].miniTable, name, args)
+
+        if hasattr(base, 'name') and base.name in typeChecker.types:  # Class literal
+            return find_in_table(typeChecker.types[base.name].miniTable, name, args)
+
+        if hasattr(base, 'type'):  # Instance
+            base = base.type
+            return find_in_table(typeChecker.types.get(base).miniTable, name, args)
+
+        return None
 
 
 

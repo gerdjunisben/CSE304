@@ -174,7 +174,10 @@ class varExpression_record(expression_record):
         lookup = global_symbol_table.lookUp(name)
         #print(lookup)
         self.id = lookup[1]
-        self.type = lookup[0].type
+        if(isinstance(lookup[0],str)):
+            self.type = lookup[0]
+        else:   
+            self.type = lookup[0].type
 
 class unaryExpression_record(expression_record):
     def __init__(self,operation,operand,line):  
@@ -233,7 +236,7 @@ class methodCallExpression_record(expression_record):
         if(not isinstance(args,list)):
             args = [args]
         self.args = args
-        global_symbol_table.addArgs(fieldAccess,args)
+        global_symbol_table.addArgs(fieldAccess,args,self)
 
 class newExpression_record(expression_record):
     def __init__(self,base,args,line):  
@@ -241,7 +244,7 @@ class newExpression_record(expression_record):
         self.base = base
         self.args = args
         global_symbol_table.addFieldLookUp(base,base,self)
-        global_symbol_table.addArgs(self,args)
+        global_symbol_table.addArgs(self,args,self)
 
 class referenceExpression_record(expression_record):
     def __init__(self,ref_type,line):  
@@ -300,10 +303,12 @@ def createPrintRecurr(line):
         output = "If([\n"
         output += "Condition(\n"+createPrintRecurr(line.conditional)
         output += ")\n"
-        output += "Then(\n"+createPrintRecurr(line.then_block)
+        output += "Then(\n"+createPrintRecurr(line.then_block.block)
         output += ")\n"
-        output += "Else(\n"+createPrintRecurr(line.else_block)
-        output += ")\n])"
+        if(not isinstance(line.else_block,list)):
+            output += "Else(\n"+createPrintRecurr(line.else_block.block)
+            output += ")\n"
+        output+= "])"
         return output
     elif line.__class__.__name__ == 'while_record':
         output += "While([\n"
@@ -356,8 +361,11 @@ def createPrintRecurr(line):
         return "Variable(" + str(line.id) + ")"
     elif line.__class__.__name__ == 'referenceExpression_record':
         return line.ref_type
+    elif line.__class__.__name__ == 'variable_record':
+        return "Var_record(" + line.name + ", " + str(line.ID) + ", " + line.type + "), "
     elif line.__class__.__name__ == 'list':
-        return ""
+        for thing in line:
+            return createPrintRecurr(thing)
     else:
         return (line.__class__.__name__)
     
