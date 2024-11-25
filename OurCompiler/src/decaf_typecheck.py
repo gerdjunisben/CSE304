@@ -52,6 +52,12 @@ class typeTree:
                     thing[3].type = 'error'
                 else:
                     thing[3].type = res
+            elif (thing[0] == 3):
+                res = self.validStatement(thing[1],thing[2],thing[3])
+                if(res == None):
+                    thing[4].type = 'error'
+                else:
+                    thing[4].type = res
             else:
                 res = self.validBinary(thing[1],thing[2],thing[3])
                 if(res==None):
@@ -104,6 +110,27 @@ class typeTree:
         if(thing.type in types):
             return thing.type
         return None
+    
+    def validStatement(self, op):
+        if(op == "if"):
+            leftRes = self.checkValid(op.left,{'then'})
+            rightRes = self.checkValid(op.right,{'else'})
+            if(leftRes != None and rightRes != None):
+                return 'if'
+            else:
+                return None
+        elif(op == "while"):
+            return self.checkValid(op, op.types)
+        elif(op == "for"):
+            return self.checkValid(op, op.types)
+        elif(op == "return"):
+            return self.checkValid(op, op.types)
+        elif(op == "expr"):
+            return self.checkValid(op, op.types)
+        elif(op == "block"):
+            return self.checkValid(op, op.types)
+        else:
+            return None
 
 
 
@@ -120,3 +147,11 @@ typeChecker.addType('float','void')
 typeChecker.addType('int','float')
 typeChecker.addType('bool','void')
 typeChecker.addType('object','void')
+typeChecker.addType('if','void')
+typeChecker.addType('then','if')
+typeChecker.addType('else','if')
+typeChecker.addType('while','void')
+typeChecker.addType('for','void')
+typeChecker.addType('return','void')
+typeChecker.addType('expr','void')
+typeChecker.addType('block','void')
