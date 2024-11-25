@@ -341,22 +341,22 @@ def createPrintRecurr(line):
     elif line.__class__.__name__ == 'autoExpression_record':
         return "Auto(" + createPrintRecurr(line.operand) + ", " + line.auto_type + ", " + line.tense + ")"
     elif line.__class__.__name__ == 'assignExpression_record':
-        return "Assign(" + createPrintRecurr(line.assignee) + ", " + createPrintRecurr(line.assigner) + ", " +str(line.assignee.type) + ", "+str(line.assigner.type)+")"
+        return "Assign(" + createPrintRecurr(line.assignee) + ", " + createPrintRecurr(line.assigner) + ")"
     elif line.__class__.__name__ == 'binaryExpression_record':
         return "Binary(" + line.operation +", " + createPrintRecurr(line.leftOperand) + ", " + createPrintRecurr(line.rightOperand) + ")"
     elif line.__class__.__name__ == 'fieldAccessExpression_record':
-        return "Field-access(" + createPrintRecurr(line.base) + ", " + str(line.field) + ", " + str(line.field.id) + ")"
+        return "Field-access(" + createPrintRecurr(line.base) + ", " + str(line.field) + ")"
     elif line.__class__.__name__ == 'const_record':
         return "Constant (" + line.type +"-constant(" + str(line.value) + ")"
     elif line.__class__.__name__ == 'newExpression_record':
-        return "New-object(" + line.base + ", [" + (", ".join(createPrintRecurr(e) for e in line.args) if len(line.args) != 0 else "") + "], " + str(line.field.id) + ")"
+        return "New-object(" + line.base + ", [" + (", ".join(createPrintRecurr(e) for e in line.args) if len(line.args) != 0 else "") + "])"
     elif line.__class__.__name__ == 'return_record':
         if (line.return_val != None):
             return "Return(" + createPrintRecurr(line.return_val) +  ")"
         else:
             return "Return( )"
     elif line.__class__.__name__ == 'methodCallExpression_record':
-        return "Method-call(" + createPrintRecurr(line.base) + ", " + line.method_name + ", [" + (", ".join(createPrintRecurr(e) for e in line.args) if len(line.args) != 0 else "") + "], " + str(line.field.id) + ")"
+        return "Method-call(" + createPrintRecurr(line.base) + ", " + line.method_name + ", [" + (", ".join(createPrintRecurr(e) for e in line.args) if len(line.args) != 0 else "") + "])"
     elif line.__class__.__name__ == 'varExpression_record':
         return "Variable(" + str(line.id) + ")"
     elif line.__class__.__name__ == 'referenceExpression_record':
