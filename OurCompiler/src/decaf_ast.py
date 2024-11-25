@@ -54,6 +54,7 @@ class constructor_record:
         global_symbol_table.setIDConst(className,(self,self.ID))
 
         constructor_record.constructID += 1
+        typeChecker.addMethodReturn('void')
 
 class method_record:
     methodID =1
@@ -72,6 +73,7 @@ class method_record:
         self.ID = method_record.methodID
         global_symbol_table.setID(name,(self,self.ID))
         method_record.methodID +=1
+        typeChecker.addMethodReturn(returnType)
 
 class field_record:
     fieldID = 1
@@ -115,12 +117,14 @@ class if_record(statement_record):
         self.conditional = conditional
         self.then_block = then_block
         self.else_block = else_block
+        typeChecker.addCheckValid(conditional,{'bool'},self)
 
 class while_record(statement_record):
     def __init__(self,conditional,loop_block,line):
         super().__init__(line) 
         self.conditional = conditional
         self.loop_block = loop_block
+        typeChecker.addCheckValid(conditional,{'bool'},self)
 
 class for_record(statement_record):
     def __init__(self,initializer,conditional,update_expr,loop_body,line):
@@ -129,11 +133,17 @@ class for_record(statement_record):
         self.conditional = conditional
         self.update_expr = update_expr
         self.loop_body = loop_body
+        typeChecker.addValidForLoop(initializer.expression,conditional,update_expr.expression,self)
 
 class return_record(statement_record):
     def __init__(self,return_val,line):
         super().__init__(line)  
         self.return_val = return_val
+        if(return_val == None):
+            typeChecker.addValidReturn('void',self)
+        else:
+            typeChecker.addValidReturn(return_val.type,self);
+        
 
 class expressionStatement_record(statement_record):
     def __init__(self,expression,line):

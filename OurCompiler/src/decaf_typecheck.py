@@ -37,6 +37,19 @@ class typeTree:
 
     def addValidBinary(self,left,right,op,thing):
         self.checkQueue += [(2,left,right,op,thing)]
+    
+    def addValidForLoop(self,initialize,conditional,update,thing):
+        self.checkQueue += [(3,initialize,conditional,update,thing)]
+
+    def addValidReturn(self,returnVal,thing):
+        self.checkQueue += [(4,returnVal,thing)]
+
+
+    def addMethodReturn(self,methodReturn):
+        for i in range(0,len(self.checkQueue)):
+            if self.checkQueue[i][0] == 4 and len(self.checkQueue[i])==3:
+                self.checkQueue[i] = self.checkQueue[i][:3] + (methodReturn,) 
+
 
     def executeQueue(self):
         for thing in self.checkQueue:
@@ -53,11 +66,19 @@ class typeTree:
                 else:
                     thing[3].type = res
             elif (thing[0] == 3):
-                res = self.validStatement(thing[1],thing[2],thing[3])
-                if(res == None):
+                res1 = self.validTypes(thing[1].type,thing[3].type)
+                res2 = self.checkValid(thing[2],{'bool'})
+                if(res2 == None or res1 == None):
                     thing[4].type = 'error'
                 else:
-                    thing[4].type = res
+                    thing[4].type = res2
+            elif(thing[0] == 4):
+                res = self.validTypes(thing[1],thing[3])
+                if(res==None):
+                    thing[2].type = 'error'
+                else:
+                    thing[2].type = thing[1]
+
             else:
                 res = self.validBinary(thing[1],thing[2],thing[3])
                 if(res==None):
@@ -111,26 +132,7 @@ class typeTree:
             return thing.type
         return None
     
-    def validStatement(self, op):
-        if(op == "if"):
-            leftRes = self.checkValid(op.left,{'then'})
-            rightRes = self.checkValid(op.right,{'else'})
-            if(leftRes != None and rightRes != None):
-                return 'if'
-            else:
-                return None
-        elif(op == "while"):
-            return self.checkValid(op, op.types)
-        elif(op == "for"):
-            return self.checkValid(op, op.types)
-        elif(op == "return"):
-            return self.checkValid(op, op.types)
-        elif(op == "expr"):
-            return self.checkValid(op, op.types)
-        elif(op == "block"):
-            return self.checkValid(op, op.types)
-        else:
-            return None
+
 
 
 
@@ -147,11 +149,3 @@ typeChecker.addType('float','void')
 typeChecker.addType('int','float')
 typeChecker.addType('bool','void')
 typeChecker.addType('object','void')
-typeChecker.addType('if','void')
-typeChecker.addType('then','if')
-typeChecker.addType('else','if')
-typeChecker.addType('while','void')
-typeChecker.addType('for','void')
-typeChecker.addType('return','void')
-typeChecker.addType('expr','void')
-typeChecker.addType('block','void')

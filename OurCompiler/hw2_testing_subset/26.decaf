@@ -5,12 +5,16 @@ class A {
         
     }
 
-     public A(){
-        
+    public A(){
+        int i;
+        for(i=0;i<10;i++)
+        {
+
+        }
     }
 
     public int boogie (int a){
-        
+        return 2;
     } 
 
 }
