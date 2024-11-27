@@ -297,7 +297,7 @@ def p_stmt(p):
         else:
             p[0] = p[1]
     elif len(p) == 2 and p[1] != ';':
-        p[0] = block_record(p[1],[],p.lineno(1))
+        p[0] = p[1]
 
 def p_literal(p):
     '''literal : INTCONST
@@ -391,12 +391,12 @@ def p_assign(p):
             | lhs MINUSMINUS
             | MINUSMINUS lhs'''
     if p[2] == '=':
-        p[0] = assignExpression_record(p[1],p[3],p.lineno(1))
+        p[0] = assignExpression_record(p[1],p[3],p.lineno(2))
     else:
         if(p[1] == '++' or p[1] =='--'):
             p[0] = autoExpression_record(p[2],p[1],'pre',p.lineno(1))
         else:
-            p[0] = autoExpression_record(p[1],p[2],'post',p.lineno(1))
+            p[0] = autoExpression_record(p[1],p[2],'post',p.lineno(2))
 
 def p_arith_op(p):
     '''arith_op : PLUS
@@ -425,7 +425,7 @@ def p_unary_op(p):
 def p_stmt_expr(p):
     '''stmt_expr : assign
                 | method_invocation'''
-    p[0] = expressionStatement_record(p[1],p.lineno(1)) 
+    p[0] = expressionStatement_record(p[1],p[1].line) 
 
 
 

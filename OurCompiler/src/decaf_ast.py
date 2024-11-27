@@ -43,6 +43,8 @@ class class_record:
 class constructor_record:
     constructID = 1
     def __init__(self,className, visibility, parameters, variable_table, body,line):
+
+        
         self.visibility = visibility
         self.parameters = parameters #Sequence of parameters, each parameter is a variable in variable table
         self.variable_table = variable_table #Table of all variables
@@ -59,6 +61,7 @@ class constructor_record:
 class method_record:
     methodID =1
     def __init__(self,name,className,visibility,applicability,parameters,returnType,variable_table,body,line):
+
         self.name = name
         self.className = className
         self.visibility = visibility
@@ -157,6 +160,7 @@ class block_record(statement_record):
         global_symbol_table.addParams()
         self.variable_table = variable_table + global_symbol_table.returnAllVars()
         #print(self.variable_table)
+        print("exiting " + str(line)  )
         self.miniName = global_symbol_table.exitScope()
         variable_record.varID=1
 
@@ -321,25 +325,25 @@ def createPrintRecurr(line):
         output+= "])"
         return output
     elif line.__class__.__name__ == 'while_record':
-        output += "While([\n"
+        output = "While([\n"
         output += "Condition(\n"+createPrintRecurr(line.conditional)
         output += ")\n"
-        output += createPrintRecurr(line.loop_block)
+        output += createPrintRecurr(line.loop_block.block)
         output += "\n])"
         return output
     elif line.__class__.__name__ == 'for_record':
-        output += "For([\n"
+        output = "For([\n"
         output += "Initializer(\n"+createPrintRecurr(line.initializer)
         output += ")\n"
         output += "Condition(\n"+createPrintRecurr(line.conditional)
         output += ")\n"
         output += "UpdateExpr(\n"+createPrintRecurr(line.update_expr)
         output += ")\n"
-        output += createPrintRecurr(line.loop_body)
+        output += createPrintRecurr(line.loop_body.block)
         output += "\n])"
         return output
     elif line.__class__.__name__ == 'return_record':
-        output += "Return(\n"
+        output = "Return(\n"
         output += createPrintRecurr(line.return_val)
         output += ")"
         return output
@@ -387,7 +391,6 @@ def check(file):
 
 
     data = open(file).read()
-
 
 
     prog = parser.parse(data, debug=False)

@@ -59,10 +59,12 @@ class typeTree:
                     thing[3].type = thing[2].type
                 else:
                     thing[3].type = 'error'
+                    raise SyntaxError(f"Type mismatch between {thing[1].type} on line {thing[1].line} and {thing[2].type} on line {thing[2].line}")
             elif (thing[0] == 1):
                 res = self.checkValid(thing[1],thing[2])
                 if(res==None):
                     thing[3].type = 'error'
+                    raise SyntaxError(f"Type mismatch between {thing[1].type} on line {thing[1].line} invalid type for surrounding context")
                 else:
                     thing[3].type = res
             elif (thing[0] == 3):
@@ -70,12 +72,14 @@ class typeTree:
                 res2 = self.checkValid(thing[2],{'bool'})
                 if(res2 == None or res1 == None):
                     thing[4].type = 'error'
+                    raise SyntaxError(f"Invalid for loop either {thing[1].type} on line {thing[1].line} and {thing[3].type} on line {thing[3].line} mismatch or {thing[2].type} on line {thing[2].line} is not a bool")
                 else:
                     thing[4].type = res2
             elif(thing[0] == 4):
                 res = self.validTypes(thing[1],thing[3])
                 if(res==None):
                     thing[2].type = 'error'
+                    raise SyntaxError(f"Type mismatch between returned value and header return {thing[1].type} on line {thing[1].line} and {thing[3].type} on line {thing[3].line}")
                 else:
                     thing[2].type = thing[1]
 
@@ -83,8 +87,10 @@ class typeTree:
                 res = self.validBinary(thing[1],thing[2],thing[3])
                 if(res==None):
                     thing[4].type = 'error'
+                    raise SyntaxError(f"Invalid binary op involving {thing[1].type} on line {thing[1].line} and {thing[2].type} on line {thing[2].line} involving operation {thing[3]}")
                 else:
                     thing[4].type = res
+        self.checkQueue = []
 
 
     def validBinary(self,left,right,op):
