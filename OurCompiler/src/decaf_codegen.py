@@ -28,22 +28,83 @@ def mov_imm_temp(cell,cons):
     else:
         return mov_immed_f(cell.registerName,cons.value)
     
+def processArithmetic(binary):
+    b = []
+    ours = []
+    ret = None
+    if(binary.leftOperand.__class__.__name__ == 'const_record'):
+        left = StorageMachine.getNextTemp()
+        ours +=[left]
+        b+=[mov_imm_temp(left,binary.leftOperand)]
+    elif(binary.leftOperand.__class__.__name__ == 'varExpression_record'):
+        left = curIDs[binary.leftOperand.id]
+    else:
+        res =processArithmetic(binary.leftOperand)
+        b += res[0]
+        left = res[1]
+        ours +=[left]
+
+
+
+    if(binary.rightOperand.__class__.__name__ == 'const_record'):
+        right = StorageMachine.getNextTemp()
+        ours +=[right]
+        b+=[mov_imm_temp(right,binary.rightOperand)]
+    elif(binary.rightOperand.__class__.__name__ == 'varExpression_record'):
+        right = curIDs[binary.rightOperand.id]
+    else:
+        res = processArithmetic(binary.rightOperand)
+        b += res[0]
+        right = res[1]
+        ours +=[right]
+
+    if(binary.operation == '+'):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[iadd(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fadd(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+
+    for cell in ours:
+        StorageMachine.freeRegister(cell)
+    return ret
+
+    
 def processBinary(binary):
     b = []
+    ours = []
     left = None
     right = None
 
     if(binary.leftOperand.__class__.__name__ == 'const_record'):
         left = StorageMachine.getNextTemp()
+        ours +=[left]
         b+=[mov_imm_temp(left,binary.leftOperand)]
-    else:
+    elif(binary.leftOperand.__class__.__name__ == 'varExpression_record'):
         left = curIDs[binary.leftOperand.id]
+    else:
+        res = processArithmetic(binary.leftOperand)
+        left = res[1]
+        ours +=[left]
+        b+= res[0]
+
+
 
     if(binary.rightOperand.__class__.__name__ == 'const_record'):
         right = StorageMachine.getNextTemp()
+        ours +=[right]
         b+=[mov_imm_temp(right,binary.rightOperand)]
-    else:
+    elif(binary.rightOperand.__class__.__name__ == 'varExpression_record'):
         right = curIDs[binary.rightOperand.id]
+    else:
+        res = processArithmetic(binary.rightOperand)
+        right = res[1]
+        ours +=[right]
+        b+= res[0]
+
+
+
     tempLabel = None
     if(binary.operation == '=='):
         res = StorageMachine.getNextTemp()
@@ -90,6 +151,8 @@ def processBinary(binary):
         tempLabel = StorageMachine.getNextLabel()
         b+=[bz(res.registerName,tempLabel)]
         StorageMachine.freeRegister(res)
+    for cell in ours:
+        StorageMachine.freeRegister(cell)
     return (b,tempLabel)
 
 def processExpression(exp):
@@ -116,11 +179,15 @@ def processExpression(exp):
     return b
 
 
-def processBlock(block,methodName = None):
+def processBlock(block,methodName = None,args = None):
     ours = []
     b = []
     if(methodName!= None):
         b+= [label(methodName)]
+    if args!=None:
+        temp = StorageMachine.getArgs(len(args))
+        for i in range(0,len(args)):
+            curIDs[args[i].ID] = temp[i]
     for line in block:
         if isinstance(line,list):
             if(line[0].__class__.__name__ == 'variable_record'):
@@ -179,7 +246,7 @@ def check(file):
     if(prog):
         for clazz in prog:
             for method in clazz.methods:
-                blocks += [processBlock(method.body.block,method.name)]
+                blocks += [processBlock(method.body.block,method.name,method.parameters)]
 
     print("wala")
 
