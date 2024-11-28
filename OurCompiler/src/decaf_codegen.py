@@ -6,22 +6,121 @@ from decaf_absmc import *
 StorageMachine = TheStorageMachine(100)
 
 
-curIDs = {}
+curIDs = {'return':StorageMachine.getArgs(1)[0]}
+
+class ReturnRegister:
+    def __init__(self):
+        self.id = 'return'
+
+
+
+returnRegister = ReturnRegister()
+
+def mov_imm(reg,cons):
+    if(cons.type == 'int'):
+        return mov_immed_i(curIDs[reg.id].registerName,cons.value)
+    else:
+        return mov_immed_f(curIDs[reg.id].registerName,cons.value)
+    
+def mov_imm_temp(cell,cons):
+    if(cons.type == 'int'):
+        return mov_immed_i(cell.registerName,cons.value)
+    else:
+        return mov_immed_f(cell.registerName,cons.value)
+    
+def processBinary(binary):
+    b = []
+    left = None
+    right = None
+
+    if(binary.leftOperand.__class__.__name__ == 'const_record'):
+        left = StorageMachine.getNextTemp()
+        b+=[mov_imm_temp(left,binary.leftOperand)]
+    else:
+        left = curIDs[binary.leftOperand.id]
+
+    if(binary.rightOperand.__class__.__name__ == 'const_record'):
+        right = StorageMachine.getNextTemp()
+        b+=[mov_imm_temp(right,binary.rightOperand)]
+    else:
+        right = curIDs[binary.rightOperand.id]
+    tempLabel = None
+    if(binary.operation == '=='):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[isub(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fsub(res.registerName,left.registerName,right.registerName)]
+        tempLabel = StorageMachine.getNextLabel()
+        b+=[bnz(res.registerName,tempLabel)]
+        StorageMachine.freeRegister(res)
+    elif(binary.operation == '<'):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[ilt(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[flt(res.registerName,left.registerName,right.registerName)]
+        tempLabel = StorageMachine.getNextLabel()
+        b+=[bz(res.registerName,tempLabel)]
+        StorageMachine.freeRegister(res)
+    elif(binary.operation == '<='):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[ileq(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fleq(res.registerName,left.registerName,right.registerName)]
+        tempLabel = StorageMachine.getNextLabel()
+        b+=[bz(res.registerName,tempLabel)]
+        StorageMachine.freeRegister(res)
+    elif(binary.operation == '>'):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[igt(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fgt(res.registerName,left.registerName,right.registerName)]
+        tempLabel = StorageMachine.getNextLabel()
+        b+=[bz(res.registerName,tempLabel)]
+        StorageMachine.freeRegister(res)
+    elif(binary.operation == '>='):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[igeq(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fgeq(res.registerName,left.registerName,right.registerName)]
+        tempLabel = StorageMachine.getNextLabel()
+        b+=[bz(res.registerName,tempLabel)]
+        StorageMachine.freeRegister(res)
+    return (b,tempLabel)
 
 def processExpression(exp):
+    b = []
     if exp.__class__.__name__ == 'assignExpression_record':
         if(exp.assigner.__class__.__name__ == 'const_record'):
-            if(exp.assigner.type == 'int'):
-                return mov_immed_i(curIDs[exp.assignee.id].registerName,exp.assigner.value)
-            else:
-                return mov_immed_f(curIDs[exp.assignee.id].registerName,exp.assigner.value)
+            b+=[ mov_imm(exp.assignee,exp.assigner)]
         else:
-            return mov(curIDs[exp.assignee.id].registerName,curIDs[exp.assigner.id].registerName)
+            b+=[  mov(curIDs[exp.assignee.id].registerName,curIDs[exp.assigner.id].registerName)]
+    elif exp.__class__.__name__ == 'autoExpression_record':
+        inc = StorageMachine.getNextTemp()
+        b+= [mov_immed_i(inc.registerName,1)]
+        if exp.auto_type == '++':
+            if(exp.operand.type == 'int'):
+                b += [iadd(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
+            else:
+                b += [fadd(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
+        else:
+            if(exp.operand.type == 'int'):
+                b += [isub(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
+            else:
+                b += [fsub(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
+        StorageMachine.freeRegister(inc)
+    return b
 
-def processBlock(block,methodName):
+
+def processBlock(block,methodName = None):
     ours = []
     b = []
-    b+= [label(methodName)]
+    if(methodName!= None):
+        b+= [label(methodName)]
     for line in block:
         if isinstance(line,list):
             if(line[0].__class__.__name__ == 'variable_record'):
@@ -29,8 +128,37 @@ def processBlock(block,methodName):
                     curIDs[var.ID] = StorageMachine.getNextTemp()
                     ours += [var.ID]
         elif line.__class__.__name__ == "expressionStatement_record":
-            b += [processExpression(line.expression)]
-    b+= [ret()]
+            b += processExpression(line.expression)
+        elif line.__class__.__name__ == "return_record":
+            if line.type != 'void':
+                if(line.return_val.__class__.__name__ == 'const_record'):
+                    b+=[mov_imm(returnRegister,line.return_val)]
+                else:
+                    b+= [mov(curIDs[returnRegister.id].registerName,curIDs[line.return_val.id].registerName)]
+            b += [ret()]
+        elif line.__class__.__name__ == "if_record":
+            tempLabel = ""
+            endLabel = ""
+            if(line.conditional.__class__.__name__ == 'binaryExpression_record'):
+                temp = processBinary(line.conditional)
+                b +=temp[0]
+                tempLabel = temp[1]
+            else:
+                pass
+
+            b+= processBlock(line.then_block.block)
+
+            if(not isinstance(line.else_block,list)):
+                endLabel = StorageMachine.getNextLabel()
+                b+= [jmp(endLabel)]
+
+            b+= [label(tempLabel)]
+
+            b+= processBlock(line.else_block.block)
+
+            if(endLabel!=""):
+                b+=[label(endLabel)]
+
     for id in ours:
         StorageMachine.freeRegister(curIDs[id])
         del curIDs[id]

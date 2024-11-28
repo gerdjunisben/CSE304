@@ -119,7 +119,7 @@ class typeTree:
             else:
                 return None
         else:
-            if(self.validTypes(left,right) or self.validTypes(right,left)):
+            if(self.validTypes(left.type,right.type) or self.validTypes(right.type,left.type)):
                 return 'bool'
             else:
                 return None

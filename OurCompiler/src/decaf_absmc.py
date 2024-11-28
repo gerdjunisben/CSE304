@@ -1,13 +1,13 @@
 class TheStorageMachine:
     def __init__(self,regCount):
 
-        self.argRegs = [0] * regCount
-        self.argRegsPtr = 0
-
-        self.argRegSize = regCount
         self.tempRegSize = regCount
+        self.argRegSize = regCount
+        self.labelCount = 0
         
-        
+        self.argRegs = []
+        for i in range(regCount):
+            self.argRegs += [Cell('a' + str(i))]
 
 
         self.free = Cell('Reece')  #he manages my registers <3
@@ -17,17 +17,20 @@ class TheStorageMachine:
         self.free.prev = self.free
 
         for i in range(regCount):   #I'm evil so I have this abstract sorta vm type beat
-            bonus = Cell(i)
+            bonus = Cell('t' + str(i))
             bonus.prev = self.free.prev
             bonus.next = self.free
             self.free.prev.next = bonus
             self.free.prev = bonus
 
+    def getNextLabel(self):
+        self.labelCount+=1;
+        return "LABEL" + str(self.labelCount)
 
-    def getNextArg(self):
-        self.argRegsPtr+=1
-        return 'a' + str(self.argRegsPtr-1)
-
+    def getArgs(self,count):
+        if(count > self.argRegSize):
+            raise MemoryError("Not enough arg registers")
+        return self.argRegs[0:count]
     
     def getNextTemp(self):
         if self.free.next == self.free:
@@ -79,8 +82,8 @@ class TheStorageMachine:
             raise IndexError("Invalid push, increase stack size if you need it")
 
 class Cell:
-    def __init__(self,registerNumber):
-        self.registerName = 't' + str(registerNumber)
+    def __init__(self,registerName):
+        self.registerName = registerName
         self.allocated = False
         self.next = None
         self.prev = None
@@ -131,3 +134,128 @@ class restore():
         self.register = register
 
 
+class iadd():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class isub():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class imul():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class idiv():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class imod():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class igt():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class igeq():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class ilt():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+
+class ileq():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+
+class fadd():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class fsub():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class fmul():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class fdiv():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class fmod():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class fgt():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class fgeq():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class flt():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+
+class fleq():
+    def __init__(self,res,operand1,operand2):
+        self.res = res
+        self.operand1 = operand1
+        self.operand2 = operand2
+
+class bz():
+    def __init__(self,register,label):
+        self.register = register
+        self.label = label
+
+class bnz():
+    def __init__(self,register,label):
+        self.register = register
+        self.label = label
+
+
+class jmp():
+    def __init__(self,label):
+        self.label = label
