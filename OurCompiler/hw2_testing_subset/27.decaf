@@ -3,8 +3,8 @@ class A {
     public int wala(int a){
         int i;
         i = 10;
-        if(i>=a){
-            i++;
+        if(i<11){
+            i= a + 11;
         }
         else
         {

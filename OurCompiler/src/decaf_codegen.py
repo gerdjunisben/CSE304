@@ -6,7 +6,7 @@ from decaf_absmc import *
 StorageMachine = TheStorageMachine(100)
 
 
-curIDs = {'return':StorageMachine.getArgs(1)[0]}
+curIDs = {'return':StorageMachine.getArgs(1)[0],'one':StorageMachine.getNextTemp(),'zero':StorageMachine.getNextTemp()}
 
 class ReturnRegister:
     def __init__(self):
@@ -28,7 +28,7 @@ def mov_imm_temp(cell,cons):
     else:
         return mov_immed_f(cell.registerName,cons.value)
     
-def processArithmetic(binary):
+def processBinary(binary):
     b = []
     ours = []
     ret = None
@@ -39,7 +39,7 @@ def processArithmetic(binary):
     elif(binary.leftOperand.__class__.__name__ == 'varExpression_record'):
         left = curIDs[binary.leftOperand.id]
     else:
-        res =processArithmetic(binary.leftOperand)
+        res =processBinary(binary.leftOperand)
         b += res[0]
         left = res[1]
         ours +=[left]
@@ -53,7 +53,7 @@ def processArithmetic(binary):
     elif(binary.rightOperand.__class__.__name__ == 'varExpression_record'):
         right = curIDs[binary.rightOperand.id]
     else:
-        res = processArithmetic(binary.rightOperand)
+        res = processBinary(binary.rightOperand)
         b += res[0]
         right = res[1]
         ours +=[right]
@@ -65,13 +65,82 @@ def processArithmetic(binary):
         else:
             b+=[fadd(res.registerName,left.registerName,right.registerName)]
         ret = (b,res)
+    elif(binary.operation == '-'):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[isub(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fsub(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '*'):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[imul(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fmul(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '/'):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[idiv(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fdiv(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '=='):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[isub(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fsub(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '<'):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[ilt(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[flt(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '<='):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[ileq(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fleq(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '>'):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[igt(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fgt(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '>='):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[igeq(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fgeq(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '||'):
+        res = StorageMachine.getNextTemp()
+        b+=[iadd(res.registerName,left.registerName,right.registerName)]
+        b+=[igt(res.registerName,res.registerName,curIDs['zero'].registerName)]
+        ret = (b,res)
+    elif(binary.operation == '&&'):
+        res = StorageMachine.getNextTemp()
+        two = StorageMachine.getNextTemp()
+        b+=[mov_immed_i(two.registerName,2)]
+        b+=[iadd(res.registerName,left.registerName,right.registerName)]
+        b+=[igeq(res.registerName,res.registerName,two.registerName)]
+        StorageMachine.freeRegister(two)
+        ret = (b,res)
 
     for cell in ours:
         StorageMachine.freeRegister(cell)
     return ret
 
     
-def processBinary(binary):
+def processConditional(binary):
     b = []
     ours = []
     left = None
@@ -84,7 +153,7 @@ def processBinary(binary):
     elif(binary.leftOperand.__class__.__name__ == 'varExpression_record'):
         left = curIDs[binary.leftOperand.id]
     else:
-        res = processArithmetic(binary.leftOperand)
+        res = processBinary(binary.leftOperand)
         left = res[1]
         ours +=[left]
         b+= res[0]
@@ -98,10 +167,11 @@ def processBinary(binary):
     elif(binary.rightOperand.__class__.__name__ == 'varExpression_record'):
         right = curIDs[binary.rightOperand.id]
     else:
-        res = processArithmetic(binary.rightOperand)
+        res = processBinary(binary.rightOperand)
         right = res[1]
         ours +=[right]
         b+= res[0]
+    
 
 
 
@@ -151,6 +221,22 @@ def processBinary(binary):
         tempLabel = StorageMachine.getNextLabel()
         b+=[bz(res.registerName,tempLabel)]
         StorageMachine.freeRegister(res)
+    elif(binary.operation == '||'):
+        res = StorageMachine.getNextTemp()
+        b+=[iadd(res.registerName,left.registerName,right.registerName)]
+        b+=[igt(res.registerName,res.registerName,curIDs['zero'].registerName)]
+        tempLabel = StorageMachine.getNextLabel()
+        b+=[bz(res.registerName,tempLabel)]
+        StorageMachine.freeRegister(res)
+    elif(binary.operation == '&&'):
+        res = StorageMachine.getNextTemp()
+        two = StorageMachine.getNextTemp()
+        b+=[mov_immed_i(two.registerName,2)]
+        b+=[iadd(res.registerName,left.registerName,right.registerName)]
+        b+=[igeq(res.registerName,res.registerName,two.registerName)]
+        tempLabel = StorageMachine.getNextLabel()
+        b+=[bz(res.registerName,tempLabel)]
+        StorageMachine.freeRegister(res)
     for cell in ours:
         StorageMachine.freeRegister(cell)
     return (b,tempLabel)
@@ -160,22 +246,29 @@ def processExpression(exp):
     if exp.__class__.__name__ == 'assignExpression_record':
         if(exp.assigner.__class__.__name__ == 'const_record'):
             b+=[ mov_imm(exp.assignee,exp.assigner)]
+        elif(exp.assigner.__class__.__name__ == 'binaryExpression_record'):
+            res = processBinary(exp.assigner)
+            b+= res[0]
+            b+=[  mov(curIDs[exp.assignee.id].registerName,res[1].registerName)]
         else:
             b+=[  mov(curIDs[exp.assignee.id].registerName,curIDs[exp.assigner.id].registerName)]
     elif exp.__class__.__name__ == 'autoExpression_record':
         inc = StorageMachine.getNextTemp()
-        b+= [mov_immed_i(inc.registerName,1)]
         if exp.auto_type == '++':
             if(exp.operand.type == 'int'):
-                b += [iadd(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
+                b += [iadd(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,curIDs['one'].registerName)]
             else:
+                b+= [mov_immed_f(inc.registerName,1.0)]
                 b += [fadd(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
+                StorageMachine.freeRegister(inc)
         else:
             if(exp.operand.type == 'int'):
-                b += [isub(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
+                b += [isub(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,curIDs['one'].registerName)]
             else:
+                b+= [mov_immed_f(inc.registerName,1.0)]
                 b += [fsub(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
-        StorageMachine.freeRegister(inc)
+                StorageMachine.freeRegister(inc)
+        
     return b
 
 
@@ -207,7 +300,7 @@ def processBlock(block,methodName = None,args = None):
             tempLabel = ""
             endLabel = ""
             if(line.conditional.__class__.__name__ == 'binaryExpression_record'):
-                temp = processBinary(line.conditional)
+                temp = processConditional(line.conditional)
                 b +=temp[0]
                 tempLabel = temp[1]
             else:
