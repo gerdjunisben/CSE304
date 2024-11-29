@@ -28,6 +28,33 @@ def mov_imm_temp(cell,cons):
     else:
         return mov_immed_f(cell.registerName,cons.value)
     
+
+def processMethod(method):
+    b =[]
+    ret = None
+    if(len(method.args) == 0):
+        args = StorageMachine.getArgs(1)
+    else:
+        args = StorageMachine.getArgs(len(method.args))
+    for i in range(0,len(method.args)):
+        if(method.args[i].__class__.__name__ == 'const_record'):
+            b+= [mov_imm_temp(args[i],method.args[i])]
+        elif(method.args[i].__class__.__name__ == 'varExpression_record'):
+            b+= [mov(args[i].registerName,curIDs(method.args[i]))]
+        elif(method.args[i].__class__.__name__ == 'binaryExpression_record'):
+            rez = processBinary(method.args[i])
+            b+= rez[0]
+            b+= [mov(args[i].registerName,rez[1].registerName)]
+        else:
+            rez = processMethod(method.args[i])
+            b+= rez[0]
+            b+= [mov(args[i].registerName,rez[1].registerName)]
+    b+= [ call(method.method_name)]
+    ret = (b,args[0])
+
+    return ret
+
+
 def processBinary(binary):
     b = []
     ours = []
@@ -250,8 +277,14 @@ def processExpression(exp):
             res = processBinary(exp.assigner)
             b+= res[0]
             b+=[  mov(curIDs[exp.assignee.id].registerName,res[1].registerName)]
+        elif(exp.assigner.__class__.__name__ == 'varExpression_record'):
+            res = processMethod(exp.assigner)
+            b+= res[0]
+            b+=[  mov(curIDs[exp.assignee.id].registerName,res[1].registerName)]
         else:
-            b+=[  mov(curIDs[exp.assignee.id].registerName,curIDs[exp.assigner.id].registerName)]
+            res = processMethod(exp.assigner)
+            b+= res[0]
+            b+=[  mov(curIDs[exp.assignee.id].registerName,res[1].registerName)]
     elif exp.__class__.__name__ == 'autoExpression_record':
         inc = StorageMachine.getNextTemp()
         if exp.auto_type == '++':
@@ -268,6 +301,12 @@ def processExpression(exp):
                 b+= [mov_immed_f(inc.registerName,1.0)]
                 b += [fsub(curIDs[exp.operand.id].registerName,curIDs[exp.operand.id].registerName,inc.registerName)]
                 StorageMachine.freeRegister(inc)
+    elif exp.__class__.__name__ == 'methodCallExpression_record':
+        res = processMethod(exp.assigner)
+        b+= res[0]
+        b+=[  mov(curIDs[exp.assignee.id].registerName,res[1].registerName)]
+
+
         
     return b
 
@@ -293,8 +332,16 @@ def processBlock(block,methodName = None,args = None):
             if line.type != 'void':
                 if(line.return_val.__class__.__name__ == 'const_record'):
                     b+=[mov_imm(returnRegister,line.return_val)]
-                else:
+                elif(line.return_val.__class__.__name__ == 'varExpression_record'):
                     b+= [mov(curIDs[returnRegister.id].registerName,curIDs[line.return_val.id].registerName)]
+                elif(line.return_val.__class__.__name__ == 'binaryExpression_record'):
+                    res = processBinary(line.return_val)
+                    b+= res[0]
+                    b+=[  mov(curIDs[returnRegister.id].registerName,res[1].registerName)]
+                else:
+                    res = processMethod(line.return_val)
+                    b+= res[0]
+                    b+=[  mov(curIDs[returnRegister.id].registerName,res[1].registerName)]
             b += [ret()]
         elif line.__class__.__name__ == "if_record":
             tempLabel = ""

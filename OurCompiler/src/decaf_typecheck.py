@@ -76,7 +76,7 @@ class typeTree:
                 else:
                     thing[4].type = res2
             elif(thing[0] == 4):
-                res = self.validTypes(thing[1],thing[3])
+                res = self.validTypes(thing[1].type,thing[3])
                 if(res==None):
                     thing[2].type = 'error'
                     raise SyntaxError(f"Type mismatch between returned value and header return {thing[1].type} on line {thing[1].line} and {thing[3].type} on line {thing[3].line}")

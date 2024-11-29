@@ -145,7 +145,7 @@ class return_record(statement_record):
         if(return_val == None):
             typeChecker.addValidReturn('void',self)
         else:
-            typeChecker.addValidReturn(return_val.type,self);
+            typeChecker.addValidReturn(return_val,self);
         
 
 class expressionStatement_record(statement_record):

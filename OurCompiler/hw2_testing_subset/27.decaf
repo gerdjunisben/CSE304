@@ -1,18 +1,23 @@
 class A {
 
-    public int wala(int a){
+
+
+    public void main()
+    {
         int i;
-        i = 10;
-        if(i<11){
-            i= a + 11;
-        }
-        else
-        {
-            i--;
-        }
+        i= this.wala((this.retTen()),20);
+    }
+
+    public int retTen()
+    {
+        return 10;
+    }
+
+    public int wala(int a,int b){
+        
 
 
-        return;
+        return a + b;
     }
 
 }

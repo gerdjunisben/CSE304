@@ -259,3 +259,7 @@ class bnz():
 class jmp():
     def __init__(self,label):
         self.label = label
+
+class call():
+    def __init__(self,label):
+        self.label = label
