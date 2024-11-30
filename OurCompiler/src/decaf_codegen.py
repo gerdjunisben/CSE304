@@ -22,7 +22,7 @@ def mov_imm(reg,cons):
     else:
         return mov_immed_f(curIDs[reg.id].registerName,cons.value)
     
-def mov_imm_temp(cell,cons):
+def mov_imm_cell(cell,cons):
     if(cons.type == 'int'):
         return mov_immed_i(cell.registerName,cons.value)
     else:
@@ -37,18 +37,7 @@ def processMethod(method):
     else:
         args = StorageMachine.getArgs(len(method.args))
     for i in range(0,len(method.args)):
-        if(method.args[i].__class__.__name__ == 'const_record'):
-            b+= [mov_imm_temp(args[i],method.args[i])]
-        elif(method.args[i].__class__.__name__ == 'varExpression_record'):
-            b+= [mov(args[i].registerName,curIDs(method.args[i]))]
-        elif(method.args[i].__class__.__name__ == 'binaryExpression_record'):
-            rez = processBinary(method.args[i])
-            b+= rez[0]
-            b+= [mov(args[i].registerName,rez[1].registerName)]
-        else:
-            rez = processMethod(method.args[i])
-            b+= rez[0]
-            b+= [mov(args[i].registerName,rez[1].registerName)]
+        b+= handleExpression(args[i],method.args[i])
     b+= [ call(method.method_name)]
     ret = (b,args[0])
 
@@ -62,29 +51,37 @@ def processBinary(binary):
     if(binary.leftOperand.__class__.__name__ == 'const_record'):
         left = StorageMachine.getNextTemp()
         ours +=[left]
-        b+=[mov_imm_temp(left,binary.leftOperand)]
+        b+=[mov_imm_cell(left,binary.leftOperand)]
     elif(binary.leftOperand.__class__.__name__ == 'varExpression_record'):
         left = curIDs[binary.leftOperand.id]
-    else:
-        res =processBinary(binary.leftOperand)
-        b += res[0]
+    elif(left.__class__.__name__ == 'binaryExpression_record'):
+        res = processBinary(binary.leftOperand)
         left = res[1]
         ours +=[left]
-
+        b+= res[0]
+    else:
+        res = processMethod(binary.leftOperand)
+        left = res[1]
+        ours +=[left]
+        b+= res[0]
 
 
     if(binary.rightOperand.__class__.__name__ == 'const_record'):
         right = StorageMachine.getNextTemp()
         ours +=[right]
-        b+=[mov_imm_temp(right,binary.rightOperand)]
+        b+=[mov_imm_cell(right,binary.rightOperand)]
     elif(binary.rightOperand.__class__.__name__ == 'varExpression_record'):
         right = curIDs[binary.rightOperand.id]
-    else:
+    elif(right.__class__.__name__ == 'binaryExpression_record'):
         res = processBinary(binary.rightOperand)
-        b += res[0]
         right = res[1]
         ours +=[right]
-
+        b+= res[0]
+    else:
+        res = processMethod(binary.rightOperand)
+        right = res[1]
+        ours +=[right]
+        b+= res[0]
     if(binary.operation == '+'):
         res = StorageMachine.getNextTemp()
         if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
@@ -169,122 +166,46 @@ def processBinary(binary):
     
 def processConditional(binary):
     b = []
-    ours = []
-    left = None
-    right = None
-
-    if(binary.leftOperand.__class__.__name__ == 'const_record'):
-        left = StorageMachine.getNextTemp()
-        ours +=[left]
-        b+=[mov_imm_temp(left,binary.leftOperand)]
-    elif(binary.leftOperand.__class__.__name__ == 'varExpression_record'):
-        left = curIDs[binary.leftOperand.id]
-    else:
-        res = processBinary(binary.leftOperand)
-        left = res[1]
-        ours +=[left]
-        b+= res[0]
 
 
 
-    if(binary.rightOperand.__class__.__name__ == 'const_record'):
-        right = StorageMachine.getNextTemp()
-        ours +=[right]
-        b+=[mov_imm_temp(right,binary.rightOperand)]
-    elif(binary.rightOperand.__class__.__name__ == 'varExpression_record'):
-        right = curIDs[binary.rightOperand.id]
-    else:
-        res = processBinary(binary.rightOperand)
-        right = res[1]
-        ours +=[right]
-        b+= res[0]
-    
-
-
-
-    tempLabel = None
+    tempLabel = StorageMachine.getNextLabel()
+    res = processBinary(binary)
+    b+=res[0]
     if(binary.operation == '=='):
-        res = StorageMachine.getNextTemp()
-        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
-            b+=[isub(res.registerName,left.registerName,right.registerName)]
-        else:
-            b+=[fsub(res.registerName,left.registerName,right.registerName)]
-        tempLabel = StorageMachine.getNextLabel()
-        b+=[bnz(res.registerName,tempLabel)]
-        StorageMachine.freeRegister(res)
-    elif(binary.operation == '<'):
-        res = StorageMachine.getNextTemp()
-        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
-            b+=[ilt(res.registerName,left.registerName,right.registerName)]
-        else:
-            b+=[flt(res.registerName,left.registerName,right.registerName)]
-        tempLabel = StorageMachine.getNextLabel()
-        b+=[bz(res.registerName,tempLabel)]
-        StorageMachine.freeRegister(res)
-    elif(binary.operation == '<='):
-        res = StorageMachine.getNextTemp()
-        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
-            b+=[ileq(res.registerName,left.registerName,right.registerName)]
-        else:
-            b+=[fleq(res.registerName,left.registerName,right.registerName)]
-        tempLabel = StorageMachine.getNextLabel()
-        b+=[bz(res.registerName,tempLabel)]
-        StorageMachine.freeRegister(res)
-    elif(binary.operation == '>'):
-        res = StorageMachine.getNextTemp()
-        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
-            b+=[igt(res.registerName,left.registerName,right.registerName)]
-        else:
-            b+=[fgt(res.registerName,left.registerName,right.registerName)]
-        tempLabel = StorageMachine.getNextLabel()
-        b+=[bz(res.registerName,tempLabel)]
-        StorageMachine.freeRegister(res)
-    elif(binary.operation == '>='):
-        res = StorageMachine.getNextTemp()
-        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
-            b+=[igeq(res.registerName,left.registerName,right.registerName)]
-        else:
-            b+=[fgeq(res.registerName,left.registerName,right.registerName)]
-        tempLabel = StorageMachine.getNextLabel()
-        b+=[bz(res.registerName,tempLabel)]
-        StorageMachine.freeRegister(res)
-    elif(binary.operation == '||'):
-        res = StorageMachine.getNextTemp()
-        b+=[iadd(res.registerName,left.registerName,right.registerName)]
-        b+=[igt(res.registerName,res.registerName,curIDs['zero'].registerName)]
-        tempLabel = StorageMachine.getNextLabel()
-        b+=[bz(res.registerName,tempLabel)]
-        StorageMachine.freeRegister(res)
-    elif(binary.operation == '&&'):
-        res = StorageMachine.getNextTemp()
-        two = StorageMachine.getNextTemp()
-        b+=[mov_immed_i(two.registerName,2)]
-        b+=[iadd(res.registerName,left.registerName,right.registerName)]
-        b+=[igeq(res.registerName,res.registerName,two.registerName)]
-        tempLabel = StorageMachine.getNextLabel()
-        b+=[bz(res.registerName,tempLabel)]
-        StorageMachine.freeRegister(res)
-    for cell in ours:
-        StorageMachine.freeRegister(cell)
+        b+=[bnz(res[1].registerName,tempLabel)]
+    else:
+        
+        b+=[bz(res[1].registerName,tempLabel)]
+
+    StorageMachine.freeRegister(res[1])
     return (b,tempLabel)
+
+def handleExpression(left,right):
+    b = []
+    if(right.__class__.__name__ == 'const_record'):
+        b+=[ mov_imm_cell(left,right)]
+    elif(right.__class__.__name__ == 'binaryExpression_record'):
+        res = processBinary(right)
+        b+= res[0]
+        b+=[  mov(left.registerName,res[1].registerName)]
+    elif(right.__class__.__name__ == 'varExpression_record'):
+
+        b+=[  mov(left.registerName,curIDs[right.id].registerName)]
+    else:
+        res = processMethod(right)
+        b+= res[0]
+        b+=[  mov(left.registerName,res[1].registerName)]
+    return b
 
 def processExpression(exp):
     b = []
     if exp.__class__.__name__ == 'assignExpression_record':
-        if(exp.assigner.__class__.__name__ == 'const_record'):
-            b+=[ mov_imm(exp.assignee,exp.assigner)]
-        elif(exp.assigner.__class__.__name__ == 'binaryExpression_record'):
-            res = processBinary(exp.assigner)
-            b+= res[0]
-            b+=[  mov(curIDs[exp.assignee.id].registerName,res[1].registerName)]
-        elif(exp.assigner.__class__.__name__ == 'varExpression_record'):
-            res = processMethod(exp.assigner)
-            b+= res[0]
-            b+=[  mov(curIDs[exp.assignee.id].registerName,res[1].registerName)]
-        else:
-            res = processMethod(exp.assigner)
-            b+= res[0]
-            b+=[  mov(curIDs[exp.assignee.id].registerName,res[1].registerName)]
+        left = exp.assignee
+        right = exp.assigner
+        left = curIDs[left.id]
+        b+= handleExpression(left,right)
+        
     elif exp.__class__.__name__ == 'autoExpression_record':
         inc = StorageMachine.getNextTemp()
         if exp.auto_type == '++':
@@ -361,7 +282,8 @@ def processBlock(block,methodName = None,args = None):
 
             b+= [label(tempLabel)]
 
-            b+= processBlock(line.else_block.block)
+            if(not isinstance(line.else_block,list)):
+                b+= processBlock(line.else_block.block)
 
             if(endLabel!=""):
                 b+=[label(endLabel)]
