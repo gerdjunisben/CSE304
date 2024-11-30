@@ -132,6 +132,7 @@ def t_LBRACE(t):
     r'\{'
     #global_symbol_table.addParams()
     global_symbol_table.enterNewScope()
+    global_symbol_table.addParams()
     return t
 
 def t_RBRACE(t):
@@ -154,7 +155,7 @@ def t_INTCONST(t):
 
 # Function for FLOATCONST regex
 def t_FLOATCONST(t):
-    r'(-)?\d+(\.)?\d+'
+    r'\d+(\.)?\d+'
     t.value = float(t.value)
     return t
 

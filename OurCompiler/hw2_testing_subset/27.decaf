@@ -5,7 +5,7 @@ class A {
     public void main()
     {
         int i;
-        i= this.wala((this.retTen()),20);
+        i= this.wala((this.retTen()),+20);
     }
 
     public int retTen()
@@ -15,9 +15,9 @@ class A {
 
     public int wala(int a,int b){
         
-        if(a>10)
+        for(a=0;true;a++)
         {
-            return a-b;
+            b++;
         }
         return a + b;
     }

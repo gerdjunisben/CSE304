@@ -16,11 +16,7 @@ class ReturnRegister:
 
 returnRegister = ReturnRegister()
 
-def mov_imm(reg,cons):
-    if(cons.type == 'int'):
-        return mov_immed_i(curIDs[reg.id].registerName,cons.value)
-    else:
-        return mov_immed_f(curIDs[reg.id].registerName,cons.value)
+
     
 def mov_imm_cell(cell,cons):
     if(cons.type == 'int'):
@@ -37,10 +33,35 @@ def processMethod(method):
     else:
         args = StorageMachine.getArgs(len(method.args))
     for i in range(0,len(method.args)):
-        b+= handleExpression(args[i],method.args[i])
+        b+= handleSetting(args[i],method.args[i])
     b+= [ call(method.method_name)]
     ret = (b,args[0])
 
+    return ret
+
+def processUnary(unary):
+    ret = None
+    b=[]
+    if(unary.operation == '!'):
+        temp = StorageMachine.getNextTemp()
+        res = StorageMachine.getNextTemp()
+        b+= handleSetting(temp,unary.operand)
+        b+=[mov_immed_i(res.registerName,1)]
+        b+=[isub(res.registerName,res.registerName,temp.registerName)]
+        StorageMachine.freeRegister(temp)
+        ret = (b,res)
+    elif(unary.operation == '-'):
+        temp = StorageMachine.getNextTemp()
+        res = StorageMachine.getNextTemp()
+        b+= handleSetting(temp,unary.operand)
+        b+=[mov_immed_i(res.registerName,0)]
+        b+=[isub(res.registerName,res.registerName,temp.registerName)]
+        StorageMachine.freeRegister(temp)
+        ret = (b,res)
+    else:
+        res = StorageMachine.getNextTemp()
+        b+=[mov_immed_i(res.registerName,unary.operand.value)]
+        ret = (b,res)
     return ret
 
 
@@ -54,8 +75,13 @@ def processBinary(binary):
         b+=[mov_imm_cell(left,binary.leftOperand)]
     elif(binary.leftOperand.__class__.__name__ == 'varExpression_record'):
         left = curIDs[binary.leftOperand.id]
-    elif(left.__class__.__name__ == 'binaryExpression_record'):
+    elif(binary.leftOperand.__class__.__name__ == 'binaryExpression_record'):
         res = processBinary(binary.leftOperand)
+        left = res[1]
+        ours +=[left]
+        b+= res[0]
+    elif(binary.leftOperand.__class__.__name__ == 'unaryExpression_record'):
+        res = processUnary(binary.leftOperand)
         left = res[1]
         ours +=[left]
         b+= res[0]
@@ -72,11 +98,17 @@ def processBinary(binary):
         b+=[mov_imm_cell(right,binary.rightOperand)]
     elif(binary.rightOperand.__class__.__name__ == 'varExpression_record'):
         right = curIDs[binary.rightOperand.id]
-    elif(right.__class__.__name__ == 'binaryExpression_record'):
+    elif(binary.rightOperand.__class__.__name__ == 'binaryExpression_record'):
         res = processBinary(binary.rightOperand)
         right = res[1]
         ours +=[right]
         b+= res[0]
+    elif(binary.rightOperand.__class__.__name__ == 'unaryExpression_record'):
+        res = processUnary(binary.rightOperand)
+        right = res[1]
+        ours +=[right]
+        b+= res[0]
+        
     else:
         res = processMethod(binary.rightOperand)
         right = res[1]
@@ -111,6 +143,13 @@ def processBinary(binary):
             b+=[fdiv(res.registerName,left.registerName,right.registerName)]
         ret = (b,res)
     elif(binary.operation == '=='):
+        res = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
+            b+=[isub(res.registerName,left.registerName,right.registerName)]
+        else:
+            b+=[fsub(res.registerName,left.registerName,right.registerName)]
+        ret = (b,res)
+    elif(binary.operation == '!='):
         res = StorageMachine.getNextTemp()
         if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
             b+=[isub(res.registerName,left.registerName,right.registerName)]
@@ -164,24 +203,30 @@ def processBinary(binary):
     return ret
 
     
-def processConditional(binary):
+def processConditional(cond):
     b = []
 
 
 
     tempLabel = StorageMachine.getNextLabel()
-    res = processBinary(binary)
-    b+=res[0]
-    if(binary.operation == '=='):
-        b+=[bnz(res[1].registerName,tempLabel)]
-    else:
+    if(cond.__class__.__name__ == 'binaryExpression_record'):
+        res = processBinary(cond)
+        b+=res[0]
+        if(cond.operation == '=='):
+            b+=[bnz(res[1].registerName,tempLabel)]
+        else:
         
-        b+=[bz(res[1].registerName,tempLabel)]
+            b+=[bz(res[1].registerName,tempLabel)]
 
-    StorageMachine.freeRegister(res[1])
+        StorageMachine.freeRegister(res[1])
+    else:
+        res = processUnary(cond)
+        b+=res[0]
+        b+=[bnz(res[1].registerName,tempLabel)]
+        StorageMachine.freeRegister(res[1])
     return (b,tempLabel)
 
-def handleExpression(left,right):
+def handleSetting(left,right):
     b = []
     if(right.__class__.__name__ == 'const_record'):
         b+=[ mov_imm_cell(left,right)]
@@ -192,6 +237,10 @@ def handleExpression(left,right):
     elif(right.__class__.__name__ == 'varExpression_record'):
 
         b+=[  mov(left.registerName,curIDs[right.id].registerName)]
+    elif(right.__class__.__name__ == 'unaryExpression_record'):
+        res = processUnary(right)
+        b+= res[0]
+        b+=[  mov(left.registerName,res[1].registerName)]
     else:
         res = processMethod(right)
         b+= res[0]
@@ -204,7 +253,7 @@ def processExpression(exp):
         left = exp.assignee
         right = exp.assigner
         left = curIDs[left.id]
-        b+= handleExpression(left,right)
+        b+= handleSetting(left,right)
         
     elif exp.__class__.__name__ == 'autoExpression_record':
         inc = StorageMachine.getNextTemp()
@@ -252,7 +301,7 @@ def processBlock(block,methodName = None,args = None):
         elif line.__class__.__name__ == "return_record":
             if line.type != 'void':
                 if(line.return_val.__class__.__name__ == 'const_record'):
-                    b+=[mov_imm(returnRegister,line.return_val)]
+                    b+=[mov_imm_cell(curIDs[returnRegister.id],line.return_val)]
                 elif(line.return_val.__class__.__name__ == 'varExpression_record'):
                     b+= [mov(curIDs[returnRegister.id].registerName,curIDs[line.return_val.id].registerName)]
                 elif(line.return_val.__class__.__name__ == 'binaryExpression_record'):
@@ -267,26 +316,93 @@ def processBlock(block,methodName = None,args = None):
         elif line.__class__.__name__ == "if_record":
             tempLabel = ""
             endLabel = ""
-            if(line.conditional.__class__.__name__ == 'binaryExpression_record'):
+            if(line.conditional.__class__.__name__ == 'binaryExpression_record' or
+               line.conditional.__class__.__name__ == 'unaryExpression_record'):
                 temp = processConditional(line.conditional)
                 b +=temp[0]
                 tempLabel = temp[1]
+                b+= processBlock(line.then_block.block)
+
+                if(not isinstance(line.else_block,list)):
+                    endLabel = StorageMachine.getNextLabel()
+                    b+= [jmp(endLabel)]
+
+                b+= [label(tempLabel)]
+
+                if(not isinstance(line.else_block,list)):
+                    b+= processBlock(line.else_block.block)
+
+                if(endLabel!=""):
+                    b+=[label(endLabel)]
             else:
-                pass
+                if(line.conditional.value == "true"):
+                    b+= processBlock(line.then_block.block)
+                #if false optimize it out
 
-            b+= processBlock(line.then_block.block)
-
-            if(not isinstance(line.else_block,list)):
+            
+        elif line.__class__.__name__ == "while_record":
+            tempLabel = ""
+            endLabel = ""
+            if(line.conditional.__class__.__name__ == 'binaryExpression_record' or
+               line.conditional.__class__.__name__ == 'unaryExpression_record'):
+                topLoop = StorageMachine.getNextLabel()
                 endLabel = StorageMachine.getNextLabel()
-                b+= [jmp(endLabel)]
+                temp = processConditional(line.conditional)
+                b+=[label(topLoop)]
+                b +=temp[0]
+                tempLabel = temp[1]
 
-            b+= [label(tempLabel)]
+                b+= processBlock(line.loop_block.block)
+                b+= [jmp(topLoop)]
 
-            if(not isinstance(line.else_block,list)):
-                b+= processBlock(line.else_block.block)
+                b+= [label(tempLabel)]
 
-            if(endLabel!=""):
-                b+=[label(endLabel)]
+
+                if(endLabel!=""):
+                    b+=[label(endLabel)]
+            else:
+                if(line.conditional.value == "true"): #infinite loop but I allow it cause I'm chill like that
+                    topLoop = StorageMachine.getNextLabel()
+                    endLabel = StorageMachine.getNextLabel()
+                    b+=[label(topLoop)]
+                    
+                    b+= processBlock(line.loop_block.block)
+                    b+= [jmp(topLoop)]
+                    b+= [label(endLabel)] #so we can break later
+                #if false optimize it out
+        elif line.__class__.__name__ == "for_record":
+            tempLabel = ""
+            endLabel = ""
+            if(line.conditional.__class__.__name__ == 'binaryExpression_record' or
+               line.conditional.__class__.__name__ == 'unaryExpression_record'):
+                topLoop = StorageMachine.getNextLabel()
+                endLabel = StorageMachine.getNextLabel()
+                temp = processConditional(line.conditional)
+                b += processExpression(line.initializer.expression)
+                b+=[label(topLoop)]
+                b +=temp[0]
+                b+=processExpression(line.update_expr.expression)
+                tempLabel = temp[1]
+
+                b+= processBlock(line.loop_body.block)
+                b+= [jmp(topLoop)]
+
+                b+= [label(tempLabel)]
+
+
+                if(endLabel!=""):
+                    b+=[label(endLabel)]
+            else:
+                if(line.conditional.value == "true"): #infinite loop but I allow it cause I'm chill like that
+                    topLoop = StorageMachine.getNextLabel()
+                    endLoop = StorageMachine.getNextLabel()
+                    b += processExpression(line.initializer.expression)
+                    b+=[label(topLoop)]
+                    b+=processExpression(line.update_expr.expression)
+                    b+= processBlock(line.loop_body.block)
+                    b+= [jmp(topLoop)]
+                    b+= [label(endLoop)] #so we can break later
+                #if false optimize it out
 
     for id in ours:
         StorageMachine.freeRegister(curIDs[id])
