@@ -63,9 +63,9 @@ def p_program(p):
     '''program : class_decl
                 | class_decl program'''
     if len(p) ==2:
-        p[0] = p[1]
+        p[0] = [p[1]]
     else:
-        p[0] = (p[1],p[2])
+        p[0] = [p[1]] + p[2]
 
 def p_class_decl(p):
     '''class_decl : CLASS ID EXTENDS ID LBRACE class_body_decl RBRACE

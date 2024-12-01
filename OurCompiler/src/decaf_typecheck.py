@@ -18,10 +18,10 @@ class typeTree:
         self.types[name] = self.types[sup].children[name]
         
 
-    def addUsertype(self,name,sup,miniTable):
+    def addUsertype(self,name,sup,miniTable,publicFields,privateFields):
         if (self.types[sup] == None):
             return None
-        self.types[sup].children[name] = typeNode(name,sup,miniTable)
+        self.types[sup].children[name] = typeNode(name,sup,miniTable, self.types[sup].publicFields+publicFields,privateFields )
         self.types[name] = self.types[sup].children[name]
 
     def superOfName(self,name):
@@ -143,11 +143,13 @@ class typeTree:
 
 
 class typeNode:
-     def __init__(self,name,parent,miniTable=None):
+     def __init__(self,name,parent,miniTable=None,publicFields = [],privateFields = []):
         self.name = name
         self.parent = parent
         self.children = {'null':None}
         self.miniTable = miniTable
+        self.publicFields = publicFields
+        self.privateFields = privateFields
 
 
 typeChecker = typeTree()

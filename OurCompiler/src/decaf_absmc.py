@@ -263,3 +263,21 @@ class jmp():
 class call():
     def __init__(self,label):
         self.label = label
+
+class halloc():
+    def __init__(self,register,cellCount):
+        self.register = register
+        self.cellCount = cellCount
+
+
+class hload():
+    def __init__(self,res,base,offset):
+        self.res = res
+        self.base = base
+        self.offset = offset
+
+class hstore():
+    def __init__(self,res,base,offset):
+        self.res = res
+        self.base = base
+        self.offset = offset

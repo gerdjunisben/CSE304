@@ -1,12 +1,24 @@
-class A {
+class Z{
+    public int groovePoints;
+    private int freakAwards;
+}
 
 
 
-    public void main()
+class A extends Z{
+    public int funkScore;
+
+    public A()
     {
-        int i;
-        i= this.wala((this.retTen()),+20);
+
     }
+
+    public A(int a)
+    {
+
+    }
+
+
 
     public int retTen()
     {
@@ -22,4 +34,16 @@ class A {
         return a + b;
     }
 
+}
+
+
+class B{
+    public void main()
+    {
+        int i;
+        A thingy;
+        thingy = new A(5);
+        i = thingy.groovePoints;
+        i= thingy.wala(thingy.funkScore,i);
+    }
 }

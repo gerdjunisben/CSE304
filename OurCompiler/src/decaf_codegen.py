@@ -2,6 +2,7 @@
 import decaf_parser as parser
 import sys
 from decaf_absmc import *
+from decaf_typecheck import typeChecker
 
 StorageMachine = TheStorageMachine(100)
 
@@ -32,10 +33,31 @@ def processMethod(method):
         args = StorageMachine.getArgs(1)
     else:
         args = StorageMachine.getArgs(len(method.args))
+
     for i in range(0,len(method.args)):
         b+= handleSetting(args[i],method.args[i])
     b+= [ call(method.method_name)]
     ret = (b,args[0])
+
+    return ret
+
+def processConstructor(memory,newStatement):
+    b =[]
+    ret = None
+    if(len(newStatement.args) == 0):
+        args = StorageMachine.getArgs(1)
+    else:
+        args = StorageMachine.getArgs(len(newStatement.args) + 1)
+    b+= [save(memory.registerName)]
+    for i in range(0,len(newStatement.args)):
+        b+= [save(args[i].registerName)]
+    for i in range(0,len(newStatement.args)):
+        b+= handleSetting(args[i],newStatement.args[i])
+    b+= [ call(newStatement.base +  '_'+str(newStatement.id))]
+    b+= [restore(memory.registerName)]
+    for i in range(0,len(newStatement.args)):
+        b+= [restore(args[i].registerName)]
+    ret = b
 
     return ret
 
@@ -85,6 +107,15 @@ def processBinary(binary):
         left = res[1]
         ours +=[left]
         b+= res[0]
+    elif(binary.leftOperand.__class__.__name__ == 'fieldAccessExpression_record'):
+        left = StorageMachine.getNextTemp()
+        i = 0
+        for field in typeChecker.types[binary.leftOperand.base.type].publicFields:
+            if(field.name == binary.leftOperand.field):
+                break
+            i+=1
+        b+= [mov_immed_i(left.registerName,i)]
+        b+= [ hload(left.registerName,curIDs[binary.leftOperand.base.id].registerName,left.registerName)]
     else:
         res = processMethod(binary.leftOperand)
         left = res[1]
@@ -108,7 +139,15 @@ def processBinary(binary):
         right = res[1]
         ours +=[right]
         b+= res[0]
-        
+    elif(binary.rightOperand.__class__.__name__ == 'fieldAccessExpression_record'):
+        right = StorageMachine.getNextTemp()
+        i = 0
+        for field in typeChecker.types[binary.rightOperand.base.type].publicFields:
+            if(field.name == binary.rightOperand.field):
+                break
+            i+=1
+        b+= [mov_immed_i(right.registerName,i)]
+        b+= [ hload(right.registerName,curIDs[binary.rightOperand.base.id].registerName,right.registerName)]
     else:
         res = processMethod(binary.rightOperand)
         right = res[1]
@@ -241,6 +280,17 @@ def handleSetting(left,right):
         res = processUnary(right)
         b+= res[0]
         b+=[  mov(left.registerName,res[1].registerName)]
+    elif(right.__class__.__name__ == 'newExpression_record'):
+        b+=[halloc(left.registerName,len(typeChecker.types[right.type].publicFields))]
+        b+= processConstructor(left,right)
+    elif(right.__class__.__name__ == 'fieldAccessExpression_record'):
+        i = 0
+        for field in typeChecker.types[right.base.type].publicFields:
+            if(field.name == right.field):
+                break
+            i+=1
+        b+= [mov_immed_i(left.registerName,i)]
+        b+= [ hload(left.registerName,curIDs[right.base.id].registerName,left.registerName)]
     else:
         res = processMethod(right)
         b+= res[0]
@@ -281,15 +331,16 @@ def processExpression(exp):
     return b
 
 
-def processBlock(block,methodName = None,args = None):
+def processBlock(block,methodName = None,args = []):
     ours = []
     b = []
     if(methodName!= None):
         b+= [label(methodName)]
-    if args!=None:
+    if len(args) != 0:
         temp = StorageMachine.getArgs(len(args))
         for i in range(0,len(args)):
             curIDs[args[i].ID] = temp[i]
+            ours+=[args[i].ID]
     for line in block:
         if isinstance(line,list):
             if(line[0].__class__.__name__ == 'variable_record'):
@@ -405,7 +456,8 @@ def processBlock(block,methodName = None,args = None):
                 #if false optimize it out
 
     for id in ours:
-        StorageMachine.freeRegister(curIDs[id])
+        if(curIDs[id].registerName[0] != 'a'):
+            StorageMachine.freeRegister(curIDs[id])
         del curIDs[id]
     return b
 
@@ -416,8 +468,6 @@ def check(file):
 
 
     prog = parser.parse(data, debug=False)
-    if not isinstance(prog,tuple):
-        prog = (prog,)
 
     blocks = []
 
@@ -425,6 +475,8 @@ def check(file):
         for clazz in prog:
             for method in clazz.methods:
                 blocks += [processBlock(method.body.block,method.name,method.parameters)]
+            for constructor in clazz.constructors:
+                blocks += [processBlock(constructor.body.block,clazz.name + '_'+ str(constructor.ID),constructor.parameters)+ [ret()]]
 
     print("wala")
 

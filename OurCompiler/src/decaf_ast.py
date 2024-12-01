@@ -30,11 +30,21 @@ class class_record:
         self.line = line
         global_symbol_table.addParams()
         #print(str(line) + "," + str(global_symbol_table.cur.names))
+        publicFields = []
+        privateFields = []
+        for i in self.fields:
+            if(i.applicability == None and i.visibility == 'public'):
+                publicFields+=[i]
+            else:
+                privateFields+=[i]
+        if(superName!=None):
+            for field in typeChecker.types[superName].publicFields:
+                self.fields += [field_record(field.name,field.className,field.visibility,field.applicability,field.type,field.line)]
         self.miniName = global_symbol_table.exitScope()
         if(superName==None):
-            typeChecker.addUsertype(name,'object',self.miniName)
+            typeChecker.addUsertype(name,'object',self.miniName,publicFields,privateFields)
         else:
-            typeChecker.addUsertype(name,superName,self.miniName)
+            typeChecker.addUsertype(name,superName,self.miniName,publicFields,privateFields)
         global_symbol_table.setRefs(self.name)
         global_symbol_table.setID(name,-1)
         global_symbol_table.executeFieldLookUps()
