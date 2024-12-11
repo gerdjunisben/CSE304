@@ -123,9 +123,9 @@ def p_field_decl(p):
     app = None
     vis = None
 
-    if(p[1] != None and p[1]['Visibility'] != None):
+    if(p[1] != None and p[1].get('Visibility') != None):
         vis = p[1]['Visibility']
-    elif(p[1] != None and p[1]['Applicability'] != None):
+    if(p[1] != None and p[1].get('Applicability') != None):
         app = p[1]['Applicability']
 
     fields = []

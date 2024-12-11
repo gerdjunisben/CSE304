@@ -5,7 +5,7 @@ from decaf_absmc import *
 from decaf_typecheck import typeChecker
 
 StorageMachine = TheStorageMachine(100)
-
+staticFields = []
 
 curIDs = {'return':StorageMachine.getArgs(1)[0],'one':StorageMachine.getNextTemp(),'zero':StorageMachine.getNextTemp()}
 
@@ -112,10 +112,20 @@ def processBinary(binary):
         i = 0
         for field in typeChecker.types[binary.leftOperand.base.type].publicFields:
             if(field.name == binary.leftOperand.field):
+                if(field.applicability == 'static'):
+                    i = 0
+                    for statField in staticFields:
+                        if(field.staticID == statField ):
+                            break
+                        i+=1
+                    b+= [mov_immed_i(left.registerName,i)]
+                    b+= [ hload(left.registerName,'sap',left.registerName)]
+                    i = -1
                 break
             i+=1
-        b+= [mov_immed_i(left.registerName,i)]
-        b+= [ hload(left.registerName,curIDs[binary.leftOperand.base.id].registerName,left.registerName)]
+        if ( i!= -1):
+            b+= [mov_immed_i(left.registerName,i)]
+            b+= [ hload(left.registerName,curIDs[binary.leftOperand.base.id].registerName,left.registerName)]
     else:
         res = processMethod(binary.leftOperand)
         left = res[1]
@@ -144,15 +154,31 @@ def processBinary(binary):
         i = 0
         for field in typeChecker.types[binary.rightOperand.base.type].publicFields:
             if(field.name == binary.rightOperand.field):
+                if(field.applicability == 'static'):
+                    i = 0
+                    for statField in staticFields:
+                        if(field.staticID == statField ):
+                            break
+                        i+=1
+                    b+= [mov_immed_i(right.registerName,i)]
+                    b+= [ hload(right.registerName,'sap',right.registerName)]
+                    i = -1
                 break
+            
             i+=1
-        b+= [mov_immed_i(right.registerName,i)]
-        b+= [ hload(right.registerName,curIDs[binary.rightOperand.base.id].registerName,right.registerName)]
+        if(i!=-1):
+            b+= [mov_immed_i(right.registerName,i)]
+            b+= [ hload(right.registerName,curIDs[binary.rightOperand.base.id].registerName,right.registerName)]
     else:
         res = processMethod(binary.rightOperand)
         right = res[1]
         ours +=[right]
         b+= res[0]
+
+
+
+
+
     if(binary.operation == '+'):
         res = StorageMachine.getNextTemp()
         if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
@@ -287,6 +313,15 @@ def handleSetting(left,right):
         i = 0
         for field in typeChecker.types[right.base.type].publicFields:
             if(field.name == right.field):
+                if(field.applicability == 'static'):
+                    i = 0
+                    for statField in staticFields:
+                        if(field.staticID == statField ):
+                            break
+                        i+=1
+                    b+= [mov_immed_i(left.registerName,i)]
+                    b+= [ hload(left.registerName,'sap',left.registerName)]
+                    return b
                 break
             i+=1
         b+= [mov_immed_i(left.registerName,i)]
@@ -331,7 +366,7 @@ def processExpression(exp):
     return b
 
 
-def processBlock(block,methodName = None,args = []):
+def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = None):
     ours = []
     b = []
     if(methodName!= None):
@@ -403,7 +438,7 @@ def processBlock(block,methodName = None,args = []):
                 b +=temp[0]
                 tempLabel = temp[1]
 
-                b+= processBlock(line.loop_block.block)
+                b+= processBlock(line.loop_block.block,outerTop=topLoop,outerEnd=endLabel)
                 b+= [jmp(topLoop)]
 
                 b+= [label(tempLabel)]
@@ -417,7 +452,7 @@ def processBlock(block,methodName = None,args = []):
                     endLabel = StorageMachine.getNextLabel()
                     b+=[label(topLoop)]
                     
-                    b+= processBlock(line.loop_block.block)
+                    b+= processBlock(line.loop_block.block,outerTop=topLoop,outerEnd=endLabel)
                     b+= [jmp(topLoop)]
                     b+= [label(endLabel)] #so we can break later
                 #if false optimize it out
@@ -435,7 +470,7 @@ def processBlock(block,methodName = None,args = []):
                 b+=processExpression(line.update_expr.expression)
                 tempLabel = temp[1]
 
-                b+= processBlock(line.loop_body.block)
+                b+= processBlock(line.loop_body.block,outerTop=topLoop,outerEnd=endLabel)
                 b+= [jmp(topLoop)]
 
                 b+= [label(tempLabel)]
@@ -450,10 +485,16 @@ def processBlock(block,methodName = None,args = []):
                     b += processExpression(line.initializer.expression)
                     b+=[label(topLoop)]
                     b+=processExpression(line.update_expr.expression)
-                    b+= processBlock(line.loop_body.block)
+                    b+= processBlock(line.loop_body.block,outerTop=topLoop,outerEnd=endLoop)
                     b+= [jmp(topLoop)]
                     b+= [label(endLoop)] #so we can break later
                 #if false optimize it out
+        elif (line.__class__.__name__=="controlFlow_record"):
+            print("here")
+            if(line.type == 'break'):
+                b+=[jmp(outerEnd)]
+            else:
+                b+=[jmp(outerTop)]
 
     for id in ours:
         if(curIDs[id].registerName[0] != 'a'):
@@ -472,6 +513,14 @@ def check(file):
     blocks = []
 
     if(prog):
+        static_size = 0
+        for clazz in prog:
+            for field in clazz.fields:
+                if(field.applicability == 'static'):
+                    static_size +=1
+                    global staticFields
+                    staticFields += [field.staticID]
+        blocks += [[halloc('sap',static_size)]]
         for clazz in prog:
             for method in clazz.methods:
                 blocks += [processBlock(method.body.block,method.name,method.parameters)]

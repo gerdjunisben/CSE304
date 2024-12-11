@@ -33,7 +33,7 @@ class class_record:
         publicFields = []
         privateFields = []
         for i in self.fields:
-            if(i.applicability == None and i.visibility == 'public'):
+            if(i.visibility == 'public'):
                 publicFields+=[i]
             else:
                 privateFields+=[i]
@@ -90,6 +90,7 @@ class method_record:
 
 class field_record:
     fieldID = 1
+    staticID = 1
     def __init__(self, name, className, visibility, applicability, type,line):
         self.name = name
         self.className = className
@@ -101,6 +102,9 @@ class field_record:
         global_symbol_table.setID(name,(self,self.ID))
         global_symbol_table.removeParam(name)
         field_record.fieldID += 1
+        if(applicability=='static'):
+            self.staticID = field_record.staticID
+            field_record.staticID +=1
 
 
 

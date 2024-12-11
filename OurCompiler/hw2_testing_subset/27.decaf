@@ -6,7 +6,7 @@ class Z{
 
 
 class A extends Z{
-    public int funkScore;
+    public static int funkScore;
 
     public A()
     {
@@ -27,9 +27,9 @@ class A extends Z{
 
     public int wala(int a,int b){
         
-        for(a=0;true;a++)
+        for(a=0;a<10;a++)
         {
-            b++;
+            break;
         }
         return a + b;
     }
@@ -43,7 +43,10 @@ class B{
         int i;
         A thingy;
         thingy = new A(5);
-        i = thingy.groovePoints;
+        if( (3+ A.funkScore) == 2)
+        {
+            return 0;
+        }
         i= thingy.wala(thingy.funkScore,i);
     }
 }
