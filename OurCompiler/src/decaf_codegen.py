@@ -189,28 +189,72 @@ def processBinary(binary):
         if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
             b+=[iadd(res.registerName,left.registerName,right.registerName)]
         else:
-            b+=[fadd(res.registerName,left.registerName,right.registerName)]
+            temp1 = StorageMachine.getNextTemp()
+            temp2 = StorageMachine.getNextTemp()
+            if(binary.leftOperand.type == 'int'):
+                b+=[itof(temp1.registerName,left.registerName)]
+            elif(binary.rightOperand.type == 'int'):
+                b+=[itof(temp2.registerName,right.registerName)]
+            b+=[fadd(res.registerName,temp1.registerName  if (binary.leftOperand.type == 'int') else left.registerName,temp2.registerName  if (binary.rightOperand.type == 'int') else right.registerName)]
+            StorageMachine.freeRegister(temp1)
+            StorageMachine.freeRegister(temp2)
         ret = (b,res)
     elif(binary.operation == '-'):
         res = StorageMachine.getNextTemp()
         if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
             b+=[isub(res.registerName,left.registerName,right.registerName)]
         else:
-            b+=[fsub(res.registerName,left.registerName,right.registerName)]
+            temp1 = StorageMachine.getNextTemp()
+            temp2 = StorageMachine.getNextTemp()
+            if(binary.leftOperand.type == 'int'):
+                b+=[itof(temp1.registerName,left.registerName)]
+            elif(binary.rightOperand.type == 'int'):
+                b+=[itof(temp2.registerName,right.registerName)]
+            b+=[fsub(res.registerName,temp1.registerName  if (binary.leftOperand.type == 'int') else left.registerName,temp2.registerName  if (binary.rightOperand.type == 'int') else right.registerName)]
+            StorageMachine.freeRegister(temp1)
+            StorageMachine.freeRegister(temp2)
         ret = (b,res)
     elif(binary.operation == '*'):
         res = StorageMachine.getNextTemp()
         if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
             b+=[imul(res.registerName,left.registerName,right.registerName)]
         else:
-            b+=[fmul(res.registerName,left.registerName,right.registerName)]
+            temp1 = StorageMachine.getNextTemp()
+            temp2 = StorageMachine.getNextTemp()
+            if(binary.leftOperand.type == 'int'):
+                b+=[itof(temp1.registerName,left.registerName)]
+            elif(binary.rightOperand.type == 'int'):
+                b+=[itof(temp2.registerName,right.registerName)]
+            b+=[fmul(res.registerName,temp1.registerName  if (binary.leftOperand.type == 'int') else left.registerName,temp2.registerName  if (binary.rightOperand.type == 'int') else right.registerName)]
+            StorageMachine.freeRegister(temp1)
+            StorageMachine.freeRegister(temp2)
         ret = (b,res)
     elif(binary.operation == '/'):
         res = StorageMachine.getNextTemp()
         if(binary.leftOperand.type == 'int' and binary.rightOperand.type == 'int'):
             b+=[idiv(res.registerName,left.registerName,right.registerName)]
         else:
-            b+=[fdiv(res.registerName,left.registerName,right.registerName)]
+            temp1 = StorageMachine.getNextTemp()
+            temp2 = StorageMachine.getNextTemp()
+            if(binary.leftOperand.type == 'int'):
+                b+=[itof(temp1.registerName,left.registerName)]
+            elif(binary.rightOperand.type == 'int'):
+                b+=[itof(temp2.registerName,right.registerName)]
+            b+=[fdiv(res.registerName,temp1.registerName  if (binary.leftOperand.type == 'int') else left.registerName,temp2.registerName  if (binary.rightOperand.type == 'int') else right.registerName)]
+            StorageMachine.freeRegister(temp1)
+            StorageMachine.freeRegister(temp2)
+        ret = (b,res)
+    elif(binary.operation == '%'):
+        res = StorageMachine.getNextTemp()
+        temp1 = StorageMachine.getNextTemp()
+        temp2 = StorageMachine.getNextTemp()
+        if(binary.leftOperand.type == 'float'):
+            b+=[ftoi(temp1.registerName,left.registerName)]
+        if(binary.rightOperand.type == 'float'):
+            b+=[ftoi(temp2.registerName,right.registerName)]
+        b+=[imod(res.registerName,temp1.registerName  if (binary.leftOperand.type == 'float') else left.registerName,temp2.registerName if (binary.rightOperand.type == 'float') else right.registerName)]
+        StorageMachine.freeRegister(temp1)
+        StorageMachine.freeRegister(temp2)
         ret = (b,res)
     elif(binary.operation == '=='):
         res = StorageMachine.getNextTemp()
@@ -723,6 +767,10 @@ def check(file):
                     print("move_immed_f " + instruction.register + ", " + str(instruction.float) )
                 elif(isinstance(instruction,label)):
                     print(instruction.name + ":"  )
+                elif(isinstance(instruction,ftoi)):
+                    print("ftoi " + instruction.res + ", " + instruction.operand)
+                elif(isinstance(instruction,itof)):
+                    print("itof " + instruction.res + ", " + instruction.operand)
                 
                 
                 

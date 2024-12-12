@@ -279,3 +279,15 @@ class hstore():
         self.res = res
         self.base = base
         self.offset = offset
+
+
+
+class ftoi():
+    def __init__(self,res,operand):
+        self.res = res
+        self.operand = operand
+
+class itof():
+    def __init__(self,res,operand):
+        self.res = res
+        self.operand = operand

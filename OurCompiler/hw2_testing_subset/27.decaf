@@ -6,7 +6,7 @@ class Z{
 
 
 class A extends Z{
-    public static int funkScore;
+    public static float funkScore;
 
     public A()
     {
