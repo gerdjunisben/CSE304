@@ -1,10 +1,11 @@
 class a {
     public static int a()
     {
-        i=null;
+        i=true;
         if( a && b || c && d)
             C.farb();
         else
             b=c;
+        return;
     }
 }

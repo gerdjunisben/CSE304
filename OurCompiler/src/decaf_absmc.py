@@ -115,7 +115,7 @@ class mov():
 
 class call():
     def __init__(self,label):
-        self.lable = label
+        self.label = label
 
 class ret():
     def __init__(self):
@@ -260,9 +260,7 @@ class jmp():
     def __init__(self,label):
         self.label = label
 
-class call():
-    def __init__(self,label):
-        self.label = label
+
 
 class halloc():
     def __init__(self,register,cellCount):

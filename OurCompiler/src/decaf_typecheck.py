@@ -18,10 +18,10 @@ class typeTree:
         self.types[name] = self.types[sup].children[name]
         
 
-    def addUsertype(self,name,sup,miniTable,publicFields,privateFields):
+    def addUsertype(self,name,sup,miniTable,publicFields,privateFields,staticCount):
         if (self.types[sup] == None):
             return None
-        self.types[sup].children[name] = typeNode(name,sup,miniTable, self.types[sup].publicFields+publicFields,privateFields )
+        self.types[sup].children[name] = typeNode(name,sup,miniTable, self.types[sup].publicFields+publicFields,privateFields,staticCount )
         self.types[name] = self.types[sup].children[name]
 
     def superOfName(self,name):
@@ -76,7 +76,10 @@ class typeTree:
                 else:
                     thing[4].type = res2
             elif(thing[0] == 4):
-                res = self.validTypes(thing[1].type,thing[3])
+                if(isinstance(thing[1],str)):
+                    res = self.validTypes(thing[1],thing[3])
+                else:
+                    res = self.validTypes(thing[1].type,thing[3])
                 if(res==None):
                     thing[2].type = 'error'
                     raise SyntaxError(f"Type mismatch between returned value and header return {thing[1].type} on line {thing[1].line} and {thing[3].type} on line {thing[3].line}")
@@ -143,13 +146,17 @@ class typeTree:
 
 
 class typeNode:
-     def __init__(self,name,parent,miniTable=None,publicFields = [],privateFields = []):
+    def __init__(self,name,parent,miniTable=None,publicFields = [],privateFields = [],staticCount = 0):
         self.name = name
         self.parent = parent
         self.children = {'null':None}
         self.miniTable = miniTable
         self.publicFields = publicFields
         self.privateFields = privateFields
+        self.staticCount = staticCount
+    
+    def typeSize(self):
+        return len(self.publicFields) + len(self.privateFields) - self.staticCount
 
 
 typeChecker = typeTree()

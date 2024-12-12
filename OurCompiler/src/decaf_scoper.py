@@ -23,8 +23,10 @@ class SymbolTable:
         for r in self.refs:
             if r.ref_type == 'this':
                 r.className = className
+                r.type = className
             else:
                 r.className = typeChecker.types[className].parent
+                r.type = typeChecker.types[className].parent
         self.refs = []
 
     def enterScope(self,mini):
@@ -99,7 +101,7 @@ class SymbolTable:
                     return False
             return True
 
-        def find_in_table(table, name, args,static):
+        def find_in_table(table, name, args,static,isThis = False):
             if not table or name not in table.names:
                 return None
             entries = table.names[name]
@@ -107,16 +109,20 @@ class SymbolTable:
                 for entry in entries:
                     if entry[0].__class__.__name__ == 'constructor_record' and validate_parameters(entry[0].parameters, args):
                         return entry
-            elif entries[0].visibility and (not hasattr(entries, 'parameters') or validate_parameters(entries[0].parameters, args)):
+            elif (entries[0].visibility or isThis) and (not hasattr(entries, 'parameters') or validate_parameters(entries[0].parameters, args)):
                 if(static and entries[0].applicability == 'static'):
                     return entries
                 elif(not static and entries[0].applicability != 'static'):
                     return entries
             return None
 
-        if base.__class__.__name__ == 'referenceExpression_record':  # self/super
+        if base.__class__.__name__ == 'referenceExpression_record':  # this/super
+            isThis = False
+            if(base.ref_type == 'this'):
+                isThis = True
             base = base.className
-            return find_in_table(typeChecker.types.get(base).miniTable, name, args,False)
+            
+            return find_in_table(typeChecker.types.get(base).miniTable, name, args,False,isThis)
 
         if isinstance(base, str) and base in typeChecker.types:  # new keyword
             return find_in_table(typeChecker.types[base].miniTable, name, args,False)

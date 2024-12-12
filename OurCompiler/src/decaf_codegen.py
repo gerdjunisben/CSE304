@@ -125,11 +125,14 @@ def processBinary(binary):
             i+=1
         if ( i!= -1):
             b+= [mov_immed_i(left.registerName,i)]
-            b+= [ hload(left.registerName,curIDs[binary.leftOperand.base.id].registerName,left.registerName)]
+            if(binary.leftOperand.base.__class__.__name__ == 'referenceExpression_record'):
+                b+= [ hload(left.registerName,'a0',left.registerName)]
+            else:
+                b+= [ hload(left.registerName,curIDs[binary.leftOperand.base.id].registerName,left.registerName)]
+    
     else:
         res = processMethod(binary.leftOperand)
         left = res[1]
-        ours +=[left]
         b+= res[0]
 
 
@@ -168,11 +171,13 @@ def processBinary(binary):
             i+=1
         if(i!=-1):
             b+= [mov_immed_i(right.registerName,i)]
-            b+= [ hload(right.registerName,curIDs[binary.rightOperand.base.id].registerName,right.registerName)]
+            if(binary.rightOperand.base.__class__.__name__ == 'referenceExpression_record'):
+                b+= [ hload(right.registerName,'a0',right.registerName)]
+            else:
+                b+= [ hload(right.registerName,curIDs[binary.rightOperand.base.id].registerName,right.registerName)]
     else:
         res = processMethod(binary.rightOperand)
         right = res[1]
-        ours +=[right]
         b+= res[0]
 
 
@@ -291,8 +296,128 @@ def processConditional(cond):
         StorageMachine.freeRegister(res[1])
     return (b,tempLabel)
 
+def handleSettingField(left,right):
+    b=[]
+    isStatic = False
+    i = 0
+    for field in typeChecker.types[left.base.type].publicFields:
+        if(field.name == left.field):
+            if(field.applicability == 'static'):
+                isStatic = True
+                i = 0
+                for statField in staticFields:
+                    if(field.staticID == statField ):
+                        break
+                    i+=1
+            break
+        i+=1
+    offset = StorageMachine.getNextTemp()
+    b+= [mov_immed_i(offset.registerName,i)]
+    if(right.__class__.__name__ == 'const_record'):
+        temp = StorageMachine.getNextTemp()
+        b+=[ mov_imm_cell(temp,right)]
+
+        if(isStatic):
+            b+=[hstore('sap',offset.registerName,temp.registerName)]
+        else:
+            if(left.base.__class__.__name__ == 'referenceExpression_record'):
+                b+=[hstore('a0',offset.registerName,temp.registerName)]
+            else:
+                b+=[hstore(curIDs[left.base.id].registerName,offset.registerName,temp.registerName)]
+        StorageMachine.freeRegister(temp)
+    elif(right.__class__.__name__ == 'binaryExpression_record'):
+        res = processBinary(right)
+        b+= res[0]
+        
+        if(isStatic):
+            b+=[hstore('sap',offset.registerName,res[1].registerName)]
+        else:
+            if(left.base.__class__.__name__ == 'referenceExpression_record'):
+                b+=[hstore('a0',offset.registerName,res[1].registerName)]
+            else:
+                b+=[hstore(curIDs[left.base.id].registerName,offset.registerName,res[1].registerName)]
+
+    elif(right.__class__.__name__ == 'varExpression_record'):
+
+        if(isStatic):
+            b+=[hstore('sap',offset.registerName,curIDs[right.id].registerName)]
+        else:
+            if(left.base.__class__.__name__ == 'referenceExpression_record'):
+                b+=[hstore('a0',offset.registerName,curIDs[right.id].registerName)]
+            else:
+                b+=[hstore(curIDs[left.base.id].registerName,offset.registerName,curIDs[right.id].registerName)]
+            
+    elif(right.__class__.__name__ == 'unaryExpression_record'):
+        res = processUnary(right)
+        b+= res[0]
+
+        if(isStatic):
+            b+=[hstore('sap',offset.registerName,res[1].registerName)]
+        else:
+            if(left.base.__class__.__name__ == 'referenceExpression_record'):
+                b+=[hstore('a0',offset.registerName,res[1].registerName)]
+            else:
+                b+=[hstore(curIDs[left.base.id].registerName,offset.registerName,res[1].registerName)]
+
+    elif(right.__class__.__name__ == 'newExpression_record'):
+        temp = StorageMachine.getNextTemp()
+        
+        b+=[halloc(temp.registerName,typeChecker.types[right.type].typeSize())]
+        b+= processConstructor(temp,right)
+
+        if(isStatic):
+            b+=[hstore('sap',offset.registerName,temp.registerName)]
+        else:
+            if(left.base.__class__.__name__ == 'referenceExpression_record'):
+                b+=[hstore('a0',offset.registerName,temp.registerName)]
+            else:
+                b+=[hstore(curIDs[left.base.id].registerName,offset.registerName,temp.registerName)]
+
+        StorageMachine.freeRegister(temp)
+
+    elif(right.__class__.__name__ == 'fieldAccessExpression_record'):
+        temp = StorageMachine.getNextTemp()
+        j = 0
+        for field in typeChecker.types[right.base.type].publicFields:
+            if(field.name == right.field):
+                if(field.applicability == 'static'):
+                    j = 0
+                    for statField in staticFields:
+                        if(field.staticID == statField ):
+                            break
+                        j+=1
+                    b+= [mov_immed_i(temp.registerName,i)]
+                    b+= [ hload(temp.registerName,'sap',temp.registerName)]
+                    return b
+                break
+            j+=1
+        b+= [mov_immed_i(temp.registerName,i)]
+        if(right.base.__class__.__name__ == 'referenceExpression_record'):
+                b+=[hstore('a0',offset.registerName,temp.registerName)]
+        else:
+            b+=[hstore(curIDs[right.base.id].registerName,offset.registerName,temp.registerName)]
+        if(isStatic):
+            b+=[hstore('sap',offset.registerName,temp.registerName)]
+        else:
+            if(left.base.__class__.__name__ == 'referenceExpression_record'):
+                b+=[hstore('a0',offset.registerName,temp.registerName)]
+            else:
+                b+=[hstore(curIDs[left.base.id].registerName,offset.registerName,temp.registerName)]
+        StorageMachine.freeRegister(temp)
+    else:
+        res = processMethod(right)
+        b+= res[0]
+        if(isStatic):
+            b+=[hstore('sap',offset.registerName,res[1].registerName)]
+        else:
+            b+=[hstore(curIDs[left.base.id].registerName,offset.registerName,res[1].registerName)]
+    StorageMachine.freeRegister(offset)
+    return b
+
 def handleSetting(left,right):
     b = []
+    
+    
     if(right.__class__.__name__ == 'const_record'):
         b+=[ mov_imm_cell(left,right)]
     elif(right.__class__.__name__ == 'binaryExpression_record'):
@@ -307,7 +432,7 @@ def handleSetting(left,right):
         b+= res[0]
         b+=[  mov(left.registerName,res[1].registerName)]
     elif(right.__class__.__name__ == 'newExpression_record'):
-        b+=[halloc(left.registerName,len(typeChecker.types[right.type].publicFields))]
+        b+=[halloc(left.registerName,typeChecker.types[right.type].typeSize())]
         b+= processConstructor(left,right)
     elif(right.__class__.__name__ == 'fieldAccessExpression_record'):
         i = 0
@@ -337,8 +462,11 @@ def processExpression(exp):
     if exp.__class__.__name__ == 'assignExpression_record':
         left = exp.assignee
         right = exp.assigner
-        left = curIDs[left.id]
-        b+= handleSetting(left,right)
+        if(left.__class__.__name__ == 'fieldAccessExpression_record'):
+            b+= handleSettingField(left,right)
+        else:
+            left = curIDs[left.id]
+            b+= handleSetting(left,right)
         
     elif exp.__class__.__name__ == 'autoExpression_record':
         inc = StorageMachine.getNextTemp()
@@ -372,9 +500,9 @@ def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = Non
     if(methodName!= None):
         b+= [label(methodName)]
     if len(args) != 0:
-        temp = StorageMachine.getArgs(len(args))
+        temp = StorageMachine.getArgs(len(args) + 1)
         for i in range(0,len(args)):
-            curIDs[args[i].ID] = temp[i]
+            curIDs[args[i].ID] = temp[i+1]
             ours+=[args[i].ID]
     for line in block:
         if isinstance(line,list):
@@ -463,8 +591,9 @@ def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = Non
                line.conditional.__class__.__name__ == 'unaryExpression_record'):
                 topLoop = StorageMachine.getNextLabel()
                 endLabel = StorageMachine.getNextLabel()
-                temp = processConditional(line.conditional)
                 b += processExpression(line.initializer.expression)
+                temp = processConditional(line.conditional)
+                
                 b+=[label(topLoop)]
                 b +=temp[0]
                 b+=processExpression(line.update_expr.expression)
@@ -490,7 +619,7 @@ def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = Non
                     b+= [label(endLoop)] #so we can break later
                 #if false optimize it out
         elif (line.__class__.__name__=="controlFlow_record"):
-            print("here")
+            #print("here")
             if(line.type == 'break'):
                 b+=[jmp(outerEnd)]
             else:
@@ -526,7 +655,82 @@ def check(file):
                 blocks += [processBlock(method.body.block,method.name,method.parameters)]
             for constructor in clazz.constructors:
                 blocks += [processBlock(constructor.body.block,clazz.name + '_'+ str(constructor.ID),constructor.parameters)+ [ret()]]
-
+        for block in blocks:
+            for instruction in block:
+                if(isinstance(instruction,hload)):
+                    print("hload " + instruction.res + ", " + instruction.base + ", " + instruction.offset )
+                elif(isinstance(instruction,hstore)):
+                    print("hstore " + instruction.res + ", " + instruction.base + ", " + instruction.offset )
+                elif(isinstance(instruction,halloc)):
+                    print("halloc " + instruction.register + ", " + str(instruction.cellCount))
+                elif(isinstance(instruction,call)):
+                    print("call " + instruction.label)
+                elif(isinstance(instruction,jmp)):
+                    print("jmp " + instruction.label )
+                elif(isinstance(instruction,bnz)):
+                    print("bnz " + instruction.register + ", " + instruction.label )
+                elif(isinstance(instruction,bz)):
+                    print("bz " + instruction.register + ", " + instruction.label )
+                elif(isinstance(instruction,fleq)):
+                    print("fleq " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,flt)):
+                    print("flt " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,fgeq)):
+                    print("fgeq " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,fgt)):
+                    print("fgt " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+               
+                elif(isinstance(instruction,fdiv)):
+                    print("fdiv " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,fmul)):
+                    print("fmul " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,fsub)):
+                    print("fsub " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,fadd)):
+                    print("fadd " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                
+                
+                
+                elif(isinstance(instruction,ileq)):
+                    print("ileq " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,ilt)):
+                    print("ilt " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,igeq)):
+                    print("igeq " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,igt)):
+                    print("igt " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,imod)):
+                    print("imod " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,idiv)):
+                    print("idiv " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,imul)):
+                    print("imul " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,isub)):
+                    print("isub " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,iadd)):
+                    print("iadd " + instruction.res + ", " + instruction.operand1 + ", " + instruction.operand2 )
+                elif(isinstance(instruction,restore)):
+                    print("restore " + instruction.register  )
+                elif(isinstance(instruction,save)):
+                    print("save " + instruction.register )
+                elif(isinstance(instruction,ret)):
+                    print("ret" )
+                elif(isinstance(instruction,mov)):
+                    print("mov " + instruction.register1 + ", " + instruction.register2 )
+                elif(isinstance(instruction,mov_immed_i)):
+                    print("move_immed_i " + instruction.register + ", " + str(instruction.integer) )
+                elif(isinstance(instruction,mov_immed_f)):
+                    print("move_immed_f " + instruction.register + ", " + str(instruction.float) )
+                elif(isinstance(instruction,label)):
+                    print(instruction.name + ":"  )
+                
+                
+                
+                
+                
+                
+    
+    
     print("wala")
 
 

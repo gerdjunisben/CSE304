@@ -32,19 +32,24 @@ class class_record:
         #print(str(line) + "," + str(global_symbol_table.cur.names))
         publicFields = []
         privateFields = []
+        staticCount = 0
         for i in self.fields:
             if(i.visibility == 'public'):
                 publicFields+=[i]
             else:
                 privateFields+=[i]
+            if(i.applicability == 'static'):
+                staticCount+=1
         if(superName!=None):
             for field in typeChecker.types[superName].publicFields:
-                self.fields += [field_record(field.name,field.className,field.visibility,field.applicability,field.type,field.line)]
+                temp = [field_record(field.name,field.className,field.visibility,field.applicability,field.type,field.line)]
+                self.fields += temp
+                publicFields+=temp
         self.miniName = global_symbol_table.exitScope()
         if(superName==None):
-            typeChecker.addUsertype(name,'object',self.miniName,publicFields,privateFields)
+            typeChecker.addUsertype(name,'object',self.miniName,publicFields,privateFields,staticCount)
         else:
-            typeChecker.addUsertype(name,superName,self.miniName,publicFields,privateFields)
+            typeChecker.addUsertype(name,superName,self.miniName,publicFields,privateFields,staticCount)
         global_symbol_table.setRefs(self.name)
         global_symbol_table.setID(name,-1)
         global_symbol_table.executeFieldLookUps()
@@ -174,7 +179,7 @@ class block_record(statement_record):
         global_symbol_table.addParams()
         self.variable_table = variable_table + global_symbol_table.returnAllVars()
         #print(self.variable_table)
-        print("exiting " + str(line)  )
+        #print("exiting " + str(line)  )
         self.miniName = global_symbol_table.exitScope()
         variable_record.varID=1
 

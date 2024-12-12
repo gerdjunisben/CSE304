@@ -3,12 +3,13 @@ class Animal {
 
     Animal()
     {
+        int i;
         for(i =0;i<3;i++)
         {
             int j;
         }
 
-        while(i=3)
+        while(i==3)
         {
 
         }
@@ -31,14 +32,12 @@ class Animal {
 
 }
 class Monkey extends Animal{
-    string favoriteFruit;
-    int monkeyStrength;
+    public int monkeyStrength;
 
     int eatBananas(int nanaCount)
     {
-        string treeName;
-        if(nanaCount > monkeyStrength){
-            monkeyStrength = nanaCount;
+        if(nanaCount > this.monkeyStrength){
+            this.monkeyStrength = nanaCount;
         }
     }
 }

@@ -10,7 +10,7 @@ class A extends Z{
 
     public A()
     {
-
+        
     }
 
     public A(int a)
@@ -38,15 +38,17 @@ class A extends Z{
 
 
 class B{
-    public void main()
+    public static void main()
     {
         int i;
         A thingy;
         thingy = new A(5);
+        A.funkScore = 10 + 3;
         if( (3+ A.funkScore) == 2)
         {
             return 0;
         }
-        i= thingy.wala(thingy.funkScore,i);
+        i= thingy.wala(A.funkScore,i);
+        return;
     }
 }
