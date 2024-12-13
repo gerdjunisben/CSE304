@@ -1,0 +1,113 @@
+
+
+halloc sap, 1
+
+
+retTen:
+move_immed_i t2, 10
+itof t5, t2
+fadd t3, a1, t5
+mov a0, t3
+ret
+
+
+sayTrue:
+move_immed_i a0, 1
+ret
+
+
+callRetTen:
+save a0
+save a1
+move_immed_i a1, 2
+call retTen
+restore a1
+mov a0, a0
+ret
+
+
+wala:
+move_immed_i a1, 0
+LABEL1:
+move_immed_i t2, 10
+ilt t5, a1, t2
+bz t5, LABEL3
+iadd a1, a1, t0
+jmp LABEL2
+jmp LABEL1
+LABEL3:
+LABEL2:
+iadd t2, a1, a2
+mov a0, t2
+ret
+
+
+C_1:
+move_immed_i t4, 0
+move_immed_i t6, 0
+hstore a0, t4, t6
+move_immed_i t4, 2
+move_immed_i t6, 0
+hstore a0, t4, t6
+ret
+
+
+C_2:
+move_immed_i t4, 0
+hstore a0, t4, a1
+move_immed_i t4, 2
+imul t6, a1, a1
+hstore a0, t4, t6
+ret
+
+
+main:
+move_immed_i t4, 0
+halloc t7, 3
+save a0
+save a1
+mov a0, t7
+move_immed_i a1, 5
+call C_2
+restore a0
+restore a1
+move_immed_i t8, 0
+save a0
+save a1
+mov a0, t7
+move_immed_i a1, 10
+call retTen
+restore a1
+hstore sap, t8, a0
+move_immed_i t8, 3
+move_immed_i t11, 1
+hload t10, sap, t11
+mov t9, t10
+itof t11, t8
+fadd t10, t11, t9
+move_immed_i t9, 2
+itof t11, t9
+fsub t8, t10, t11
+bnz t8, LABEL4
+move_immed_i a0, 0
+ret
+LABEL4:
+save a0
+save a1
+save a2
+mov a0, t7
+move_immed_i t9, 1
+hload t8, sap, t9
+mov a1, t8
+mov a2, t4
+call wala
+restore a1
+restore a2
+mov t4, a0
+ret
+
+
+retFunk:
+move_immed_i t7, 0
+hload t7, sap, t7
+ret

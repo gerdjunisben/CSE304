@@ -1,0 +1,63 @@
+
+
+halloc sap, 0
+
+
+boogie:
+move_immed_i a0, 2
+ret
+
+
+C_1:
+move_immed_i t2, 0
+move_immed_i t2, 0
+LABEL1:
+move_immed_i t3, 10
+ilt t4, t2, t3
+bz t4, LABEL3
+iadd t2, t2, t0
+jmp LABEL1
+LABEL3:
+LABEL2:
+ret
+
+
+C_2:
+ret
+
+
+C_3:
+move_immed_i t2, 0
+halloc t3, 1
+save a0
+mov a0, t3
+call C_1
+restore a0
+hstore a0, t2, t3
+move_immed_i t2, 0
+move_immed_i t3, 0
+move_immed_i t5, 0
+move_immed_i t2, 10
+move_immed_i t3, 20
+iadd t6, t2, t3
+mov t5, t6
+ilt t7, t2, t3
+bz t7, LABEL4
+save a0
+save a1
+move_immed_i t8, 0
+hload t7, a0, t8
+mov a0, t7
+move_immed_i a1, 10
+call boogie
+restore a1
+mov t7, a0
+move_immed_i t9, 0
+hload t8, a0, t9
+mov t2, t8
+move_immed_i t9, 0
+hload t8, t2, t9
+move_immed_f t7, 1.0
+fadd t8, t8, t7
+LABEL4:
+ret

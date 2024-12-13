@@ -1,0 +1,52 @@
+
+
+halloc sap, 0
+
+
+f:
+move_immed_i t4, 0
+hload t3, a0, t4
+mov t2, t3
+move_immed_i t3, 1
+iadd t4, t2, t3
+mov a0, t4
+ret
+
+
+g:
+move_immed_i t3, 0
+save a0
+call f
+mov t3, a0
+iadd t3, t3, t0
+mov a0, t3
+ret
+
+
+C_1:
+move_immed_i t3, 0
+move_immed_i t5, 0
+hstore a0, t3, t5
+ret
+
+
+f:
+save a0
+call f
+iadd t3, a0, a1
+mov a0, t3
+ret
+
+
+C_2:
+move_immed_i t5, 1
+move_immed_i t6, 2
+hstore a0, t5, t6
+move_immed_i t5, 0
+halloc t6, 1
+save a0
+mov a0, t6
+call C_1
+restore a0
+hstore a0, t5, t6
+ret

@@ -81,7 +81,8 @@ class SymbolTable:
             temp = self.fieldLookUp(l[0],l[1],l[4])
             if temp == None:
                 l[3].type = 'error'
-                continue
+                raise Exception(f"Field '{l[3].field}' not found on line {l[0].line}")
+            
             l[3].id = temp[1]
             if temp[0].__class__.__name__ == 'method_record':
                 l[3].type = temp[0].returnType

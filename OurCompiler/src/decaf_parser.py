@@ -431,25 +431,24 @@ def p_stmt_expr(p):
 
 def p_error(p):
     if not p:
-        print("SYNTAX error due to EOF (possibly an incomplete body)")
+        error_message = "SYNTAX error due to EOF (possibly an incomplete body)"
     else:
-        print(f"SYNTAX error from '{p.value}' at line {p.lineno}")
+        error_message = f"SYNTAX error at token '{p.value}' of type '{p.type}' at line {p.lineno}"
+    print(error_message)
 
 bparser = yacc.yacc(start = "program")
 
 
 def parse(data, debug=False):
     bparser.error = 0
-    p = bparser.parse(data, debug=debug)
-    '''
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<")
-    print(vars(global_symbol_table.globalTable))
-    for name,scope in global_symbol_table.globalTable.minis.items():
-        print(name + " : " + str(vars(scope)))
-        if(len(scope.minis)>0):
-            for name2,scope2 in scope.minis.items():
-                print(name2 + " : " + str(vars(scope2)))
-    '''
-    if bparser.error:
+    try:
+        p = bparser.parse(data, debug=debug,tracking=True)
+
+        if bparser.error:
+            print(bparser.error)
+            return None
+        return p
+    except Exception as e:
+        print(f"Parsing failed with exception: {e}")
+        bparser.error = 1  
         return None
-    return p

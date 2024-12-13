@@ -7,22 +7,35 @@ class Z{
 
 class A extends Z{
     public static float funkScore;
+    public float sillyPoints;
 
     public A()
     {
-        
+        super.groovePoints = 0;
+        this.sillyPoints = 0;
     }
 
     public A(int a)
     {
-
+        super.groovePoints = a;
+        this.sillyPoints = a * a;
     }
 
 
 
-    public int retTen()
+    public int retTen(float b)
     {
-        return 10;
+        return b + 10;
+    }
+
+    public bool sayTrue()
+    {
+        return true;
+    }
+
+    public int callRetTen()
+    {
+        return this.retTen(2);
     }
 
     public int wala(int a,int b){
@@ -43,12 +56,17 @@ class B{
         int i;
         A thingy;
         thingy = new A(5);
-        A.funkScore = 10 + 3;
+        A.funkScore = thingy.retTen(10);
         if( (3+ A.funkScore) == 2)
         {
             return 0;
         }
         i= thingy.wala(A.funkScore,i);
         return;
+    }
+
+    public float retFunk()
+    {
+        return A.funkScore;
     }
 }
