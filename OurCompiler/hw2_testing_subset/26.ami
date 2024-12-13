@@ -3,25 +3,25 @@
 halloc sap, 0
 
 
-print:
+M_print_1:
 
 
-print:
+M_print_2:
 
 
-print:
+M_print_3:
 
 
-print:
+M_print_4:
 
 
-scan_int:
+M_scan_int_5:
 
 
-scan_float:
+M_scan_float_6:
 
 
-boogie:
+M_boogie_7:
 move_immed_i a0, 2
 ret
 
@@ -67,7 +67,7 @@ move_immed_i t8, 0
 hload t7, a0, t8
 mov a0, t7
 move_immed_i a1, 10
-call boogie
+call M_boogie_7
 restore a1
 mov t7, a0
 move_immed_i t9, 0

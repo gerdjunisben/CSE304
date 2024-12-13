@@ -25,6 +25,8 @@ type checker can safely assume that they are true."
 
 So I'm not gonna fix that because I don't have to and I have stuff to do tomorrow.
 
+Update: Nevermind also I forgot to note that I use the first two temp registers to hold 1 and 0 because
+they get used so often and MIPS did it so I thought I'd save a few instructions.
 
 
 

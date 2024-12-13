@@ -51,7 +51,7 @@ def processMethod(method):
         b+= handleSetting(args[0],method.base)
     for i in range(0,len(method.args)):
         b+= handleSetting(args[i +1],method.args[i])
-    b+= [ call(method.method_name)]
+    b+= [ call('M_' + method.method_name + '_' + str(method.id))]
     for i in range(1,len(method.args) +1):
         b+= [restore(args[i].registerName)]
     ret = (b,args[0])
@@ -636,7 +636,7 @@ def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = Non
     ours = []
     b = []
     if(methodName!= None):
-        b+= [label(methodName)]
+        b+= [label(methodName )]
     if len(args) != 0:
         temp = StorageMachine.getArgs(len(args) + 1)
         for i in range(0,len(args)):
@@ -830,7 +830,7 @@ def compile(file):
             blocks += [[halloc('sap', static_size)]]
             for clazz in prog:
                 for method in clazz.methods:
-                    blocks += [processBlock(method.body.block, method.name, method.parameters)]
+                    blocks += [processBlock(method.body.block, 'M_' + method.name + '_' + str(method.ID), method.parameters)]
                 for constructor in clazz.constructors:
                     blocks += [processBlock(constructor.body.block,  'C_' + str(constructor.ID), constructor.parameters) + [ret()]]
             for block in blocks:

@@ -3,7 +3,25 @@
 halloc sap, 1
 
 
-retTen:
+M_print_1:
+
+
+M_print_2:
+
+
+M_print_3:
+
+
+M_print_4:
+
+
+M_scan_int_5:
+
+
+M_scan_float_6:
+
+
+M_retTen_7:
 move_immed_i t2, 10
 itof t5, t2
 fadd t3, a1, t5
@@ -11,22 +29,22 @@ mov a0, t3
 ret
 
 
-sayTrue:
+M_sayTrue_8:
 move_immed_i a0, 1
 ret
 
 
-callRetTen:
+M_callRetTen_9:
 save a0
 save a1
 move_immed_i a1, 2
-call retTen
+call M_retTen_7
 restore a1
 mov a0, a0
 ret
 
 
-wala:
+M_wala_10:
 move_immed_i a1, 0
 LABEL1:
 move_immed_i t2, 10
@@ -61,7 +79,7 @@ hstore a0, t4, t6
 ret
 
 
-main:
+M_main_11:
 move_immed_i t4, 0
 halloc t7, 3
 save a0
@@ -76,7 +94,7 @@ save a0
 save a1
 mov a0, t7
 move_immed_i a1, 10
-call retTen
+call M_retTen_7
 restore a1
 hstore sap, t8, a0
 move_immed_i t8, 3
@@ -100,14 +118,14 @@ move_immed_i t9, 1
 hload t8, sap, t9
 mov a1, t8
 mov a2, t4
-call wala
+call M_wala_10
 restore a1
 restore a2
 mov t4, a0
 ret
 
 
-retFunk:
+M_retFunk_12:
 move_immed_i t7, 0
 hload t7, sap, t7
 ret
