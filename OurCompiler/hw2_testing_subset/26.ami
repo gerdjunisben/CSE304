@@ -3,6 +3,24 @@
 halloc sap, 0
 
 
+print:
+
+
+print:
+
+
+print:
+
+
+print:
+
+
+scan_int:
+
+
+scan_float:
+
+
 boogie:
 move_immed_i a0, 2
 ret

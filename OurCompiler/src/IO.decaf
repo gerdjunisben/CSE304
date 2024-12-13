@@ -1,0 +1,27 @@
+class In{
+    public static void print(int i){
+
+    }
+
+    public static void print(float f){
+
+    }
+
+    public static void print(boolean b){
+
+    }
+
+    public static void print(string s){
+
+    }
+}
+
+class Out{
+    public static int scan_int(){
+
+    }
+
+    public static int scan_float(){
+
+    }
+}

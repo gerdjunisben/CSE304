@@ -15,6 +15,16 @@ the StorageMachine which handles labels and registers and contains classes for
 instructions, decaf_codegen does all the work
 with compiling and decaf_compiler just parses and passes.
 
+Update: Put the print and scan stuff in a file that is "linked" in, you will notice we got
+4 print labels well 
+
+"Assume that in each class, there is at most one constructor and at
+most one method with a given name. Also assume that the names of methods defined in a class are
+distinct from method names in its super classes. You do not need to check for these constraints. Your
+type checker can safely assume that they are true."
+
+So I'm not gonna fix that because I don't have to and I have stuff to do tomorrow.
+
 
 
 

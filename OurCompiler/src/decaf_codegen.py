@@ -806,13 +806,15 @@ def compile(file):
 
     try:
         data = open(file).read()
+        bonusNonsense = open('OurCompiler/src/IO.decaf').read()
 
 
-        prog = parser.parse(data, debug=False)
+        prog = parser.parse((bonusNonsense + '\n' +  data), debug=False)
 
         blocks = []
 
         output = ""
+
 
 
 
