@@ -6,6 +6,40 @@ SB ID: 114849209
 Net ID: dzampini
 
 
+Final report:
+Some earlier printing parts may not work cause we ended up make some bug fixes but you know
+the compiler works so it doesn't really matter. Note the file it produces will be in the
+same dir as the open file and as requested the name will be different. At the top of the
+compiled file is the static allocated area and then all the functions. In decaf_absmc is
+the StorageMachine which handles labels and registers, decaf_codegen does all the work
+with compiling and decaf_compiler just parses and passes.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 A4 report:
 Yeah, we didn't quite finish, midterms kinda hit us both like two conveintly well timed trucks.
 Anyways the parser makes as much of the AST as it can or at least I think it does (Ben).

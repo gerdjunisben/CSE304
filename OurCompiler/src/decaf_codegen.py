@@ -1,3 +1,10 @@
+# Benjamin Gerdjunis 
+# SB ID: 115962358
+# Net ID: bgerdjunis
+# Donato Zampini
+# SB ID: 114849209
+# Net ID: dzampini
+
 
 import decaf_parser as parser
 import sys
@@ -904,10 +911,3 @@ def compile(file):
         return None
                 
    
-if __name__ == "__main__":
-    sys.argv.append("OurCompiler/hw2_testing_subset/26.decaf")
-    if( len(sys.argv)<2):
-        print("Too few args")
-        sys.exit(1)
-    print(compile(sys.argv[1]))
-    sys.exit(0)
