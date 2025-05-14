@@ -69,7 +69,7 @@ class typeTree:
                     thing[3].type = res
             elif (thing[0] == 3):
                 res1 = self.validTypes(thing[1].type,thing[3].type)
-                res2 = self.checkValid(thing[2],{'bool'})
+                res2 = self.checkValid(thing[2],{'boolean'})
                 if(res2 == None or res1 == None):
                     thing[4].type = 'error'
                     raise Exception(f"Invalid for loop either {thing[1].type} on line {thing[1].line} and {thing[3].type} on line {thing[3].line} mismatch or {thing[2].type} on line {thing[2].line} is not a bool")
@@ -108,22 +108,22 @@ class typeTree:
             else:
                 return None
         elif(op == "boolean"):
-            leftRes = self.checkValid(left,{'bool'})
-            rightRes = self.checkValid(right,{'bool'})
+            leftRes = self.checkValid(left,{'boolean'})
+            rightRes = self.checkValid(right,{'boolean'})
             if(leftRes != None and rightRes != None):
-                return 'bool'
+                return 'boolean'
             else:
                 return None
         elif(op == "comparison"):
             leftRes = self.checkValid(left,{'float','int'})
             rightRes = self.checkValid(right,{'float','int'})
             if(leftRes != None and rightRes != None):
-                return 'bool'
+                return 'boolean'
             else:
                 return None
         else:
             if(self.validTypes(left.type,right.type) or self.validTypes(right.type,left.type)):
-                return 'bool'
+                return 'boolean'
             else:
                 return None
     
@@ -162,5 +162,5 @@ class typeNode:
 typeChecker = typeTree()
 typeChecker.addType('float','void')
 typeChecker.addType('int','float')
-typeChecker.addType('bool','void')
+typeChecker.addType('boolean','void')
 typeChecker.addType('object','void')

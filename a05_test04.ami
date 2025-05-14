@@ -1,0 +1,26 @@
+halloc sap, 0
+# ===Class In===
+M_print_1:
+M_print_2:
+M_print_3:
+M_print_4:
+# ===Class Out===
+M_scan_int_5:
+M_scan_float_6:
+# ===Class a05_test04===
+M_main_7:
+move_immed_i t2, 0
+move_immed_i t3, 0
+move_immed_i t4, 0
+move_immed_i t2, 10
+move_immed_i t3, 20
+move_immed_i t4, 0
+ilt t5, t2, t3
+bz t5, if_else_1
+iadd t5, t2, t3
+move t4, t5
+jmp if_end_2
+if_else_1:
+isub t6, t3, t2
+move t4, t6
+if_end_2:

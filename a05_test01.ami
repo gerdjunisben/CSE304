@@ -1,0 +1,20 @@
+
+
+halloc sap, 0
+
+
+M_main_1:
+move_immed_i t2, 0
+move_immed_i t3, 0
+move_immed_i t2, 10
+move t6, t2
+move_immed_i t7, 0
+isub t7, t7, t6
+move t3, t7
+move_immed_i t4, 1
+move t6, t4
+move_immed_i t8, 1
+isub t8, t8, t6
+move t5, t8
+iadd t2, t2, t0
+isub t2, t2, t0

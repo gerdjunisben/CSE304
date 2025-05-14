@@ -1,0 +1,71 @@
+
+
+halloc sap, 0
+
+
+M_print_1:
+
+
+M_print_2:
+
+
+M_print_3:
+
+
+M_print_4:
+
+
+M_scan_int_5:
+
+
+M_scan_float_6:
+
+
+M_main_7:
+move_immed_i t2, 0
+move_immed_i t3, 0
+move_immed_i t4, 0
+move_immed_f t5, 0.0
+move_immed_f t6, 0.0
+move_immed_f t7, 0.0
+move_immed_i t2, 10
+move_immed_i t3, 20
+iadd t11, t2, t3
+move t4, t11
+imul t12, t2, t3
+move t4, t12
+isub t13, t3, t2
+move t4, t13
+idiv t14, t3, t2
+move t4, t14
+move_immed_f t5, 10.0
+move_immed_f t6, 20.0
+fadd t15, t5, t6
+move t7, t15
+fmul t17, t5, t6
+move t7, t17
+fsub t18, t6, t5
+move t7, t18
+fdiv t19, t6, t5
+move t7, t19
+move_immed_i t8, 1
+move_immed_i t9, 0
+move_immed_i t16, 2
+iadd t20, t8, t9
+igeq t20, t20, t16
+move t10, t20
+iadd t16, t8, t9
+igt t16, t16, t1
+move t10, t16
+ilt t21, t2, t3
+move t10, t21
+ileq t22, t2, t3
+move t10, t22
+igt t23, t2, t3
+move t10, t23
+igeq t24, t2, t3
+move t10, t24
+isub t25, t2, t3
+move t10, t25
+isub t26, t2, t3
+move t10, t26

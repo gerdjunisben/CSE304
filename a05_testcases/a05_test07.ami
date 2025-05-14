@@ -1,0 +1,29 @@
+# ===Class In===
+M_scan_int_1:
+M_scan_float_2:
+# ===Class Out===
+M_print_3:
+M_print_4:
+M_print_5:
+M_print_6:
+# ===Class a05_test07===
+M_double_7:
+move_immed_i t1, 2
+imul t2, a0, t1
+move t0, t2		# Store RHS in assignment to Variable(2)
+move a0, t0	# Move method return value to a0
+ret
+M_main_8:
+move_immed_i t2, 10
+move t0, t2		# Store RHS in assignment to Variable(1)
+save t0
+save t1
+save t2
+move a0, t0
+call M_double_7
+move t3, a0	# Save function return value in t3
+restore t2
+restore t1
+restore t0
+move t1, t3		# Store RHS in assignment to Variable(2)
+.static_data 0

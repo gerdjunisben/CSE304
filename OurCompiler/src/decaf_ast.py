@@ -139,14 +139,14 @@ class if_record(statement_record):
         self.conditional = conditional
         self.then_block = then_block
         self.else_block = else_block
-        typeChecker.addCheckValid(conditional,{'bool'},self)
+        typeChecker.addCheckValid(conditional,{'boolean'},self)
 
 class while_record(statement_record):
     def __init__(self,conditional,loop_block,line):
         super().__init__(line) 
         self.conditional = conditional
         self.loop_block = loop_block
-        typeChecker.addCheckValid(conditional,{'bool'},self)
+        typeChecker.addCheckValid(conditional,{'boolean'},self)
 
 class for_record(statement_record):
     def __init__(self,initializer,conditional,update_expr,loop_body,line):
@@ -218,7 +218,7 @@ class unaryExpression_record(expression_record):
         self.operand = operand
         self.operation = operation
         if(operation == '!'):
-            typeChecker.addCheckValid(operand,{'bool'},self)
+            typeChecker.addCheckValid(operand,{'boolean'},self)
         else:
             typeChecker.addCheckValid(operand,{'int','float'},self)
 

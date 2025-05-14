@@ -31,9 +31,9 @@ class TheStorageMachine:
             self.free.prev.next = bonus
             self.free.prev = bonus
 
-    def getNextLabel(self):
+    def getNextLabel(self, name="Label"):
         self.labelCount+=1;
-        return "LABEL" + str(self.labelCount)
+        return name + "_" + str(self.labelCount)
 
     def getArgs(self,count):
         if(count > self.argRegSize):

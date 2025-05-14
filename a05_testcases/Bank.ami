@@ -1,0 +1,469 @@
+# ===Class In===
+M_scan_int_1:
+M_scan_float_2:
+# ===Class Out===
+M_print_3:
+M_print_4:
+M_print_5:
+M_print_6:
+# ===Class BankAccount===
+C_1:
+move_immed_i t0, 0
+hstore a0, t0, a1	#Store RHS in assiggnment to Field-access(This, account_number, 1)
+move_immed_f t1, 0.0
+move_immed_i t2, 1
+hstore a0, t2, t1	#Store RHS in assiggnment to Field-access(This, balance, 2)
+M_deposit_7:
+move_immed_i t1, 1
+hload t0, a0, t1
+fadd t2, t0, a1
+move_immed_i t3, 1
+hstore a0, t3, t2	#Store RHS in assiggnment to Field-access(This, balance, 2)
+move_immed_i t5, 1
+hload t4, a0, t5
+move a0, t4	# Move method return value to a0
+ret
+M_withdrawal_8:
+move_immed_i t1, 1
+hload t0, a0, t1
+fgt t2, t0, a1
+bz t2, if_1_else	#Check if condition
+if_1_then:
+move_immed_i t4, 1
+hload t3, a0, t4
+fsub t5, t3, a1
+move_immed_i t6, 1
+hstore a0, t6, t5	#Store RHS in assiggnment to Field-access(This, balance, 2)
+jmp if_1_end
+if_1_else:
+if_1_end:
+move_immed_i t8, 1
+hload t7, a0, t8
+move a0, t7	# Move method return value to a0
+ret
+M_get_balance_9:
+move_immed_i t1, 1
+hload t0, a0, t1
+move a0, t0	# Move method return value to a0
+ret
+# ===Class CheckingAccount===
+C_2:
+move_immed_i t0, 0
+hstore a0, t0, a1	#Store RHS in assiggnment to Field-access(This, account_number, 1)
+move_immed_f t1, 0.0
+move_immed_i t2, 1
+hstore a0, t2, t1	#Store RHS in assiggnment to Field-access(This, balance, 2)
+move_immed_i t3, 0
+move_immed_i t4, 2
+hstore a0, t4, t3	#Store RHS in assiggnment to Field-access(This, checkNumber, 3)
+M_debit_10:
+move_immed_i t2, 2
+hload t1, a0, t2
+move t0, t1		# Store RHS in assignment to Variable(2)
+move_immed_i t4, 1
+hload t3, a0, t4
+flt t5, a1, t3
+bz t5, if_2_else	#Check if condition
+if_2_then:
+move_immed_i t7, 2
+hload t6, a0, t7
+move t8, t6
+move_immed_i t9, 1
+iadd t6, t6, t9
+move_immed_i t10, 2
+hstore a0, t10, t6
+move_immed_i t12, 1
+hload t11, a0, t12
+fsub t13, t11, a1
+move_immed_i t14, 1
+hstore a0, t14, t13	#Store RHS in assiggnment to Field-access(This, balance, 2)
+jmp if_2_end
+if_2_else:
+if_2_end:
+move a0, t0	# Move method return value to a0
+ret
+# ===Class Bank===
+M_main_11:
+move_immed_i t6, 3	# Number of memory cells to be allocated on heap
+halloc t7, t6
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+move a0, t7	# Move base address of new object to a0
+move_immed_i t8, 11111
+move a1, t8
+call C_2	# Call initializer function
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t4, t7		# Store RHS in assignment to Variable(5)
+move_immed_i t9, 3	# Number of memory cells to be allocated on heap
+halloc t10, t9
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+move a0, t10	# Move base address of new object to a0
+move_immed_i t11, 22222
+move a1, t11
+call C_2	# Call initializer function
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t5, t10		# Store RHS in assignment to Variable(6)
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+save t11
+move a0, t4
+move_immed_f t12, 10000.0
+move a1, t12
+call M_deposit_7
+move t13, a0	# Save function return value in t13
+restore t11
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t0, t13		# Store RHS in assignment to Variable(1)
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+save t11
+save t12
+save t13
+move a0, t5
+move_immed_f t14, 100.0
+move a1, t14
+call M_deposit_7
+move t15, a0	# Save function return value in t15
+restore t13
+restore t12
+restore t11
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t1, t15		# Store RHS in assignment to Variable(2)
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+save t11
+save t12
+save t13
+save t14
+save t15
+move a0, t4
+call M_get_balance_9
+move t16, a0	# Save function return value in t16
+restore t15
+restore t14
+restore t13
+restore t12
+restore t11
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t0, t16		# Store RHS in assignment to Variable(1)
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+save t11
+save t12
+save t13
+save t14
+save t15
+save t16
+move a0, t5
+call M_get_balance_9
+move t17, a0	# Save function return value in t17
+restore t16
+restore t15
+restore t14
+restore t13
+restore t12
+restore t11
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t1, t17		# Store RHS in assignment to Variable(2)
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+save t11
+save t12
+save t13
+save t14
+save t15
+save t16
+save t17
+move a0, t4
+move_immed_f t18, 1000.0
+move a1, t18
+call M_withdrawal_8
+move t19, a0	# Save function return value in t19
+restore t17
+restore t16
+restore t15
+restore t14
+restore t13
+restore t12
+restore t11
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t0, t19		# Store RHS in assignment to Variable(1)
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+save t11
+save t12
+save t13
+save t14
+save t15
+save t16
+save t17
+save t18
+save t19
+move a0, t5
+move_immed_f t20, 1000.0
+move a1, t20
+call M_withdrawal_8
+move t21, a0	# Save function return value in t21
+restore t19
+restore t18
+restore t17
+restore t16
+restore t15
+restore t14
+restore t13
+restore t12
+restore t11
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t1, t21		# Store RHS in assignment to Variable(2)
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+save t11
+save t12
+save t13
+save t14
+save t15
+save t16
+save t17
+save t18
+save t19
+save t20
+save t21
+move a0, t4
+move_immed_f t22, 1000.0
+move a1, t22
+call M_debit_10
+move t23, a0	# Save function return value in t23
+restore t21
+restore t20
+restore t19
+restore t18
+restore t17
+restore t16
+restore t15
+restore t14
+restore t13
+restore t12
+restore t11
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t2, t23		# Store RHS in assignment to Variable(3)
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+save t11
+save t12
+save t13
+save t14
+save t15
+save t16
+save t17
+save t18
+save t19
+save t20
+save t21
+save t22
+save t23
+move a0, t5
+move_immed_f t24, 1000.0
+move a1, t24
+call M_debit_10
+move t25, a0	# Save function return value in t25
+restore t23
+restore t22
+restore t21
+restore t20
+restore t19
+restore t18
+restore t17
+restore t16
+restore t15
+restore t14
+restore t13
+restore t12
+restore t11
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+move t3, t25		# Store RHS in assignment to Variable(4)
+.static_data 0

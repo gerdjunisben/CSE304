@@ -309,7 +309,7 @@ def p_literal(p):
     if isinstance(p[1],int):
         p[0] = const_record('int',p[1],p.lineno(1))
     elif p[1] == "true" or p[1] == "false":
-        p[0] = const_record('bool',p[1],p.lineno(1))
+        p[0] = const_record('boolean',p[1],p.lineno(1))
     elif p[1] == "null":
         p[0] = const_record('null',p[1],p.lineno(1))
     elif isinstance(p[1],float):

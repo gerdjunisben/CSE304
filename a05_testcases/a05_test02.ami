@@ -1,0 +1,61 @@
+# ===Class In===
+M_scan_int_1:
+M_scan_float_2:
+# ===Class Out===
+M_print_3:
+M_print_4:
+M_print_5:
+M_print_6:
+# ===Class a05_test02===
+M_main_7:
+move_immed_i t9, 10
+move t0, t9		# Store RHS in assignment to Variable(1)
+move_immed_i t10, 20
+move t1, t10		# Store RHS in assignment to Variable(2)
+iadd t11, t0, t1
+move t2, t11		# Store RHS in assignment to Variable(3)
+imul t12, t0, t1
+move t2, t12		# Store RHS in assignment to Variable(3)
+isub t13, t1, t0
+move t2, t13		# Store RHS in assignment to Variable(3)
+idiv t14, t1, t0
+move t2, t14		# Store RHS in assignment to Variable(3)
+move_immed_f t15, 10.0
+move t3, t15		# Store RHS in assignment to Variable(4)
+move_immed_f t16, 20.0
+move t4, t16		# Store RHS in assignment to Variable(5)
+fadd t17, t3, t4
+move t5, t17		# Store RHS in assignment to Variable(6)
+fmul t18, t3, t4
+move t5, t18		# Store RHS in assignment to Variable(6)
+fsub t19, t4, t3
+move t5, t19		# Store RHS in assignment to Variable(6)
+fdiv t20, t4, t3
+move t5, t20		# Store RHS in assignment to Variable(6)
+move_immed_i t21, 1
+move t6, t21		# Store RHS in assignment to Variable(7)
+move_immed_i t22, 0
+move t7, t22		# Store RHS in assignment to Variable(8)
+imul t23, t6, t7
+move t8, t23		# Store RHS in assignment to Variable(9)
+move_immed_i t25, 1
+iadd t24, t6, t7
+igeq t24, t24, t25
+move t8, t24		# Store RHS in assignment to Variable(9)
+ilt t26, t0, t1
+move t8, t26		# Store RHS in assignment to Variable(9)
+ileq t27, t0, t1
+move t8, t27		# Store RHS in assignment to Variable(9)
+igt t28, t0, t1
+move t8, t28		# Store RHS in assignment to Variable(9)
+igeq t29, t0, t1
+move t8, t29		# Store RHS in assignment to Variable(9)
+igeq t30, t0, t1
+ileq t31, t0, t1
+imul t30, t30, t31
+move t8, t30		# Store RHS in assignment to Variable(9)
+igt t32, t0, t1
+ilt t33, t0, t1
+iadd t32, t32, t33
+move t8, t32		# Store RHS in assignment to Variable(9)
+.static_data 0

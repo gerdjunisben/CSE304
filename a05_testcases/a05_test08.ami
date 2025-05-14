@@ -1,0 +1,33 @@
+# ===Class In===
+M_scan_int_1:
+M_scan_float_2:
+# ===Class Out===
+M_print_3:
+M_print_4:
+M_print_5:
+M_print_6:
+# ===Class A===
+# ===Class a05_test08===
+M_main_7:
+move_immed_i t6, 10
+move t0, t6		# Store RHS in assignment to Variable(1)
+move_immed_f t7, 20.0
+move t2, t7		# Store RHS in assignment to Variable(3)
+move_immed_i t8, 0
+move t4, t8		# Store RHS in assignment to Variable(5)
+move_immed_i t9, 0
+hstore sap, t9, t0	# Store RHS in assignment to Field-access(Class-reference(A), i, 1)
+move_immed_i t10, 1
+hstore sap, t10, t2	# Store RHS in assignment to Field-access(Class-reference(A), f, 2)
+move_immed_i t11, 2
+hstore sap, t11, t4	# Store RHS in assignment to Field-access(Class-reference(A), b, 3)
+move_immed_i t13, 0
+hload t12, sap, t13
+move t1, t12		# Store RHS in assignment to Variable(2)
+move_immed_i t15, 1
+hload t14, sap, t15
+move t3, t14		# Store RHS in assignment to Variable(4)
+move_immed_i t17, 2
+hload t16, sap, t17
+move t5, t16		# Store RHS in assignment to Variable(6)
+.static_data 3

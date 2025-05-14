@@ -1,0 +1,33 @@
+# ===Class In===
+M_scan_int_1:
+M_scan_float_2:
+# ===Class Out===
+M_print_3:
+M_print_4:
+M_print_5:
+M_print_6:
+# ===Class nrfib===
+M_main_7:
+move_immed_i t4, 5
+move t0, t4		# Store RHS in assignment to Variable(1)
+move_immed_i t5, 1
+move t2, t5		# Store RHS in assignment to Variable(3)
+move_immed_i t6, 0
+move t3, t6		# Store RHS in assignment to Variable(4)
+move_immed_i t7, 1
+move t1, t7		# Store RHS in assignment to Variable(2)
+for_1_cond:
+ilt t8, t1, t0
+bz t8, for_1_end	# Check for condition
+for_1_body:
+iadd t9, t3, t2
+move t2, t9		# Store RHS in assignment to Variable(3)
+isub t10, t2, t3
+move t3, t10		# Store RHS in assignment to Variable(4)
+for_1_update:
+move_immed_i t11, 1
+iadd t12, t1, t11
+move t1, t12		# Store RHS in assignment to Variable(2)
+jmp for_1_cond
+for_1_end:
+.static_data 0

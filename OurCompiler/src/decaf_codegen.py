@@ -332,12 +332,12 @@ def processBinary(binary):
     return ret
 
     
-def processConditional(cond):
+def processConditional(cond,labelName = "Label"):
     b = []
 
 
 
-    tempLabel = StorageMachine.getNextLabel()
+    tempLabel = StorageMachine.getNextLabel(labelName)
     if(cond.__class__.__name__ == 'binaryExpression_record'):
         res = processBinary(cond)
         b+=res[0]
@@ -703,13 +703,16 @@ def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = Non
             endLabel = ""
             if(line.conditional.__class__.__name__ == 'binaryExpression_record' or
                line.conditional.__class__.__name__ == 'unaryExpression_record'):
-                temp = processConditional(line.conditional)
+                if(not isinstance(line.else_block,list)):
+                    temp = processConditional(line.conditional, "if_else")
+                else:
+                    temp = processConditional(line.conditional, "if_end")
                 b +=temp[0]
                 tempLabel = temp[1]
                 b+= processBlock(line.then_block.block)
 
                 if(not isinstance(line.else_block,list)):
-                    endLabel = StorageMachine.getNextLabel()
+                    endLabel = StorageMachine.getNextLabel("if_end")
                     b+= [jmp(endLabel)]
 
                 b+= [label(tempLabel)]
@@ -730,8 +733,8 @@ def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = Non
             endLabel = ""
             if(line.conditional.__class__.__name__ == 'binaryExpression_record' or
                line.conditional.__class__.__name__ == 'unaryExpression_record'):
-                topLoop = StorageMachine.getNextLabel()
-                endLabel = StorageMachine.getNextLabel()
+                topLoop = StorageMachine.getNextLabel("while_top")
+                endLabel = StorageMachine.getNextLabel("while_end")
                 temp = processConditional(line.conditional)
                 b+=[label(topLoop)]
                 b +=temp[0]
@@ -760,10 +763,10 @@ def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = Non
             endLabel = ""
             if(line.conditional.__class__.__name__ == 'binaryExpression_record' or
                line.conditional.__class__.__name__ == 'unaryExpression_record'):
-                topLoop = StorageMachine.getNextLabel()
-                endLabel = StorageMachine.getNextLabel()
+                topLoop = StorageMachine.getNextLabel("for_top")
+                endLabel = StorageMachine.getNextLabel("for_post")
                 b += processExpression(line.initializer.expression)
-                temp = processConditional(line.conditional)
+                temp = processConditional(line.conditional,"for_end")
                 
                 b+=[label(topLoop)]
                 b +=temp[0]
@@ -780,8 +783,8 @@ def processBlock(block,methodName = None,args = [], outerEnd=None,outerTop = Non
                     b+=[label(endLabel)]
             else:
                 if(line.conditional.value == "true"): #infinite loop but I allow it cause I'm chill like that
-                    topLoop = StorageMachine.getNextLabel()
-                    endLoop = StorageMachine.getNextLabel()
+                    topLoop = StorageMachine.getNextLabel("for_top")
+                    endLoop = StorageMachine.getNextLabel("end_loop")
                     b += processExpression(line.initializer.expression)
                     b+=[label(topLoop)]
                     b+=processExpression(line.update_expr.expression)
@@ -806,10 +809,10 @@ def compile(file):
 
     try:
         data = open(file).read()
-        bonusNonsense = open('OurCompiler/src/IO.decaf').read()
+        bonusNonsense = open('/home/gerdjunisben/Documents/CSE304/OurCompiler/src/IO.decaf').read()
 
-
-        prog = parser.parse((bonusNonsense + '\n' +  data), debug=False)
+        print((bonusNonsense + '\n' +  data));
+        prog = parser.parse(( data), debug=False)
 
         blocks = []
 
@@ -829,12 +832,15 @@ def compile(file):
                         staticFields += [field.staticID]
             blocks += [[halloc('sap', static_size)]]
             for clazz in prog:
+                blocks += [f"# ===Class {clazz.name}==="]
                 for method in clazz.methods:
                     blocks += [processBlock(method.body.block, 'M_' + method.name + '_' + str(method.ID), method.parameters)]
                 for constructor in clazz.constructors:
                     blocks += [processBlock(constructor.body.block,  'C_' + str(constructor.ID), constructor.parameters) + [ret()]]
             for block in blocks:
-                output += "\n\n"
+                if isinstance(block, str):
+                    output += f"{block}\n"
+                    continue
                 for instruction in block:
                     if isinstance(instruction, hload):
                         output += f"hload {instruction.res}, {instruction.base}, {instruction.offset}\n"
@@ -891,7 +897,7 @@ def compile(file):
                     elif isinstance(instruction, ret):
                         output += "ret\n"
                     elif isinstance(instruction, mov):
-                        output += f"mov {instruction.register1}, {instruction.register2}\n"
+                        output += f"move {instruction.register1}, {instruction.register2}\n"
                     elif isinstance(instruction, mov_immed_i):
                         output += f"move_immed_i {instruction.register}, {instruction.integer}\n"
                     elif isinstance(instruction, mov_immed_f):

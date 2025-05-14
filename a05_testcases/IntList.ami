@@ -1,0 +1,149 @@
+# ===Class In===
+M_scan_int_1:
+M_scan_float_2:
+# ===Class Out===
+M_print_3:
+M_print_4:
+M_print_5:
+M_print_6:
+# ===Class IntList===
+C_1:
+M_create_list_7:
+move_immed_i t1, 2	# Number of memory cells to be allocated on heap
+halloc t2, t1
+save a0
+save t0
+save t1
+save t2
+move a0, t2	# Move base address of new object to a0
+call C_1	# Call initializer function
+restore t2
+restore t1
+restore t0
+restore a0
+move t0, t2		# Store RHS in assignment to Variable(2)
+move_immed_i t3, 0
+hstore t0, t3, a0	#Store RHS in assiggnment to Field-access(Variable(2), value, 1)
+move_immed_i t4, 0
+move_immed_i t5, 1
+hstore t0, t5, t4	#Store RHS in assiggnment to Field-access(Variable(2), next, 2)
+move a0, t0	# Move method return value to a0
+ret
+M_insert_8:
+save a0
+save a1
+save t0
+move a0, a1
+call M_create_list_7
+move t1, a0	# Save function return value in t1
+restore t0
+restore a1
+restore a0
+move t0, t1		# Store RHS in assignment to Variable(2)
+move_immed_i t2, 1
+hstore t0, t2, a0	#Store RHS in assiggnment to Field-access(Variable(2), next, 2)
+move a0, t0	# Move method return value to a0
+ret
+M_search_9:
+move_immed_i t1, 0
+hload t0, a0, t1
+igeq t2, t0, a1
+ileq t3, t0, a1
+imul t2, t2, t3
+bz t2, if_1_else	#Check if condition
+if_1_then:
+move_immed_i t4, 1
+move a0, t4	# Move method return value to a0
+ret
+jmp if_1_end
+if_1_else:
+move_immed_i t6, 1
+hload t5, a0, t6
+move_immed_i t7, 0
+igeq t8, t5, t7
+ileq t9, t5, t7
+imul t8, t8, t9
+bz t8, if_2_else	#Check if condition
+if_2_then:
+move_immed_i t10, 0
+move a0, t10	# Move method return value to a0
+ret
+jmp if_2_end
+if_2_else:
+save a0
+save a1
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+save t7
+save t8
+save t9
+save t10
+move_immed_i t12, 1
+hload t11, a0, t12
+move a0, t11
+move a1, a1
+call M_search_9
+move t13, a0	# Save function return value in t13
+restore t10
+restore t9
+restore t8
+restore t7
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+restore a1
+restore a0
+move a0, t13	# Move method return value to a0
+ret
+if_2_end:
+if_1_end:
+M_length_10:
+move_immed_i t1, 1
+hload t0, a0, t1
+move_immed_i t2, 0
+igeq t3, t0, t2
+ileq t4, t0, t2
+imul t3, t3, t4
+bz t3, if_3_else	#Check if condition
+if_3_then:
+move_immed_i t5, 1
+move a0, t5	# Move method return value to a0
+ret
+jmp if_3_end
+if_3_else:
+move_immed_i t6, 1
+save a0
+save t0
+save t1
+save t2
+save t3
+save t4
+save t5
+save t6
+move_immed_i t8, 1
+hload t7, a0, t8
+move a0, t7
+call M_length_10
+move t9, a0	# Save function return value in t9
+restore t6
+restore t5
+restore t4
+restore t3
+restore t2
+restore t1
+restore t0
+restore a0
+iadd t10, t6, t9
+move a0, t10	# Move method return value to a0
+ret
+if_3_end:
+.static_data 0

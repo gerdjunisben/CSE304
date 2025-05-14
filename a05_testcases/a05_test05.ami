@@ -1,0 +1,28 @@
+# ===Class In===
+M_scan_int_1:
+M_scan_float_2:
+# ===Class Out===
+M_print_3:
+M_print_4:
+M_print_5:
+M_print_6:
+# ===Class a05_test05===
+M_main_7:
+move_immed_i t3, 0
+move t0, t3		# Store RHS in assignment to Variable(1)
+move_immed_i t4, 10
+move t1, t4		# Store RHS in assignment to Variable(2)
+move_immed_i t5, 0
+move t2, t5		# Store RHS in assignment to Variable(3)
+while_1_cond:
+ilt t6, t0, t1
+bz t6, while_1_end	# Check while condition
+while_1_body:
+iadd t7, t2, t0
+move t2, t7		# Store RHS in assignment to Variable(3)
+move t8, t0
+move_immed_i t9, 1
+iadd t0, t0, t9
+jmp while_1_cond
+while_1_end:
+.static_data 0
