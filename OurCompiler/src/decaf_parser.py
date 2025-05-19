@@ -202,7 +202,7 @@ def p_method_decl(p):
     app = None
     if(p[1] != None and p[1]['Visibility'] != None):
         vis = p[1]['Visibility']
-    elif(p[1] != None and p[1]['Applicability'] != None):
+    if(p[1] != None and p[1]['Applicability'] != None):
         app = p[1]['Applicability']
     var_tab = []
     if p[2] == 'void':
@@ -352,6 +352,14 @@ def p_lhs(p):
     '''lhs : field_access'''
     p[0] = p[1]
 
+def p_method_invocation(p):
+    '''method_invocation : field_access LPAREN RPAREN
+                        | field_access LPAREN arguments RPAREN'''
+    if len(p) == 4:
+        p[0] = methodCallExpression_record(p[1],[],p.lineno(1))
+    else:
+        p[0] = methodCallExpression_record(p[1],p[3],p.lineno(1))
+
 
 def p_field_access(p):
     '''field_access : primary PERIOD ID
@@ -362,13 +370,7 @@ def p_field_access(p):
         p[0] = fieldAccessExpression_record(p[1],p[3],p.lineno(1))
 
 
-def p_method_invocation(p):
-    '''method_invocation : field_access LPAREN RPAREN
-                        | field_access LPAREN arguments RPAREN'''
-    if len(p) == 4:
-        p[0] = methodCallExpression_record(p[1],[],p.lineno(1))
-    else:
-        p[0] = methodCallExpression_record(p[1],p[3],p.lineno(1))
+
     
 
 def p_expr(p):

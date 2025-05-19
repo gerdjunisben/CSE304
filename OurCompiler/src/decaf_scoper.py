@@ -15,6 +15,7 @@ class SymbolTable:
         self.params = []
         self.lookUps = []
         self.refs = []
+        self.classing = False
 
     def addRef(self,reference):
         self.refs += [reference]
@@ -129,6 +130,7 @@ class SymbolTable:
             return find_in_table(typeChecker.types[base].miniTable, name, args,False)
 
         if hasattr(base, 'name') and base.name in typeChecker.types:  # Class literal
+            
             return find_in_table(typeChecker.types[base.name].miniTable, name, args,True)
 
         if hasattr(base, 'type'):  # Instance
@@ -139,7 +141,8 @@ class SymbolTable:
 
 
 
-        
+    def addName(self,name):
+        self.cur.names[name] = "n/a"
 
     def add(self,var):
         #print("ADD")

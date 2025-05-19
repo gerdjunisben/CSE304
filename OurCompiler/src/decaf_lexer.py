@@ -144,6 +144,11 @@ def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     if t.value in reserved:
         t.type = reserved[t.value]
+        if t.value == 'class':
+            global_symbol_table.classing = True
+    elif global_symbol_table.classing:
+        global_symbol_table.classing = False
+        global_symbol_table.addName(t.value)
     return t
 
 
