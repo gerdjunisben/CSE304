@@ -10,6 +10,7 @@ import decaf_parser as parser
 import sys
 from decaf_absmc import *
 from decaf_typecheck import typeChecker
+from decaf_lexer import global_symbol_table
 
 StorageMachine = TheStorageMachine(100)
 staticFields = []
@@ -472,7 +473,8 @@ def setField(field, value):
 
 def handleSetting(left,right):
     b = []
-    
+    if(right.type == 'static class ref'):
+        typeChecker.lastSecondWoopsie(right,global_symbol_table)
     
     if(right.__class__.__name__ == 'const_record'):
         b+=[ mov_imm_cell(left,right)]

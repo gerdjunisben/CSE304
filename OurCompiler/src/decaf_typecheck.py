@@ -5,11 +5,13 @@
 # SB ID: 114849209
 # Net ID: dzampini
 
+
 class typeTree:
     def __init__(self):
         self.root = typeNode('void',None)
         self.types = {'void':self.root}
         self.checkQueue = []
+        self.whenWeDoneQueue = []
 
     def addType(self,name,sup):
         if (self.types[sup] == None):
@@ -50,6 +52,12 @@ class typeTree:
             if self.checkQueue[i][0] == 4 and len(self.checkQueue[i])==3:
                 self.checkQueue[i] = self.checkQueue[i][:3] + (methodReturn,) 
 
+    def lastSecondWoopsie(self,var,global_symbol_table):
+        res = global_symbol_table.lookUp(var.name)
+        var.type = res[0]
+        var.id = res[1]
+
+    
 
     def executeQueue(self):
         for thing in self.checkQueue:

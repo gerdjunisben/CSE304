@@ -142,7 +142,7 @@ class SymbolTable:
 
 
     def addName(self,name):
-        self.cur.names[name] = "n/a"
+        self.cur.names[name] = "static class ref"
 
     def add(self,var):
         #print("ADD")

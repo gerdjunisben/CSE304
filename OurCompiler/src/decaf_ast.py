@@ -207,7 +207,9 @@ class varExpression_record(expression_record):
         lookup = global_symbol_table.lookUp(name)
         #print(lookup)
         self.id = lookup[1]
-        if(isinstance(lookup[0],str)):
+        if(isinstance(lookup,str)):
+            self.type = lookup
+        elif(isinstance(lookup[0],str)):
             self.type = lookup[0]
         else:   
             self.type = lookup[0].type
